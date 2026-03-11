@@ -84,7 +84,7 @@ export default function Sidebar({ user, onLogout }: SidebarProps) {
       <div className="px-5 pt-5 pb-4">
         <div className="flex items-center gap-2">
           <Image
-            src="/logo/delta-light-360.png"
+            src="/logo/delta-dark-360.png"
             alt="Delta360"
             width={140}
             height={40}

@@ -128,3 +128,20 @@ body {
   border-radius: 8px !important;
   box-shadow: 0 10px 25px -5px rgba(12, 40, 51, 0.3) !important;
 }
+.recharts-default-tooltip .recharts-tooltip-label {
+  color: #8CAEC1 !important;
+  font-size: 11px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+}
+.recharts-default-tooltip .recharts-tooltip-item {
+  color: #FFFFFF !important;
+  font-weight: 600 !important;
+}
+
+/* Recharts Legend text */
+.recharts-legend-item-text {
+  color: #0C2833 !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+}

@@ -38,8 +38,7 @@ interface Entity {
   accountTypes: string[];
 }
 
-
-const BRAND_COLORS = {
+const BRAND = {
   orange: '#FF5C00',
   navy: '#0C2833',
   steel: '#8CAEC1',
@@ -47,37 +46,41 @@ const BRAND_COLORS = {
   orangeLight: '#FF8A40',
   steelPale: '#DDE9EE',
   steelDark: '#B5CFD9',
-  navyDark: '#122F3D',
+  navyLight: '#122F3D',
+  bg: '#F7F9FB',
 };
 
 const NODE_COLORS: Record<string, string> = {
-  'Entity': BRAND_COLORS.orange,
-  'Account': BRAND_COLORS.navy,
-  'CloseTemplate': BRAND_COLORS.steel,
-  'JournalTemplate': BRAND_COLORS.orangeLight,
-  'ReconRule': BRAND_COLORS.steelDark,
-  'default': BRAND_COLORS.steelPale,
+  'Entity': BRAND.orange,
+  'Account': BRAND.navy,
+  'CloseTemplate': BRAND.steel,
+  'JournalTemplate': BRAND.orangeLight,
+  'ReconRule': BRAND.steelDark,
+  'default': BRAND.steelPale,
 };
 
-const PIE_COLORS = [BRAND_COLORS.orange, BRAND_COLORS.navy, BRAND_COLORS.steel, BRAND_COLORS.orangeLight, BRAND_COLORS.steelDark, '#122F3D'];
+const PIE_COLORS = [BRAND.orange, BRAND.navy, BRAND.steel, BRAND.orangeLight, BRAND.steelDark, BRAND.navyLight];
 
 function SkeletonLoader() {
   return (
-    <div className="animate-pulse space-y-2">
+    <div className="animate-pulse space-y-3">
       <div className="h-8 bg-[#DDE9EE] rounded w-3/4"></div>
       <div className="h-4 bg-[#DDE9EE] rounded w-1/2"></div>
     </div>
   );
 }
 
-function MetricCard({ label, value, bgColor, subtext }: { label: string; value: string | number; bgColor: string; textColor?: string; subtext: string }) {
-  return (
-    <div className={`${bgColor} rounded-xl p-6 text-white`}>
-      <p className="text-xs uppercase tracking-wider font-semibold mb-2 opacity-90">{label}</p>
-      <p className={`text-4xl font-bold mb-2`}>{value}</p>
-      <p className="text-xs opacity-75">{subtext}</p>
-    </div>
-  );
+/* eslint-disable @typescript-eslint/no-explicit-any */
+function CustomTooltip({ active, payload }: any) {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-[#0C2833] text-white rounded-lg px-4 py-2.5 text-sm shadow-elevated border border-[#122F3D]">
+        <p className="text-[10px] uppercase tracking-wider text-[#8CAEC1] mb-0.5">{payload[0].payload?.name || payload[0].name}</p>
+        <p className="font-bold text-base">{payload[0].value}</p>
+      </div>
+    );
+  }
+  return null;
 }
 
 function ForceGraph({ nodes, edges }: { nodes: Node[]; edges: Edge[] }) {
@@ -123,8 +126,8 @@ function ForceGraph({ nodes, edges }: { nodes: Node[]; edges: Edge[] }) {
     });
 
     // Force simulation parameters
-    const K = 50; // Spring constant
-    const REPULSION = 5000; // Repulsion force
+    const K = 50;
+    const REPULSION = 5000;
     const DAMPING = 0.85;
     const CENTER_STRENGTH = 0.01;
     const ITERATIONS = 200;
@@ -135,7 +138,6 @@ function ForceGraph({ nodes, edges }: { nodes: Node[]; edges: Edge[] }) {
       if (iteration >= ITERATIONS) return;
       iteration++;
 
-      // Reset forces
       const forces: Record<string, { x: number; y: number }> = {};
       nodes.forEach((node) => {
         forces[node.id] = { x: 0, y: 0 };
@@ -197,11 +199,10 @@ function ForceGraph({ nodes, edges }: { nodes: Node[]; edges: Edge[] }) {
         forces[node.id].x += dx * CENTER_STRENGTH;
         forces[node.id].y += dy * CENTER_STRENGTH;
 
-        // Keep nodes in bounds
-        if (pos.x < 20) forces[node.id].x += 5;
-        if (pos.x > canvas.width - 20) forces[node.id].x -= 5;
-        if (pos.y < 20) forces[node.id].y += 5;
-        if (pos.y > canvas.height - 20) forces[node.id].y -= 5;
+        if (pos.x < 30) forces[node.id].x += 5;
+        if (pos.x > canvas.width - 30) forces[node.id].x -= 5;
+        if (pos.y < 30) forces[node.id].y += 5;
+        if (pos.y > canvas.height - 30) forces[node.id].y -= 5;
       });
 
       // Update velocities and positions
@@ -214,23 +215,22 @@ function ForceGraph({ nodes, edges }: { nodes: Node[]; edges: Edge[] }) {
         pos.x += vel.x;
         pos.y += vel.y;
 
-        // Boundary constraints
-        pos.x = Math.max(20, Math.min(canvas.width - 20, pos.x));
-        pos.y = Math.max(20, Math.min(canvas.height - 20, pos.y));
+        pos.x = Math.max(30, Math.min(canvas.width - 30, pos.x));
+        pos.y = Math.max(30, Math.min(canvas.height - 30, pos.y));
       });
 
-      // Render
-      ctx.fillStyle = '#FFFFFF';
+      // Render — brand background
+      ctx.fillStyle = BRAND.bg;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Draw edges
-      ctx.strokeStyle = '#CCCCCC';
-      ctx.lineWidth = 1;
+      // Draw edges with brand steel color
       edges.forEach((edge) => {
         const pos1 = positions[edge.source];
         const pos2 = positions[edge.target];
 
         if (pos1 && pos2) {
+          ctx.strokeStyle = BRAND.steelPale;
+          ctx.lineWidth = 1;
           ctx.beginPath();
           ctx.moveTo(pos1.x, pos1.y);
           ctx.lineTo(pos2.x, pos2.y);
@@ -243,6 +243,12 @@ function ForceGraph({ nodes, edges }: { nodes: Node[]; edges: Edge[] }) {
         const pos = positions[node.id];
         const nodeColor = NODE_COLORS[node.group] || NODE_COLORS.default;
 
+        // Outer glow
+        ctx.fillStyle = nodeColor + '20';
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, 14, 0, Math.PI * 2);
+        ctx.fill();
+
         // Node circle
         ctx.fillStyle = nodeColor;
         ctx.beginPath();
@@ -250,13 +256,13 @@ function ForceGraph({ nodes, edges }: { nodes: Node[]; edges: Edge[] }) {
         ctx.fill();
 
         // Node border
-        ctx.strokeStyle = '#FFFFFF';
+        ctx.strokeStyle = BRAND.white;
         ctx.lineWidth = 2;
         ctx.stroke();
 
         // Node label
-        ctx.fillStyle = '#0C2833';
-        ctx.font = 'bold 10px sans-serif';
+        ctx.fillStyle = BRAND.navy;
+        ctx.font = 'bold 9px Inter, sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(node.label.substring(0, 2).toUpperCase(), pos.x, pos.y);
@@ -271,8 +277,8 @@ function ForceGraph({ nodes, edges }: { nodes: Node[]; edges: Edge[] }) {
   return (
     <canvas
       ref={canvasRef}
-      className="w-full border border-[#DDE9EE] rounded-xl bg-white"
-      style={{ height: '500px' }}
+      className="w-full rounded-xl"
+      style={{ height: '500px', background: BRAND.bg }}
     />
   );
 }
@@ -313,63 +319,70 @@ export default function InsightsPage() {
   const labelCountsArray = stats ? Object.entries(stats.labelCounts).map(([name, count]) => ({ name, count })) : [];
   const relationshipCountsArray = stats ? Object.entries(stats.relationshipTypeCounts).map(([name, value]) => ({ name, value })) : [];
 
+  // Metric card data with explicit static classes (Tailwind can't resolve dynamic bg-[] )
+  const metricCards = [
+    {
+      label: 'Total Nodes',
+      value: stats?.nodeCount || 0,
+      subtext: 'Knowledge graph entities',
+      bgClass: 'metric-card-navy',
+    },
+    {
+      label: 'Total Relationships',
+      value: stats?.relationshipCount || 0,
+      subtext: 'Graph connections',
+      bgClass: 'metric-card-orange',
+    },
+    {
+      label: 'Unique Labels',
+      value: Object.keys(stats?.labelCounts || {}).length,
+      subtext: 'Entity types',
+      bgClass: 'metric-card-steel',
+    },
+  ];
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Page Header */}
       <div>
-        <h1 className="text-2xl font-bold text-[#0C2833] mb-2">System Insights</h1>
-        <p className="text-sm text-[#8CAEC1] mb-4">Real-time knowledge graph analytics and entity relationships</p>
-        <div className="w-12 h-0.5 bg-[#FF5C00] rounded-full"></div>
+        <h1 className="text-2xl font-bold text-[#0C2833] tracking-tight mb-1">System Insights</h1>
+        <p className="text-sm text-[#8CAEC1] mb-3">Real-time knowledge graph analytics and entity relationships</p>
+        <div className="w-10 h-[2px] bg-[#FF5C00] rounded-full"></div>
       </div>
 
       {/* Graph Statistics Header */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {loading ? (
           <>
-            <SkeletonLoader />
-            <SkeletonLoader />
-            <SkeletonLoader />
+            <div className="bg-white rounded-xl border border-[#DDE9EE] p-6"><SkeletonLoader /></div>
+            <div className="bg-white rounded-xl border border-[#DDE9EE] p-6"><SkeletonLoader /></div>
+            <div className="bg-white rounded-xl border border-[#DDE9EE] p-6"><SkeletonLoader /></div>
           </>
         ) : (
-          <>
-            <MetricCard
-              label="Total Nodes"
-              value={stats?.nodeCount || 0}
-              bgColor={`bg-[${BRAND_COLORS.navy}]`}
-              textColor="text-white"
-              subtext="Knowledge graph entities"
-            />
-            <MetricCard
-              label="Total Relationships"
-              value={stats?.relationshipCount || 0}
-              bgColor={`bg-[${BRAND_COLORS.orange}]`}
-              textColor="text-white"
-              subtext="Graph connections"
-            />
-            <MetricCard
-              label="Unique Labels"
-              value={Object.keys(stats?.labelCounts || {}).length}
-              bgColor={`bg-[${BRAND_COLORS.steel}]`}
-              textColor="text-white"
-              subtext="Entity types"
-            />
-          </>
+          metricCards.map((card) => (
+            <div key={card.label} className={`${card.bgClass} rounded-xl p-6 text-white shadow-card`}>
+              <p className="text-[10px] uppercase tracking-[0.1em] font-semibold mb-2 opacity-80">{card.label}</p>
+              <p className="text-4xl font-extrabold mb-1 tracking-tight">{card.value}</p>
+              <p className="text-xs opacity-60">{card.subtext}</p>
+            </div>
+          ))
         )}
       </div>
 
       {/* Node Distribution by Label */}
-      <div className="bg-white rounded-xl border border-[#DDE9EE] p-6">
-        <h3 className="text-sm font-bold text-[#0C2833] mb-4">Node Distribution by Label</h3>
+      <div className="bg-white rounded-xl border border-[#DDE9EE] p-6 shadow-card">
+        <h3 className="text-sm font-bold text-[#0C2833] mb-1.5">Node Distribution by Label</h3>
+        <div className="w-8 h-[2px] bg-[#FF5C00] mb-5 rounded-full"></div>
         {loading ? (
           <SkeletonLoader />
         ) : labelCountsArray.length > 0 ? (
           <ResponsiveContainer width="100%" height={300}>
             <BarChart layout="vertical" data={labelCountsArray}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#DDE9EE" />
-              <XAxis type="number" />
-              <YAxis dataKey="name" type="category" width={100} />
-              <Tooltip />
-              <Bar dataKey="count" fill={BRAND_COLORS.orange} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#DDE9EE" horizontal={false} />
+              <XAxis type="number" tick={{ fontSize: 11, fill: '#8CAEC1' }} axisLine={{ stroke: '#DDE9EE' }} tickLine={false} />
+              <YAxis dataKey="name" type="category" width={110} tick={{ fontSize: 12, fill: '#0C2833', fontWeight: 500 }} axisLine={false} tickLine={false} />
+              <Tooltip content={<CustomTooltip />} />
+              <Bar dataKey="count" fill={BRAND.orange} radius={[0, 6, 6, 0]} barSize={22} />
             </BarChart>
           </ResponsiveContainer>
         ) : (
@@ -378,9 +391,10 @@ export default function InsightsPage() {
       </div>
 
       {/* Relationship Types Distribution */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-xl border border-[#DDE9EE] p-6">
-          <h3 className="text-sm font-bold text-[#0C2833] mb-4">Relationship Types</h3>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div className="bg-white rounded-xl border border-[#DDE9EE] p-6 shadow-card">
+          <h3 className="text-sm font-bold text-[#0C2833] mb-1.5">Relationship Types</h3>
+          <div className="w-8 h-[2px] bg-[#FF5C00] mb-5 rounded-full"></div>
           {loading ? (
             <SkeletonLoader />
           ) : relationshipCountsArray.length > 0 ? (
@@ -392,14 +406,16 @@ export default function InsightsPage() {
                   cy="50%"
                   innerRadius={55}
                   outerRadius={85}
-                  paddingAngle={2}
+                  paddingAngle={3}
                   dataKey="value"
+                  strokeWidth={2}
+                  stroke="#F7F9FB"
                 >
                   {relationshipCountsArray.map((_, index) => (
                     <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip />
+                <Tooltip content={<CustomTooltip />} />
               </PieChart>
             </ResponsiveContainer>
           ) : (
@@ -407,22 +423,23 @@ export default function InsightsPage() {
           )}
         </div>
 
-        {/* Entity Legend */}
-        <div className="bg-white rounded-xl border border-[#DDE9EE] p-6">
-          <h3 className="text-sm font-bold text-[#0C2833] mb-4">Relationship Type Legend</h3>
-          <div className="space-y-3">
+        {/* Relationship Legend */}
+        <div className="bg-white rounded-xl border border-[#DDE9EE] p-6 shadow-card">
+          <h3 className="text-sm font-bold text-[#0C2833] mb-1.5">Relationship Type Legend</h3>
+          <div className="w-8 h-[2px] bg-[#FF5C00] mb-5 rounded-full"></div>
+          <div className="space-y-3.5">
             {loading ? (
               <SkeletonLoader />
             ) : relationshipCountsArray.length > 0 ? (
               relationshipCountsArray.map((rel, idx) => (
                 <div key={rel.name} className="flex items-center gap-3">
                   <div
-                    className="w-3 h-3 rounded-full"
+                    className="w-3 h-3 rounded-full flex-shrink-0"
                     style={{ backgroundColor: PIE_COLORS[idx % PIE_COLORS.length] }}
                   ></div>
-                  <div className="flex-1">
+                  <div className="flex-1 flex items-center justify-between">
                     <p className="text-sm font-medium text-[#0C2833]">{rel.name}</p>
-                    <p className="text-xs text-[#8CAEC1]">{rel.value} connections</p>
+                    <p className="text-xs font-semibold text-[#8CAEC1] bg-[#F0F4F7] px-2.5 py-0.5 rounded-full">{rel.value}</p>
                   </div>
                 </div>
               ))
@@ -434,38 +451,39 @@ export default function InsightsPage() {
       </div>
 
       {/* Entity-Account Relationships */}
-      <div className="bg-white rounded-xl border border-[#DDE9EE] p-6">
-        <h3 className="text-sm font-bold text-[#0C2833] mb-4">Entities and Account Relationships</h3>
+      <div className="bg-white rounded-xl border border-[#DDE9EE] p-6 shadow-card">
+        <h3 className="text-sm font-bold text-[#0C2833] mb-1.5">Entities and Account Relationships</h3>
+        <div className="w-8 h-[2px] bg-[#FF5C00] mb-5 rounded-full"></div>
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {[...Array(3)].map((_, i) => (
-              <SkeletonLoader key={i} />
+              <div key={i} className="bg-[#F7F9FB] rounded-lg p-5"><SkeletonLoader /></div>
             ))}
           </div>
         ) : entities && entities.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {entities.map((entity, idx) => (
-              <div key={idx} className="border border-[#DDE9EE] rounded-lg p-4 hover:shadow-md transition-shadow">
+              <div key={idx} className="border border-[#DDE9EE] rounded-xl p-5 hover:shadow-card-hover transition-all duration-200 bg-white">
                 <div className="flex items-start justify-between mb-3">
                   <div>
                     <p className="text-sm font-bold text-[#0C2833]">{entity.entityName}</p>
-                    <span className="text-xs bg-[#DDE9EE] text-[#0C2833] px-2 py-1 rounded mt-1 inline-block font-semibold">
+                    <span className="text-[10px] uppercase tracking-wider bg-[#DDE9EE] text-[#0C2833] px-2 py-0.5 rounded mt-1.5 inline-block font-semibold">
                       {entity.entityCode}
                     </span>
                   </div>
                 </div>
                 <div className="my-3">
-                  <p className="text-3xl font-bold text-[#FF5C00]">{entity.accountCount}</p>
-                  <p className="text-xs text-[#8CAEC1]">accounts linked</p>
+                  <p className="text-3xl font-extrabold text-[#FF5C00] tracking-tight">{entity.accountCount}</p>
+                  <p className="text-[11px] text-[#8CAEC1] font-medium mt-0.5">accounts linked</p>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1.5 pt-3 border-t border-[#F0F4F6]">
                   {entity.accountTypes.slice(0, 3).map((type, typeIdx) => (
-                    <span key={typeIdx} className="text-xs bg-[#F0F4F7] text-[#0C2833] px-2 py-1 rounded">
+                    <span key={typeIdx} className="text-[10px] bg-[#F0F4F7] text-[#0C2833] px-2 py-0.5 rounded font-medium">
                       {type}
                     </span>
                   ))}
                   {entity.accountTypes.length > 3 && (
-                    <span className="text-xs bg-[#F0F4F7] text-[#0C2833] px-2 py-1 rounded">
+                    <span className="text-[10px] bg-[rgba(255,92,0,0.08)] text-[#FF5C00] px-2 py-0.5 rounded font-semibold">
                       +{entity.accountTypes.length - 3}
                     </span>
                   )}
@@ -479,16 +497,26 @@ export default function InsightsPage() {
       </div>
 
       {/* Knowledge Graph Visualization */}
-      <div className="bg-white rounded-xl border border-[#DDE9EE] p-6">
-        <div className="flex items-center gap-3 mb-4">
+      <div className="bg-white rounded-xl border border-[#DDE9EE] p-6 shadow-card">
+        <div className="flex items-center gap-3 mb-1.5">
           <Network className="h-5 w-5 text-[#FF5C00]" />
           <h3 className="text-sm font-bold text-[#0C2833]">Knowledge Graph Visualization</h3>
         </div>
+        <div className="w-8 h-[2px] bg-[#FF5C00] mb-4 rounded-full ml-8"></div>
         <p className="text-xs text-[#8CAEC1] mb-4">
-          Interactive force-directed graph showing nodes (entities) and relationships. Nodes repel each other while edges pull connected nodes together.
+          Force-directed graph showing nodes and relationships. Nodes repel each other while edges pull connected nodes together.
         </p>
+        {/* Node Color Legend */}
+        <div className="flex flex-wrap gap-4 mb-4">
+          {Object.entries(NODE_COLORS).filter(([k]) => k !== 'default').map(([label, color]) => (
+            <div key={label} className="flex items-center gap-1.5">
+              <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: color }}></div>
+              <span className="text-[11px] font-medium text-[#0C2833]">{label}</span>
+            </div>
+          ))}
+        </div>
         {loading ? (
-          <div className="h-96 bg-[#F0F4F7] rounded-lg animate-pulse" />
+          <div className="h-[500px] bg-[#F7F9FB] rounded-xl animate-pulse" />
         ) : network && network.nodes.length > 0 ? (
           <ForceGraph nodes={network.nodes} edges={network.edges} />
         ) : (

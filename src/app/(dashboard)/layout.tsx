@@ -74,17 +74,17 @@ export default function DashboardLayout({
       {/* Main content area with ml offset */}
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* Header bar */}
-        <header className="bg-white border-b border-[#DDE9EE] flex items-center justify-between px-8 py-4">
-          <h1 className="text-lg font-semibold text-[#0C2833]">
+        <header className="bg-white border-b border-[#DDE9EE] flex items-center justify-between px-8 py-4 shadow-[0_1px_2px_rgba(12,40,51,0.04)]">
+          <h1 className="text-lg font-bold tracking-tight-brand text-[#0C2833]">
             {getPageTitle(pathname)}
           </h1>
-          <div className="text-sm text-[#8CAEC1]">
-            Good {getGreeting()}, {user.name}
+          <div className="text-sm text-[#8CAEC1] font-medium">
+            Good {getGreeting()}, <span className="text-[#0C2833]">{user.name}</span>
           </div>
         </header>
 
         {/* Content area */}
-        <main className="flex-1 overflow-y-auto bg-white">
+        <main className="flex-1 overflow-y-auto bg-[#F7F9FB]">
           <div className="px-8 py-6">
             {children}
           </div>
