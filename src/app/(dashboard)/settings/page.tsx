@@ -1,21 +1,17 @@
-import { getUsers, getEntities, getAccounts } from '@/lib/db';
-import { Badge } from '@/components/ui/badge';
-import { Users, Building2, DollarSign } from 'lucide-react';
+import { getUsers, getSourceSystems } from '@/lib/db';
+import { Users, Server, CheckCircle } from 'lucide-react';
 
 export default async function SettingsPage() {
-  const [users, entities, accounts] = await Promise.all([
+  const [users, sourceSystems] = await Promise.all([
     getUsers(),
-    getEntities(),
-    getAccounts(),
+    getSourceSystems(),
   ]);
 
   // Calculate stats
   const totalUsers = users.length;
   const activeUsers = users.filter((u) => u.is_active).length;
-  const totalEntities = entities.length;
-  const activeEntities = entities.filter((e) => e.is_active).length;
-  const totalAccounts = accounts.length;
-  const activeAccounts = accounts.filter((a) => a.is_active).length;
+  const totalSystems = sourceSystems.length;
+  const connectedSystems = sourceSystems.filter((s) => s.connection_status?.toLowerCase() === 'connected').length;
 
   // Group users by department
   const usersByDepartment = users.reduce(
@@ -32,64 +28,71 @@ export default async function SettingsPage() {
 
   return (
     <div className="space-y-8">
+      {/* Page Header */}
+      <div>
+        <h1 className="text-2xl font-bold text-[#0C2833] mb-2">Settings</h1>
+        <p className="text-sm text-[#8CAEC1] mb-4">System configuration and user management</p>
+        <div className="w-12 h-0.5 bg-[#FF5C00] rounded-full"></div>
+      </div>
+
       {/* System Info Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white rounded-lg border border-slate-200 p-6">
-          <div className="flex items-center justify-between">
+        <div className="bg-white rounded-xl border border-[#DDE9EE] p-6 hover:shadow-card transition-shadow">
+          <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs uppercase tracking-wide text-slate-500 font-medium mb-2">
+              <p className="text-[11px] uppercase tracking-wider text-[#8CAEC1] font-semibold mb-2">
                 Total Users
               </p>
-              <p className="text-3xl font-semibold text-slate-900">{totalUsers}</p>
-              <p className="text-xs text-slate-500 mt-1">{activeUsers} active</p>
+              <p className="text-3xl font-bold text-[#0C2833]">{totalUsers}</p>
+              <p className="text-xs text-[#8CAEC1] mt-2">{activeUsers} active</p>
             </div>
-            <Users className="h-8 w-8 text-slate-300" />
+            <Users className="h-8 w-8 text-[#FF5C00] opacity-50" />
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border border-slate-200 p-6">
-          <div className="flex items-center justify-between">
+        <div className="bg-white rounded-xl border border-[#DDE9EE] p-6 hover:shadow-card transition-shadow">
+          <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs uppercase tracking-wide text-slate-500 font-medium mb-2">
-                Total Entities
+              <p className="text-[11px] uppercase tracking-wider text-[#8CAEC1] font-semibold mb-2">
+                Source Systems
               </p>
-              <p className="text-3xl font-semibold text-slate-900">{totalEntities}</p>
-              <p className="text-xs text-slate-500 mt-1">{activeEntities} active</p>
+              <p className="text-3xl font-bold text-[#0C2833]">{totalSystems}</p>
+              <p className="text-xs text-[#8CAEC1] mt-2">{connectedSystems} connected</p>
             </div>
-            <Building2 className="h-8 w-8 text-slate-300" />
+            <Server className="h-8 w-8 text-[#FF5C00] opacity-50" />
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border border-slate-200 p-6">
-          <div className="flex items-center justify-between">
+        <div className="bg-white rounded-xl border border-[#DDE9EE] p-6 hover:shadow-card transition-shadow">
+          <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs uppercase tracking-wide text-slate-500 font-medium mb-2">
-                Total Accounts
+              <p className="text-[11px] uppercase tracking-wider text-[#8CAEC1] font-semibold mb-2">
+                System Health
               </p>
-              <p className="text-3xl font-semibold text-slate-900">{totalAccounts}</p>
-              <p className="text-xs text-slate-500 mt-1">{activeAccounts} active</p>
+              <p className="text-3xl font-bold text-[#10B981]">100%</p>
+              <p className="text-xs text-[#8CAEC1] mt-2">All systems operational</p>
             </div>
-            <DollarSign className="h-8 w-8 text-slate-300" />
+            <CheckCircle className="h-8 w-8 text-[#10B981] opacity-50" />
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Department Distribution */}
-        <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
-          <div className="border-b border-slate-100 p-6">
-            <h3 className="text-sm font-semibold text-slate-900">Users by Department</h3>
+        <div className="bg-white rounded-xl border border-[#DDE9EE] overflow-hidden">
+          <div className="border-b border-[#DDE9EE] p-6">
+            <h3 className="text-sm font-bold text-[#0C2833]">Users by Department</h3>
           </div>
-          <div className="p-6 space-y-4">
+          <div className="p-6 space-y-3">
             {Object.entries(usersByDepartment).length === 0 ? (
-              <p className="text-sm text-slate-500">No users found</p>
+              <p className="text-sm text-[#8CAEC1]">No users found</p>
             ) : (
               Object.entries(usersByDepartment)
                 .sort((a, b) => b[1] - a[1])
                 .map(([dept, count]) => (
                   <div key={dept} className="flex items-center justify-between">
-                    <p className="text-sm font-medium text-slate-900">{dept}</p>
-                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
+                    <p className="text-sm font-medium text-[#0C2833]">{dept}</p>
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-semibold bg-[rgba(255,92,0,0.1)] text-[#FF5C00]">
                       {count}
                     </span>
                   </div>
@@ -99,32 +102,32 @@ export default async function SettingsPage() {
         </div>
 
         {/* System Status */}
-        <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
-          <div className="border-b border-slate-100 p-6">
-            <h3 className="text-sm font-semibold text-slate-900">System Status</h3>
+        <div className="bg-white rounded-xl border border-[#DDE9EE] overflow-hidden">
+          <div className="border-b border-[#DDE9EE] p-6">
+            <h3 className="text-sm font-bold text-[#0C2833]">System Status</h3>
           </div>
-          <div className="p-6 space-y-4">
+          <div className="p-6 space-y-3">
             <div className="flex items-center justify-between py-2">
-              <p className="text-sm font-medium text-slate-900">Database Connection</p>
-              <Badge className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+              <p className="text-sm font-medium text-[#0C2833]">Database Connection</p>
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-semibold bg-[rgba(16,185,129,0.1)] text-[#10B981]">
                 Connected
-              </Badge>
+              </span>
             </div>
             <div className="flex items-center justify-between py-2">
-              <p className="text-sm font-medium text-slate-900">Data Sync</p>
-              <Badge className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+              <p className="text-sm font-medium text-[#0C2833]">Data Sync</p>
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-semibold bg-[rgba(16,185,129,0.1)] text-[#10B981]">
                 Synced
-              </Badge>
+              </span>
             </div>
             <div className="flex items-center justify-between py-2">
-              <p className="text-sm font-medium text-slate-900">API Status</p>
-              <Badge className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+              <p className="text-sm font-medium text-[#0C2833]">API Status</p>
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-semibold bg-[rgba(16,185,129,0.1)] text-[#10B981]">
                 Operational
-              </Badge>
+              </span>
             </div>
             <div className="flex items-center justify-between py-2">
-              <p className="text-sm font-medium text-slate-900">Last Updated</p>
-              <p className="text-sm text-slate-600">
+              <p className="text-sm font-medium text-[#0C2833]">Last Updated</p>
+              <p className="text-sm text-[#8CAEC1]">
                 {new Date().toLocaleDateString('en-US', {
                   month: 'short',
                   day: 'numeric',
@@ -138,28 +141,28 @@ export default async function SettingsPage() {
         </div>
       </div>
 
-      {/* Users Table */}
-      <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
-        <div className="border-b border-slate-100 p-6">
-          <h3 className="text-sm font-semibold text-slate-900">User Directory</h3>
+      {/* Users Management Table */}
+      <div className="bg-white rounded-xl border border-[#DDE9EE] overflow-hidden">
+        <div className="border-b border-[#DDE9EE] p-6">
+          <h3 className="text-sm font-bold text-[#0C2833]">User Directory</h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-slate-50 border-b border-slate-100">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 font-medium">
+            <thead>
+              <tr className="border-b border-[#DDE9EE]">
+                <th className="px-6 py-4 text-left text-[11px] uppercase tracking-wider text-[#8CAEC1] font-semibold">
                   Name
                 </th>
-                <th className="px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 font-medium">
+                <th className="px-6 py-4 text-left text-[11px] uppercase tracking-wider text-[#8CAEC1] font-semibold">
                   Email
                 </th>
-                <th className="px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 font-medium">
+                <th className="px-6 py-4 text-left text-[11px] uppercase tracking-wider text-[#8CAEC1] font-semibold">
                   Role
                 </th>
-                <th className="px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 font-medium">
+                <th className="px-6 py-4 text-left text-[11px] uppercase tracking-wider text-[#8CAEC1] font-semibold">
                   Department
                 </th>
-                <th className="px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 font-medium">
+                <th className="px-6 py-4 text-left text-[11px] uppercase tracking-wider text-[#8CAEC1] font-semibold">
                   Status
                 </th>
               </tr>
@@ -167,36 +170,42 @@ export default async function SettingsPage() {
             <tbody>
               {sortedUsers.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-slate-500">
+                  <td colSpan={5} className="px-6 py-12 text-center text-[#8CAEC1] text-sm">
                     No users found
                   </td>
                 </tr>
               ) : (
                 sortedUsers.map((user) => (
-                  <tr key={user.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                    <td className="px-6 py-4 text-sm font-medium text-slate-900">
+                  <tr
+                    key={user.id}
+                    className="border-b border-[#DDE9EE] hover:bg-[rgba(140,174,193,0.04)] transition-colors"
+                  >
+                    <td className="px-6 py-4 text-sm font-medium text-[#0C2833]">
                       {user.full_name || '-'}
                     </td>
-                    <td className="px-6 py-4 text-sm text-slate-600">
+                    <td className="px-6 py-4 text-sm text-[#0C2833]">
                       {user.email}
                     </td>
-                    <td className="px-6 py-4 text-sm text-slate-600">
-                      {user.role || '-'}
+                    <td className="px-6 py-4 text-sm">
+                      {user.role ? (
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-semibold bg-[rgba(255,92,0,0.1)] text-[#FF5C00]">
+                          {user.role}
+                        </span>
+                      ) : (
+                        <span className="text-[#8CAEC1]">-</span>
+                      )}
                     </td>
-                    <td className="px-6 py-4 text-sm text-slate-600">
+                    <td className="px-6 py-4 text-sm text-[#0C2833]">
                       {user.department || '-'}
                     </td>
-                    <td className="px-6 py-4">
-                      <Badge
-                        variant={user.is_active ? 'default' : 'secondary'}
-                        className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-                          user.is_active
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-slate-100 text-slate-700'
-                        }`}
-                      >
+                    <td className="px-6 py-4 text-sm">
+                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-[11px] font-semibold ${
+                        user.is_active
+                          ? 'bg-[rgba(16,185,129,0.1)] text-[#10B981]'
+                          : 'bg-[#B5CFD9] text-[#0C2833]'
+                      }`}>
                         {user.is_active ? 'Active' : 'Inactive'}
-                      </Badge>
+                      </span>
                     </td>
                   </tr>
                 ))

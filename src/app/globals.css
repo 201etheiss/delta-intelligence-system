@@ -2,76 +2,129 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
+/* Delta360 Brand — Inter from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
+/* Scrollbar — brand navy */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
 ::-webkit-scrollbar-track {
   background: transparent;
 }
-
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 4px;
+  background: #8CAEC1;
+  border-radius: 3px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #0C2833;
 }
-
-/* Firefox scrollbar */
 * {
-  scrollbar-color: #cbd5e1 transparent;
+  scrollbar-color: #8CAEC1 transparent;
   scrollbar-width: thin;
 }
 
-/* Form elements */
-input,
-select,
-textarea {
-  @apply outline-none transition-colors duration-200;
-}
-
+/* Form focus — orange accent */
 input:focus,
 select:focus,
 textarea:focus {
-  @apply ring-2 ring-azure-500 ring-offset-0;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 92, 0, 0.3);
+  border-color: #FF5C00;
 }
-
 input:disabled,
 select:disabled,
 textarea:disabled {
-  @apply bg-delta-50 text-delta-400 cursor-not-allowed;
+  background-color: #F7F9FA;
+  color: #8CAEC1;
+  cursor: not-allowed;
 }
 
-/* Placeholder styling */
 ::placeholder {
-  @apply text-delta-400;
+  color: #8CAEC1;
 }
 
-/* Selection styling */
 ::selection {
-  @apply bg-azure-200 text-delta-900;
+  background: rgba(255, 92, 0, 0.15);
+  color: #0C2833;
 }
 
-/* Smooth scrolling */
 html {
   scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Body defaults */
 body {
-  @apply bg-white text-delta-900;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #FFFFFF;
+  color: #0C2833;
 }
 
-/* Link defaults */
-a {
-  @apply transition-colors duration-200;
+/* Brand heading utility */
+.brand-heading {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #0C2833;
 }
 
-/* Button focus ring */
-button {
-  @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-azure-500;
+/* Orange accent underline for section headers */
+.brand-accent-line {
+  position: relative;
+}
+.brand-accent-line::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 40px;
+  height: 3px;
+  background: #FF5C00;
+  border-radius: 2px;
+}
+
+/* Card hover animation */
+.card-hover {
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+.card-hover:hover {
+  box-shadow: 0 4px 12px -2px rgba(12, 40, 51, 0.12);
+  transform: translateY(-1px);
+}
+
+/* Data table styling */
+.data-table th {
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #8CAEC1;
+  border-bottom: 2px solid #DDE9EE;
+}
+.data-table td {
+  border-bottom: 1px solid #F0F4F6;
+}
+.data-table tr:hover td {
+  background: rgba(140, 174, 193, 0.06);
+}
+
+/* Metric card gradient backgrounds */
+.metric-card-orange {
+  background: linear-gradient(135deg, #FF5C00 0%, #FF8A40 100%);
+}
+.metric-card-navy {
+  background: linear-gradient(135deg, #0C2833 0%, #122F3D 100%);
+}
+.metric-card-steel {
+  background: linear-gradient(135deg, #8CAEC1 0%, #B5CFD9 100%);
+}
+
+/* Chart tooltip */
+.recharts-tooltip-wrapper .recharts-default-tooltip {
+  background: #0C2833 !important;
+  border: none !important;
+  border-radius: 8px !important;
+  box-shadow: 0 10px 25px -5px rgba(12, 40, 51, 0.3) !important;
 }

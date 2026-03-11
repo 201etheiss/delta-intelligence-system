@@ -43,10 +43,19 @@ export default function DashboardLayout({
     fetchUser();
   }, [router]);
 
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      router.push('/login');
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+
   if (loading) {
     return (
-      <div className="flex h-screen items-center justify-center bg-slate-50">
-        <Loader className="h-8 w-8 animate-spin text-slate-400" />
+      <div className="flex h-screen items-center justify-center bg-white">
+        <Loader className="h-8 w-8 animate-spin text-[#8CAEC1]" />
       </div>
     );
   }
@@ -56,22 +65,27 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="flex h-screen bg-slate-50">
-      {/* Sidebar */}
-      <Sidebar user={user} currentPath={pathname} />
+    <div className="flex h-screen bg-white">
+      {/* Sidebar - 260px fixed width */}
+      <div className="w-[260px] flex-shrink-0">
+        <Sidebar user={user} onLogout={handleLogout} />
+      </div>
 
-      {/* Main content */}
+      {/* Main content area with ml offset */}
       <div className="flex flex-1 flex-col overflow-hidden">
-        {/* Header */}
-        <header className="h-14 border-b border-slate-200 bg-white flex items-center px-8">
-          <h1 className="text-lg font-semibold text-slate-900">
+        {/* Header bar */}
+        <header className="bg-white border-b border-[#DDE9EE] flex items-center justify-between px-8 py-4">
+          <h1 className="text-lg font-semibold text-[#0C2833]">
             {getPageTitle(pathname)}
           </h1>
+          <div className="text-sm text-[#8CAEC1]">
+            Good {getGreeting()}, {user.name}
+          </div>
         </header>
 
         {/* Content area */}
-        <main className="flex-1 overflow-y-auto bg-slate-50">
-          <div className="p-8">
+        <main className="flex-1 overflow-y-auto bg-white">
+          <div className="px-8 py-6">
             {children}
           </div>
         </main>
@@ -99,4 +113,11 @@ function getPageTitle(pathname: string): string {
   };
 
   return titles[path] || 'Dashboard';
+}
+
+function getGreeting(): string {
+  const hour = new Date().getHours();
+  if (hour < 12) return 'morning';
+  if (hour < 18) return 'afternoon';
+  return 'evening';
 }

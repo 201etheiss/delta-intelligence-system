@@ -687,3 +687,21 @@ export async function getAccountsByType() {
     return [];
   }
 }
+
+/**
+ * Get accounts filtered by account type (e.g., 'asset', 'liability')
+ */
+export async function getAccountsByTypeFilter(accountType: string): Promise<Account[]> {
+  const { data, error } = await supabaseService
+    .from('accounts')
+    .select('*')
+    .eq('account_type', accountType)
+    .eq('is_active', true);
+
+  if (error) {
+    console.error(`Error fetching ${accountType} accounts:`, error);
+    return [];
+  }
+
+  return data || [];
+}

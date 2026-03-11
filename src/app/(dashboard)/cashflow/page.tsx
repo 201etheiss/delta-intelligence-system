@@ -1,38 +1,20 @@
-import { getAccounts, getEntities } from '@/lib/db';
-import { Badge } from '@/components/ui/badge';
+import { getAccountsByTypeFilter, getEntities } from '@/lib/db';
 
 export default async function CashFlowPage() {
   const [accounts, entities] = await Promise.all([
-    getAccounts(),
+    getAccountsByTypeFilter('asset'),
     getEntities(),
   ]);
 
   // Create entity map for lookup
   const entityMap = new Map(entities.map((e) => [e.id, e]));
 
-  // Filter cash-related accounts (Asset type typically includes cash)
-  const cashAccounts = accounts.filter(
-    (a) =>
-      a.account_type &&
-      ['asset', 'cash', 'liquid', 'current asset'].some((type) =>
-        a.account_type.toLowerCase().includes(type)
-      )
-  );
-
   // Calculate stats
-  const totalCashAccounts = cashAccounts.length;
-  const activeCashAccounts = cashAccounts.filter((a) => a.is_active).length;
-  const accountTypeCount = cashAccounts.reduce(
-    (acc, account) => {
-      const type = account.account_type || 'Unknown';
-      acc[type] = (acc[type] || 0) + 1;
-      return acc;
-    },
-    {} as Record<string, number>
-  );
+  const totalAccounts = accounts.length;
+  const activeAccounts = accounts.filter((a) => a.is_active).length;
 
   // Sort by entity and name
-  const sortedAccounts = [...cashAccounts].sort((a, b) => {
+  const sortedAccounts = [...accounts].sort((a, b) => {
     const entityA = entityMap.get(a.entity_id)?.name || 'Unknown';
     const entityB = entityMap.get(b.entity_id)?.name || 'Unknown';
     if (entityA !== entityB) return entityA.localeCompare(entityB);
@@ -41,54 +23,63 @@ export default async function CashFlowPage() {
 
   return (
     <div className="space-y-8">
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white rounded-lg border border-slate-200 p-6">
-          <p className="text-xs uppercase tracking-wide text-slate-500 font-medium mb-2">
-            Total Cash Accounts
-          </p>
-          <p className="text-3xl font-semibold text-slate-900">{totalCashAccounts}</p>
-        </div>
-
-        <div className="bg-white rounded-lg border border-slate-200 p-6">
-          <p className="text-xs uppercase tracking-wide text-slate-500 font-medium mb-2">
-            Active Accounts
-          </p>
-          <p className="text-3xl font-semibold text-slate-900">{activeCashAccounts}</p>
-        </div>
-
-        {Object.entries(accountTypeCount).map(([type, count]) => (
-          <div key={type} className="bg-white rounded-lg border border-slate-200 p-6">
-            <p className="text-xs uppercase tracking-wide text-slate-500 font-medium mb-2">
-              {type}
-            </p>
-            <p className="text-3xl font-semibold text-slate-900">{count}</p>
-          </div>
-        ))}
+      {/* Page Header */}
+      <div>
+        <h1 className="text-2xl font-bold text-[#0C2833] mb-2">Cash & Asset Accounts</h1>
+        <p className="text-sm text-[#8CAEC1] mb-4">Manage asset accounts across entities</p>
+        <div className="w-12 h-0.5 bg-[#FF5C00] rounded-full"></div>
       </div>
 
-      {/* Cash Accounts Table */}
-      <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="bg-white rounded-xl border border-[#DDE9EE] p-6 hover:shadow-card transition-shadow">
+          <p className="text-[11px] uppercase tracking-wider text-[#8CAEC1] font-semibold mb-3">
+            Total Accounts
+          </p>
+          <p className="text-3xl font-bold text-[#0C2833]">{totalAccounts}</p>
+        </div>
+
+        <div className="bg-white rounded-xl border border-[#DDE9EE] p-6 hover:shadow-card transition-shadow">
+          <p className="text-[11px] uppercase tracking-wider text-[#8CAEC1] font-semibold mb-3">
+            Active Accounts
+          </p>
+          <p className="text-3xl font-bold text-[#0C2833]">{activeAccounts}</p>
+        </div>
+
+        <div className="bg-white rounded-xl border border-[#DDE9EE] p-6 hover:shadow-card transition-shadow">
+          <p className="text-[11px] uppercase tracking-wider text-[#8CAEC1] font-semibold mb-3">
+            Inactive Accounts
+          </p>
+          <p className="text-3xl font-bold text-[#0C2833]">{totalAccounts - activeAccounts}</p>
+        </div>
+
+        <div className="bg-white rounded-xl border border-[#DDE9EE] p-6 hover:shadow-card transition-shadow">
+          <p className="text-[11px] uppercase tracking-wider text-[#8CAEC1] font-semibold mb-3">
+            Total Entities
+          </p>
+          <p className="text-3xl font-bold text-[#0C2833]">{entities.length}</p>
+        </div>
+      </div>
+
+      {/* Accounts Table */}
+      <div className="bg-white rounded-xl border border-[#DDE9EE] overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-slate-50 border-b border-slate-100">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 font-medium">
+            <thead>
+              <tr className="border-b border-[#DDE9EE]">
+                <th className="px-6 py-4 text-left text-[11px] uppercase tracking-wider text-[#8CAEC1] font-semibold">
                   Account Number
                 </th>
-                <th className="px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 font-medium">
-                  Account Name
+                <th className="px-6 py-4 text-left text-[11px] uppercase tracking-wider text-[#8CAEC1] font-semibold">
+                  Name
                 </th>
-                <th className="px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 font-medium">
-                  Type
-                </th>
-                <th className="px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 font-medium">
+                <th className="px-6 py-4 text-left text-[11px] uppercase tracking-wider text-[#8CAEC1] font-semibold">
                   Entity
                 </th>
-                <th className="px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 font-medium">
-                  Balance
+                <th className="px-6 py-4 text-left text-[11px] uppercase tracking-wider text-[#8CAEC1] font-semibold">
+                  Normal Balance
                 </th>
-                <th className="px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 font-medium">
+                <th className="px-6 py-4 text-left text-[11px] uppercase tracking-wider text-[#8CAEC1] font-semibold">
                   Status
                 </th>
               </tr>
@@ -96,39 +87,36 @@ export default async function CashFlowPage() {
             <tbody>
               {sortedAccounts.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-8 text-center text-slate-500">
-                    No cash-related accounts found
+                  <td colSpan={5} className="px-6 py-12 text-center text-[#8CAEC1] text-sm">
+                    No asset accounts found
                   </td>
                 </tr>
               ) : (
                 sortedAccounts.map((account) => (
-                  <tr key={account.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                    <td className="px-6 py-4 text-sm font-mono text-slate-900">
+                  <tr
+                    key={account.id}
+                    className="border-b border-[#DDE9EE] hover:bg-[rgba(140,174,193,0.04)] transition-colors"
+                  >
+                    <td className="px-6 py-4 text-sm font-mono text-[#0C2833]">
                       {account.account_number}
                     </td>
-                    <td className="px-6 py-4 text-sm font-medium text-slate-900">
+                    <td className="px-6 py-4 text-sm font-medium text-[#0C2833]">
                       {account.name}
                     </td>
-                    <td className="px-6 py-4 text-sm text-slate-600">
-                      {account.account_type || '-'}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-slate-600">
+                    <td className="px-6 py-4 text-sm text-[#0C2833]">
                       {entityMap.get(account.entity_id)?.name || 'Unknown'}
                     </td>
-                    <td className="px-6 py-4 text-sm text-slate-600">
+                    <td className="px-6 py-4 text-sm text-[#0C2833]">
                       {account.normal_balance || '-'}
                     </td>
-                    <td className="px-6 py-4">
-                      <Badge
-                        variant={account.is_active ? 'default' : 'secondary'}
-                        className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-                          account.is_active
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-slate-100 text-slate-700'
-                        }`}
-                      >
+                    <td className="px-6 py-4 text-sm">
+                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-[11px] font-semibold ${
+                        account.is_active
+                          ? 'bg-[rgba(16,185,129,0.1)] text-[#10B981]'
+                          : 'bg-[#B5CFD9] text-[#0C2833]'
+                      }`}>
                         {account.is_active ? 'Active' : 'Inactive'}
-                      </Badge>
+                      </span>
                     </td>
                   </tr>
                 ))

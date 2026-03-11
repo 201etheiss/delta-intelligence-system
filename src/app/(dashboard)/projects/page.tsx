@@ -1,5 +1,4 @@
 import { getProjects } from '@/lib/db';
-import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 
 function formatDate(dateString: string): string {
@@ -10,33 +9,33 @@ function formatDate(dateString: string): string {
   }
 }
 
-function getStatusColor(status: string): string {
+function getStatusBadgeClass(status: string): string {
   const statusLower = status?.toLowerCase() || 'unknown';
   switch (statusLower) {
     case 'active':
-      return 'bg-blue-100 text-blue-800';
+      return 'bg-[rgba(59,130,246,0.1)] text-[#3B82F6]';
     case 'completed':
-      return 'bg-green-100 text-green-800';
+      return 'bg-[rgba(16,185,129,0.1)] text-[#10B981]';
     case 'on-hold':
-      return 'bg-yellow-100 text-yellow-800';
+      return 'bg-[rgba(245,158,11,0.1)] text-[#F59E0B]';
     case 'cancelled':
-      return 'bg-red-100 text-red-800';
+      return 'bg-[rgba(239,68,68,0.1)] text-[#EF4444]';
     default:
-      return 'bg-slate-100 text-slate-700';
+      return 'bg-[#B5CFD9] text-[#0C2833]';
   }
 }
 
-function getPriorityColor(priority: string): string {
+function getPriorityBadgeClass(priority: string): string {
   const priorityLower = priority?.toLowerCase() || 'medium';
   switch (priorityLower) {
     case 'high':
-      return 'bg-red-50 text-red-700 border border-red-200';
+      return 'bg-[rgba(239,68,68,0.1)] text-[#EF4444]';
     case 'medium':
-      return 'bg-yellow-50 text-yellow-700 border border-yellow-200';
+      return 'bg-[rgba(245,158,11,0.1)] text-[#F59E0B]';
     case 'low':
-      return 'bg-green-50 text-green-700 border border-green-200';
+      return 'bg-[rgba(16,185,129,0.1)] text-[#10B981]';
     default:
-      return 'bg-slate-50 text-slate-700 border border-slate-200';
+      return 'bg-[#B5CFD9] text-[#0C2833]';
   }
 }
 
@@ -45,14 +44,8 @@ export default async function ProjectsPage() {
 
   // Calculate stats
   const totalProjects = projects.length;
-  const statusCounts = projects.reduce(
-    (acc, project) => {
-      const status = project.status || 'Unknown';
-      acc[status] = (acc[status] || 0) + 1;
-      return acc;
-    },
-    {} as Record<string, number>
-  );
+  const activeProjects = projects.filter((p) => p.status?.toLowerCase() === 'active').length;
+  const completedProjects = projects.filter((p) => p.status?.toLowerCase() === 'completed').length;
 
   // Sort by start date descending
   const sortedProjects = [...projects].sort((a, b) => {
@@ -63,98 +56,100 @@ export default async function ProjectsPage() {
 
   return (
     <div className="space-y-8">
-      {/* Stats Cards */}
+      {/* Page Header */}
+      <div>
+        <h1 className="text-2xl font-bold text-[#0C2833] mb-2">Projects</h1>
+        <p className="text-sm text-[#8CAEC1] mb-4">Track and manage strategic initiatives</p>
+        <div className="w-12 h-0.5 bg-[#FF5C00] rounded-full"></div>
+      </div>
+
+      {/* Summary Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white rounded-lg border border-slate-200 p-6">
-          <p className="text-xs uppercase tracking-wide text-slate-500 font-medium mb-2">
+        <div className="bg-white rounded-xl border border-[#DDE9EE] p-6 hover:shadow-card transition-shadow">
+          <p className="text-[11px] uppercase tracking-wider text-[#8CAEC1] font-semibold mb-3">
             Total Projects
           </p>
-          <p className="text-3xl font-semibold text-slate-900">{totalProjects}</p>
+          <p className="text-3xl font-bold text-[#0C2833]">{totalProjects}</p>
         </div>
 
-        {Object.entries(statusCounts).map(([status, count]) => (
-          <div key={status} className="bg-white rounded-lg border border-slate-200 p-6">
-            <p className="text-xs uppercase tracking-wide text-slate-500 font-medium mb-2">
-              {status}
-            </p>
-            <p className="text-3xl font-semibold text-slate-900">{count}</p>
-          </div>
-        ))}
+        <div className="bg-white rounded-xl border border-[#DDE9EE] p-6 hover:shadow-card transition-shadow">
+          <p className="text-[11px] uppercase tracking-wider text-[#8CAEC1] font-semibold mb-3">
+            Active Projects
+          </p>
+          <p className="text-3xl font-bold text-[#0C2833]">{activeProjects}</p>
+        </div>
+
+        <div className="bg-white rounded-xl border border-[#DDE9EE] p-6 hover:shadow-card transition-shadow">
+          <p className="text-[11px] uppercase tracking-wider text-[#8CAEC1] font-semibold mb-3">
+            Completed
+          </p>
+          <p className="text-3xl font-bold text-[#0C2833]">{completedProjects}</p>
+        </div>
+
+        <div className="bg-white rounded-xl border border-[#DDE9EE] p-6 hover:shadow-card transition-shadow">
+          <p className="text-[11px] uppercase tracking-wider text-[#8CAEC1] font-semibold mb-3">
+            In Progress
+          </p>
+          <p className="text-3xl font-bold text-[#0C2833]">{totalProjects - activeProjects - completedProjects}</p>
+        </div>
       </div>
 
-      {/* Projects Table */}
-      <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-slate-50 border-b border-slate-100">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 font-medium">
-                  Name
-                </th>
-                <th className="px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 font-medium">
-                  Description
-                </th>
-                <th className="px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 font-medium">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 font-medium">
-                  Priority
-                </th>
-                <th className="px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 font-medium">
-                  Start Date
-                </th>
-                <th className="px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 font-medium">
-                  Target Date
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {sortedProjects.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="px-6 py-8 text-center text-slate-500">
-                    No projects found
-                  </td>
-                </tr>
-              ) : (
-                sortedProjects.map((project) => (
-                  <tr key={project.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                    <td className="px-6 py-4 text-sm font-medium text-slate-900">
-                      {project.name}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-slate-600">
-                      {project.description ? (
-                        <span className="line-clamp-1">{project.description}</span>
-                      ) : (
-                        '-'
-                      )}
-                    </td>
-                    <td className="px-6 py-4">
-                      <Badge
-                        className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${getStatusColor(
-                          project.status
-                        )}`}
-                      >
-                        {project.status || 'Unknown'}
-                      </Badge>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${getPriorityColor(project.priority)}`}>
-                        {project.priority || 'Medium'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-slate-600">
-                      {formatDate(project.start_date)}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-slate-600">
-                      {formatDate(project.target_date)}
-                    </td>
-                  </tr>
-                ))
+      {/* Projects Card Grid */}
+      {sortedProjects.length === 0 ? (
+        <div className="bg-white rounded-xl border border-[#DDE9EE] p-12 text-center">
+          <p className="text-[#8CAEC1] text-sm">No projects found</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {sortedProjects.map((project) => (
+            <div
+              key={project.id}
+              className="bg-white rounded-xl border border-[#DDE9EE] p-6 hover:shadow-card transition-shadow flex flex-col"
+            >
+              <div className="flex items-start justify-between mb-4">
+                <h3 className="text-sm font-bold text-[#0C2833] flex-1">
+                  {project.name}
+                </h3>
+              </div>
+
+              {project.description && (
+                <p className="text-xs text-[#8CAEC1] mb-4 line-clamp-2">
+                  {project.description}
+                </p>
               )}
-            </tbody>
-          </table>
+
+              <div className="flex gap-2 mb-4">
+                <span className={`inline-flex items-center px-3 py-1 rounded-full text-[11px] font-semibold ${
+                  getStatusBadgeClass(project.status)
+                }`}>
+                  {project.status || 'Unknown'}
+                </span>
+                <span className={`inline-flex items-center px-3 py-1 rounded-full text-[11px] font-semibold ${
+                  getPriorityBadgeClass(project.priority)
+                }`}>
+                  {project.priority || 'Medium'}
+                </span>
+              </div>
+
+              <div className="space-y-3 pt-4 border-t border-[#DDE9EE] mt-auto">
+                <div className="flex justify-between items-center">
+                  <p className="text-[11px] uppercase tracking-wider text-[#8CAEC1] font-semibold">
+                    Start Date
+                  </p>
+                  <p className="text-sm text-[#0C2833]">{formatDate(project.start_date)}</p>
+                </div>
+
+                <div className="flex justify-between items-center">
+                  <p className="text-[11px] uppercase tracking-wider text-[#8CAEC1] font-semibold">
+                    Target Date
+                  </p>
+                  <p className="text-sm text-[#0C2833]">{formatDate(project.target_date)}</p>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
-      </div>
+      )}
     </div>
   );
 }
