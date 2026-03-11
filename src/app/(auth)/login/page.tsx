@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
 
 export default function LoginPage() {
@@ -85,16 +86,14 @@ export default function LoginPage() {
 
         {/* Logo area */}
         <div className="relative z-10">
-          <div className="flex items-center gap-3">
-            {/* Delta chevron mark */}
-            <svg width="44" height="32" viewBox="0 0 44 32" fill="none">
-              <path d="M22 0L44 20L36 20L22 8.5L8 20L0 20L22 0Z" fill="#FF5C00" />
-            </svg>
-            <div>
-              <span className="text-white text-xl font-bold tracking-tight-brand">delta</span>
-              <span className="text-white/50 text-sm font-medium ml-0.5">360</span>
-            </div>
-          </div>
+          <Image
+            src="/logo/delta-light-360.png"
+            alt="Delta360"
+            width={180}
+            height={50}
+            className="object-contain"
+            priority
+          />
         </div>
 
         {/* Main messaging */}
@@ -131,12 +130,14 @@ export default function LoginPage() {
         <div className="w-full max-w-sm mx-auto">
           {/* Mobile logo */}
           <div className="lg:hidden mb-10">
-            <div className="flex items-center gap-2">
-              <svg width="36" height="26" viewBox="0 0 44 32" fill="none">
-                <path d="M22 0L44 20L36 20L22 8.5L8 20L0 20L22 0Z" fill="#FF5C00" />
-              </svg>
-              <span className="text-lg font-bold" style={{ color: '#0C2833' }}>delta<span className="text-sm font-medium opacity-40">360</span></span>
-            </div>
+            <Image
+              src="/logo/delta-dark-360.png"
+              alt="Delta360"
+              width={150}
+              height={42}
+              className="object-contain"
+              priority
+            />
           </div>
 
           <div className="mb-8">

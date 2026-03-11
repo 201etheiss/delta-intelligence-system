@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
@@ -80,20 +81,20 @@ export default function Sidebar({ user, onLogout }: SidebarProps) {
       style={{ background: '#0C2833' }}
     >
       {/* Logo */}
-      <div className="px-6 pt-6 pb-4">
-        <div className="flex items-center gap-3">
-          <svg width="36" height="26" viewBox="0 0 44 32" fill="none">
-            <path d="M22 0L44 20L36 20L22 8.5L8 20L0 20L22 0Z" fill="#FF5C00" />
-          </svg>
-          <div className="flex flex-col">
-            <span className="text-white text-base font-bold tracking-tight leading-none">
-              delta<span className="text-white/40 text-xs font-medium">360</span>
-            </span>
-            <span className="text-[10px] font-medium mt-0.5" style={{ color: '#8CAEC1' }}>
-              Intelligence System
-            </span>
-          </div>
+      <div className="px-5 pt-5 pb-4">
+        <div className="flex items-center gap-2">
+          <Image
+            src="/logo/delta-light-360.png"
+            alt="Delta360"
+            width={140}
+            height={40}
+            className="object-contain"
+            priority
+          />
         </div>
+        <p className="text-[10px] font-medium mt-1.5 px-0.5" style={{ color: 'rgba(140, 174, 193, 0.5)' }}>
+          Intelligence System
+        </p>
       </div>
 
       <div className="mx-5 h-px" style={{ background: 'rgba(140, 174, 193, 0.12)' }} />

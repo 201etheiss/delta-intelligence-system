@@ -1,290 +1,298 @@
 'use client';
 
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
-import { ActivityLog, Account, CloseTemplate, ReconRule, Entity, SourceSystem, User } from '@/lib/db';
-import { Building2, TrendingUp, BarChart3, Zap } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import {
+  PieChart,
+  Pie,
+  Cell,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from 'recharts';
+
+const CHART_COLORS = ['#FF5C00', '#0C2833', '#8CAEC1', '#FF8A40', '#B5CFD9'];
 
 interface DashboardData {
-  accounts: Account[];
-  closeTemplates: CloseTemplate[];
-  reconRules: ReconRule[];
-  entities: Entity[];
-  activityLog: ActivityLog[];
-  sourceSystems: SourceSystem[];
-  users: User[];
+  totalEntities: number;
+  totalAccounts: number;
+  closeTemplates: number;
+  journalTemplates: number;
+  reconRules: number;
+  auditItems: number;
+  accountsByType: Record<string, number>;
+  closeByCategory: Record<string, number>;
+  journalsByType: Record<string, number>;
+  closeByFrequency: Record<string, number>;
+  recentActivity: Array<{
+    id: string;
+    action: string;
+    entity_type: string;
+    description: string;
+    created_at: string;
+  }>;
 }
 
-const BRAND_COLORS = {
-  orange: '#FF5C00',
-  black: '#000000',
-  navy: '#0C2833',
-  steel: '#8CAEC1',
-  white: '#FFFFFF',
-  navyLight: '#122F3D',
-  steelLight: '#B5CFD9',
-  steelPale: '#DDE9EE',
-  orangeLight: '#FF8A40',
-  orangeDark: '#E04D00',
-};
+const LoadingSkeleton = () => (
+  <div className="space-y-6 animate-pulse">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <div key={i} className="h-32 rounded-xl bg-gray-200"></div>
+      ))}
+    </div>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="h-80 rounded-xl bg-gray-200"></div>
+      <div className="h-80 rounded-xl bg-gray-200"></div>
+    </div>
+  </div>
+);
 
-const CHART_COLORS = [
-  BRAND_COLORS.orange,
-  BRAND_COLORS.navy,
-  BRAND_COLORS.steel,
-  BRAND_COLORS.navyLight,
-  BRAND_COLORS.orangeLight,
-  BRAND_COLORS.steelLight,
-];
+export default function DashboardContent() {
+  const [data, setData] = useState<DashboardData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-export default function DashboardContent({ data }: { data: DashboardData }) {
-  const metricCards = [
-    {
-      label: 'Total Accounts',
-      value: data.accounts.length,
-      icon: Building2,
-      color: BRAND_COLORS.orange,
-      borderColor: 'border-l-4 border-[#FF5C00]',
-    },
-    {
-      label: 'Active Close Templates',
-      value: data.closeTemplates.length,
-      icon: TrendingUp,
-      color: BRAND_COLORS.navy,
-      borderColor: 'border-l-4 border-[#0C2833]',
-    },
-    {
-      label: 'Recon Rules',
-      value: data.reconRules.length,
-      icon: BarChart3,
-      color: BRAND_COLORS.steel,
-      borderColor: 'border-l-4 border-[#8CAEC1]',
-    },
-    {
-      label: 'Source Systems',
-      value: data.sourceSystems.length,
-      icon: Zap,
-      color: '#10B981',
-      borderColor: 'border-l-4 border-[#10B981]',
-    },
-  ];
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('/api/analytics/dashboard');
+        if (!response.ok) {
+          throw new Error(`Failed to fetch dashboard data: ${response.statusText}`);
+        }
+        const dashboardData = await response.json();
+        setData(dashboardData);
+        setError(null);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to fetch dashboard data');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  // Prepare close progress data from templates
-  const closeProgressData = data.closeTemplates.reduce((acc: Record<string, number>, template) => {
-    const category = template.category || 'Other';
-    acc[category] = (acc[category] || 0) + 1;
-    return acc;
-  }, {});
+    fetchDashboardData();
+  }, []);
 
-  const closeProgressChartData = Object.entries(closeProgressData).map(([name, value]) => ({
+  if (loading) {
+    return <LoadingSkeleton />;
+  }
+
+  if (error || !data) {
+    return (
+      <div className="rounded-xl bg-white border border-red-200 p-6 text-center">
+        <p className="text-red-600">{error || 'No data available'}</p>
+      </div>
+    );
+  }
+
+  // Transform data for charts
+  const accountsChartData = Object.entries(data.accountsByType).map(([name, value]) => ({
     name,
     value,
   }));
 
-  // Prepare account distribution data
-  const accountDistData = data.accounts.reduce((acc: Record<string, number>, account) => {
-    const type = account.account_type || 'Other';
-    acc[type] = (acc[type] || 0) + 1;
-    return acc;
-  }, {});
-
-  const accountDistChartData = Object.entries(accountDistData).map(([name, value]) => ({
+  const closeChartData = Object.entries(data.closeByCategory).map(([name, value]) => ({
     name,
     value,
   }));
 
-  const formatActivityType = (type: string): string => {
-    return type.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-  };
+  const journalsChartData = Object.entries(data.journalsByType).map(([name, value]) => ({
+    name,
+    value,
+  }));
 
-  const formatDate = (dateString: string): string => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMs / 3600000);
-    const diffDays = Math.floor(diffMs / 86400000);
+  const frequencyChartData = Object.entries(data.closeByFrequency).map(([name, value]) => ({
+    name,
+    value,
+  }));
 
-    if (diffMins < 1) return 'Just now';
-    if (diffMins < 60) return `${diffMins}m ago`;
-    if (diffHours < 24) return `${diffHours}h ago`;
-    if (diffDays < 7) return `${diffDays}d ago`;
+  const MetricCard = ({
+    title,
+    value,
+    accentColor,
+  }: {
+    title: string;
+    value: number;
+    accentColor: string;
+  }) => (
+    <div className="bg-white rounded-xl border border-[#DDE9EE] p-5 relative overflow-hidden group hover:shadow-md transition-shadow">
+      <div
+        className="absolute left-0 top-0 bottom-0 w-1 transition-all"
+        style={{ backgroundColor: accentColor }}
+      ></div>
+      <p className="text-[11px] uppercase tracking-wider font-semibold text-[#8CAEC1]">
+        {title}
+      </p>
+      <p className="text-3xl font-extrabold text-[#0C2833] mt-3">
+        {value.toLocaleString()}
+      </p>
+    </div>
+  );
 
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-  };
+  const ChartCard = ({
+    title,
+    children,
+  }: {
+    title: string;
+    children: React.ReactNode;
+  }) => (
+    <div className="bg-white rounded-xl border border-[#DDE9EE] p-6">
+      <h3 className="text-sm font-bold text-[#0C2833] mb-3">{title}</h3>
+      <div className="w-8 h-0.5 bg-[#FF5C00] mb-6"></div>
+      {children}
+    </div>
+  );
 
-  const getTodayDate = (): string => {
-    const date = new Date();
-    return date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
-  };
-
-  const getCurrentGreeting = (): string => {
-    const hour = new Date().getHours();
-    if (hour < 12) return 'Good morning';
-    if (hour < 18) return 'Good afternoon';
-    return 'Good evening';
+  const CustomTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-[#0C2833] text-white rounded px-3 py-2 text-sm">
+          <p className="font-semibold">{payload[0].name || payload[0].payload.name}</p>
+          <p>{payload[0].value}</p>
+        </div>
+      );
+    }
+    return null;
   };
 
   return (
-    <div className="space-y-8 animate-fade-in">
-      {/* Greeting Banner */}
-      <div className="bg-gradient-to-r from-[#FFF9F3] to-white border-l-4 border-[#FF5C00] rounded-lg p-6 animate-slide-up">
-        <h2 className="text-2xl font-bold text-[#0C2833] mb-2">{getCurrentGreeting()}</h2>
-        <p className="text-sm text-[#8CAEC1]">{getTodayDate()}</p>
+    <div className="space-y-6">
+      {/* Metric Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <MetricCard title="Total Entities" value={data.totalEntities} accentColor="#FF5C00" />
+        <MetricCard title="Total Accounts" value={data.totalAccounts} accentColor="#0C2833" />
+        <MetricCard
+          title="Close Templates"
+          value={data.closeTemplates}
+          accentColor="#8CAEC1"
+        />
+        <MetricCard
+          title="Journal Templates"
+          value={data.journalTemplates}
+          accentColor="#FF8A40"
+        />
+        <MetricCard title="Recon Rules" value={data.reconRules} accentColor="#B5CFD9" />
+        <MetricCard title="Audit Items" value={data.auditItems} accentColor="#DDE9EE" />
       </div>
 
-      {/* Metric Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-slide-up">
-        {metricCards.map((card) => {
-          const Icon = card.icon;
-          return (
-            <div
-              key={card.label}
-              className={`${card.borderColor} rounded-lg bg-white p-6 shadow-sm hover:shadow-md transition-shadow`}
-            >
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <p className="text-xs uppercase font-semibold text-[#8CAEC1] tracking-wider">
-                    {card.label}
-                  </p>
-                  <p className="text-3xl font-bold text-[#0C2833] mt-2">
-                    {card.value.toLocaleString()}
-                  </p>
-                </div>
-                <Icon className="w-6 h-6" style={{ color: card.color }} />
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Close Progress Section */}
-      <div className="rounded-lg bg-white border border-[#DDE9EE] p-6 animate-slide-up">
-        <h3 className="text-sm font-semibold text-[#0C2833] mb-6">
-          Close Progress by Category
-        </h3>
-        {closeProgressChartData.length > 0 ? (
-          <div className="h-16 bg-[#F9FAFB] rounded-lg overflow-hidden">
-            <div className="flex h-full">
-              {closeProgressChartData.map((item, index) => {
-                const total = closeProgressChartData.reduce((sum, d) => sum + d.value, 0);
-                const percentage = (item.value / total) * 100;
-                return (
-                  <div
-                    key={item.name}
-                    style={{
-                      width: `${percentage}%`,
-                      backgroundColor: CHART_COLORS[index % CHART_COLORS.length],
-                    }}
-                    className="transition-all hover:opacity-80"
-                    title={`${item.name}: ${item.value}`}
-                  />
-                );
-              })}
-            </div>
-          </div>
-        ) : (
-          <div className="flex h-16 items-center justify-center text-[#8CAEC1]">
-            <p className="text-sm">No close template data available</p>
-          </div>
-        )}
-        {closeProgressChartData.length > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-            {closeProgressChartData.map((item, index) => (
-              <div key={item.name} className="text-xs">
-                <div className="flex items-center mb-1">
-                  <div
-                    className="w-3 h-3 rounded-full mr-2"
-                    style={{ backgroundColor: CHART_COLORS[index % CHART_COLORS.length] }}
-                  />
-                  <span className="font-medium text-[#0C2833]">{item.name}</span>
-                </div>
-                <p className="text-[#8CAEC1]">{item.value} items</p>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-slide-up">
-        {/* Account Distribution Donut Chart */}
-        <div className="rounded-lg bg-white border border-[#DDE9EE] p-6">
-          <h3 className="text-sm font-semibold text-[#0C2833] mb-6">
-            Account Distribution
-          </h3>
-          {accountDistChartData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={300}>
+      {/* Charts Row 1: Accounts by Type & Close Templates by Category */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <ChartCard title="Accounts by Type">
+          {accountsChartData.length > 0 ? (
+            <ResponsiveContainer width="100%" height={280}>
               <PieChart>
                 <Pie
-                  data={accountDistChartData}
+                  data={accountsChartData}
                   dataKey="value"
                   nameKey="name"
                   cx="50%"
                   cy="50%"
-                  innerRadius={60}
-                  outerRadius={100}
+                  innerRadius={50}
+                  outerRadius={80}
                   paddingAngle={2}
-                  label={({ name, value }) => `${name}: ${value}`}
-                  labelLine={true}
                 >
-                  {accountDistChartData.map((_entry, index) => (
+                  {accountsChartData.map((_, index) => (
                     <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: '#FFFFFF',
-                    border: `1px solid ${BRAND_COLORS.steelPale}`,
-                    borderRadius: '8px',
-                  }}
-                  formatter={(value) => [`${value} accounts`, 'Count']}
-                  labelStyle={{ color: BRAND_COLORS.navy }}
-                />
+                <Tooltip content={<CustomTooltip />} />
+                <Legend />
               </PieChart>
             </ResponsiveContainer>
           ) : (
-            <div className="flex h-[300px] items-center justify-center text-[#8CAEC1]">
+            <div className="flex h-[280px] items-center justify-center text-[#8CAEC1]">
               <p className="text-sm">No account data available</p>
             </div>
           )}
-        </div>
+        </ChartCard>
 
-        {/* Entity Overview */}
-        <div className="rounded-lg bg-white border border-[#DDE9EE] p-6">
-          <h3 className="text-sm font-semibold text-[#0C2833] mb-6">
-            Entity Overview
-          </h3>
-          {data.entities.length > 0 ? (
-            <div className="space-y-3 max-h-[300px] overflow-y-auto">
-              {data.entities.map((entity) => (
-                <div
-                  key={entity.id}
-                  className="flex items-center justify-between p-3 rounded-lg bg-[#F9FAFB] border border-[#DDE9EE]"
-                >
-                  <div>
-                    <p className="font-medium text-[#0C2833] text-sm">{entity.name}</p>
-                    <p className="text-xs text-[#8CAEC1]">{entity.code}</p>
-                  </div>
-                  <span className="text-xs font-semibold text-[#0C2833] bg-[#DDE9EE] px-2 py-1 rounded">
-                    {entity.entity_type}
-                  </span>
-                </div>
-              ))}
-            </div>
+        <ChartCard title="Close Templates by Category">
+          {closeChartData.length > 0 ? (
+            <ResponsiveContainer width="100%" height={280}>
+              <BarChart
+                data={closeChartData}
+                layout="vertical"
+                margin={{ top: 5, right: 30, left: 200, bottom: 5 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="#DDE9EE" />
+                <XAxis type="number" />
+                <YAxis type="category" dataKey="name" width={190} tick={{ fontSize: 12 }} />
+                <Tooltip content={<CustomTooltip />} />
+                <Bar dataKey="value" fill="#FF5C00" radius={[0, 8, 8, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
           ) : (
-            <div className="flex h-[300px] items-center justify-center text-[#8CAEC1]">
-              <p className="text-sm">No entities available</p>
+            <div className="flex h-[280px] items-center justify-center text-[#8CAEC1]">
+              <p className="text-sm">No category data available</p>
             </div>
           )}
-        </div>
+        </ChartCard>
+      </div>
+
+      {/* Charts Row 2: Journal Entry Types & Close Template Frequency */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <ChartCard title="Journal Entry Types">
+          {journalsChartData.length > 0 ? (
+            <ResponsiveContainer width="100%" height={280}>
+              <PieChart>
+                <Pie
+                  data={journalsChartData}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={90}
+                  paddingAngle={2}
+                >
+                  {journalsChartData.map((_, index) => (
+                    <Cell key={`cell-${index}`} fill={CHART_COLORS[index % 4]} />
+                  ))}
+                </Pie>
+                <Tooltip content={<CustomTooltip />} />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="flex h-[280px] items-center justify-center text-[#8CAEC1]">
+              <p className="text-sm">No journal data available</p>
+            </div>
+          )}
+        </ChartCard>
+
+        <ChartCard title="Close Template Frequency">
+          {frequencyChartData.length > 0 ? (
+            <ResponsiveContainer width="100%" height={280}>
+              <BarChart data={frequencyChartData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+                <defs>
+                  <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#0C2833" />
+                    <stop offset="100%" stopColor="#8CAEC1" />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#DDE9EE" />
+                <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+                <YAxis />
+                <Tooltip content={<CustomTooltip />} />
+                <Bar dataKey="value" fill="url(#barGradient)" radius={[8, 8, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="flex h-[280px] items-center justify-center text-[#8CAEC1]">
+              <p className="text-sm">No frequency data available</p>
+            </div>
+          )}
+        </ChartCard>
       </div>
 
       {/* Recent Activity Table */}
-      <div className="rounded-lg bg-white border border-[#DDE9EE] p-6 animate-slide-up">
-        <h3 className="text-sm font-semibold text-[#0C2833] mb-6">
-          Recent Activity
-        </h3>
-        {data.activityLog.length > 0 ? (
+      <div className="bg-white rounded-xl border border-[#DDE9EE] p-6">
+        <h3 className="text-sm font-bold text-[#0C2833] mb-3">Recent Activity</h3>
+        <div className="w-8 h-0.5 bg-[#FF5C00] mb-6"></div>
+        {data.recentActivity && data.recentActivity.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -296,21 +304,24 @@ export default function DashboardContent({ data }: { data: DashboardData }) {
                     Entity Type
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-semibold text-[#8CAEC1] uppercase tracking-wider">
-                    Time
+                    Description
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-[#8CAEC1] uppercase tracking-wider">
+                    Date
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {data.activityLog.slice(0, 10).map((entry) => (
-                  <tr key={entry.id} className="border-b border-[#DDE9EE] hover:bg-[#F9FAFB] transition-colors">
-                    <td className="px-6 py-4 text-[#0C2833]">
-                      {formatActivityType(entry.action)}
-                    </td>
+                {data.recentActivity.map((entry) => (
+                  <tr
+                    key={entry.id}
+                    className="border-b border-[#DDE9EE] hover:bg-[#F9FAFB] transition-colors"
+                  >
+                    <td className="px-6 py-4 text-[#0C2833] font-medium">{entry.action}</td>
+                    <td className="px-6 py-4 text-[#8CAEC1]">{entry.entity_type}</td>
+                    <td className="px-6 py-4 text-[#0C2833]">{entry.description}</td>
                     <td className="px-6 py-4 text-[#8CAEC1]">
-                      {formatActivityType(entry.entity_type)}
-                    </td>
-                    <td className="px-6 py-4 text-[#8CAEC1]">
-                      {formatDate(entry.created_at)}
+                      {new Date(entry.created_at).toLocaleDateString()}
                     </td>
                   </tr>
                 ))}
