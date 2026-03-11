@@ -1,0 +1,77 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-color: #cbd5e1 transparent;
+  scrollbar-width: thin;
+}
+
+/* Form elements */
+input,
+select,
+textarea {
+  @apply outline-none transition-colors duration-200;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  @apply ring-2 ring-azure-500 ring-offset-0;
+}
+
+input:disabled,
+select:disabled,
+textarea:disabled {
+  @apply bg-delta-50 text-delta-400 cursor-not-allowed;
+}
+
+/* Placeholder styling */
+::placeholder {
+  @apply text-delta-400;
+}
+
+/* Selection styling */
+::selection {
+  @apply bg-azure-200 text-delta-900;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Body defaults */
+body {
+  @apply bg-white text-delta-900;
+}
+
+/* Link defaults */
+a {
+  @apply transition-colors duration-200;
+}
+
+/* Button focus ring */
+button {
+  @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-azure-500;
+}
