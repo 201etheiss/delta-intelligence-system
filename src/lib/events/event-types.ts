@@ -62,9 +62,27 @@ export const EVENT_TYPES = {
   QUOTE_REQUESTED: 'quote.requested',
   QUOTE_APPROVED: 'quote.approved',
 
+  // GL Module events
+  GL_CHART_OF_ACCOUNTS_FETCHED: 'gl.chart_of_accounts.fetched',
+  GL_CHART_OF_ACCOUNTS_ERROR: 'gl.chart_of_accounts.error',
+  GL_TRIAL_BALANCE_FETCHED: 'gl.trial_balance.fetched',
+  GL_TRIAL_BALANCE_ERROR: 'gl.trial_balance.error',
+  GL_JOURNAL_ENTRIES_FETCHED: 'gl.journal_entries.fetched',
+  GL_JOURNAL_ENTRIES_ERROR: 'gl.journal_entries.error',
+  GL_JOURNAL_ENTRY_CREATED: 'gl.journal_entry.created',
+  GL_JOURNAL_ENTRY_POSTED: 'gl.journal_entry.posted',
+  GL_JOURNAL_ENTRY_POST_FAILED: 'gl.journal_entry.post_failed',
+  GL_ACCOUNT_BALANCE_FETCHED: 'gl.account_balance.fetched',
+  GL_ACCOUNT_BALANCE_ERROR: 'gl.account_balance.error',
+
   // Gateway/Feed events
   GATEWAY_QUERY: 'gateway.query',
   ASCEND_SYNC: 'ascend.sync',
+  ASCEND_AP_INVOICE_SYNC: 'ascend.ap_invoice_sync',
+  ASCEND_AR_INVOICE_SYNC: 'ascend.ar_invoice_sync',
+  ASCEND_CUSTOMER_SYNC: 'ascend.customer_sync',
+  ASCEND_JOURNAL_ENTRY_SYNC: 'ascend.journal_entry_sync',
+  ASCEND_RACK_PRICE_SYNC: 'ascend.rack_price_sync',
   SALESFORCE_SYNC: 'salesforce.sync',
   SAMSARA_SYNC: 'samsara.sync',
   POWERBI_SYNC: 'powerbi.sync',

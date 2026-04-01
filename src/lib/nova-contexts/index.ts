@@ -10,6 +10,7 @@ import { INTELLIGENCE_CONTEXT } from './intelligence';
 import { COMPLIANCE_CONTEXT } from './compliance';
 import { ORGANIZATION_CONTEXT } from './organization';
 import { SIGNAL_MAP_CONTEXT } from './signal-map';
+import { GL_MODULE_CONTEXT } from './gl-module';
 
 export { FINANCE_CONTEXT } from './finance';
 export { OPERATIONS_CONTEXT } from './operations';
@@ -17,6 +18,7 @@ export { INTELLIGENCE_CONTEXT } from './intelligence';
 export { COMPLIANCE_CONTEXT } from './compliance';
 export { ORGANIZATION_CONTEXT } from './organization';
 export { SIGNAL_MAP_CONTEXT } from './signal-map';
+export { GL_MODULE_CONTEXT } from './gl-module';
 export type { NovaContext } from './finance';
 
 export const ALL_NOVA_CONTEXTS = {
@@ -26,6 +28,7 @@ export const ALL_NOVA_CONTEXTS = {
   compliance: COMPLIANCE_CONTEXT,
   organization: ORGANIZATION_CONTEXT,
   'signal-map': SIGNAL_MAP_CONTEXT,
+  gl: GL_MODULE_CONTEXT,
 } as const;
 
 export type NovaModuleId = keyof typeof ALL_NOVA_CONTEXTS;
