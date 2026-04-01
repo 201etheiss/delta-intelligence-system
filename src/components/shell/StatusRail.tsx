@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
   DollarSign,
@@ -20,6 +21,7 @@ interface StatusRailProps {
   onModuleClick: (id: string) => void;
   onChatToggle: () => void;
   onSearchClick: () => void;
+  onHomeClick?: () => void;
 }
 
 interface ServiceHealth {
@@ -55,7 +57,9 @@ export default function StatusRail({
   onModuleClick,
   onChatToggle,
   onSearchClick,
+  onHomeClick,
 }: StatusRailProps) {
+  const pathname = usePathname();
   const [services, setServices] = useState<ServiceHealth[]>([]);
 
   useEffect(() => {
@@ -85,12 +89,15 @@ export default function StatusRail({
       {/* Module group icons */}
       <nav className="flex flex-col items-center gap-1">
         {MODULE_ICONS.map(({ id, label, Icon }) => {
-          const isActive = activeModule === id;
+          const isHome = id === 'home';
+          const isActive = isHome
+            ? (activeModule === null && pathname === '/')
+            : activeModule === id;
           return (
             <button
               key={id}
               title={label}
-              onClick={() => onModuleClick(id)}
+              onClick={() => isHome && onHomeClick ? onHomeClick() : onModuleClick(id)}
               className="relative flex items-center justify-center rounded-[8px] transition-colors"
               style={{
                 width: 34,

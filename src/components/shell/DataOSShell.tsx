@@ -229,7 +229,7 @@ function ShellInner({ children }: { children: React.ReactNode }) {
         currentPage={currentPage}
         densityMode={densityMode}
         onDensityToggle={densityToggle}
-        onNovaClick={handleChatToggle}
+        onNovaClick={() => setPaletteOpen(prev => !prev)}
       />
 
       {/* Below NovaBar */}
@@ -241,6 +241,7 @@ function ShellInner({ children }: { children: React.ReactNode }) {
           onModuleClick={handleModuleClick}
           onChatToggle={handleChatToggle}
           onSearchClick={handleSearchClick}
+          onHomeClick={() => router.push('/')}
         />
 
         {/* Right of rail */}

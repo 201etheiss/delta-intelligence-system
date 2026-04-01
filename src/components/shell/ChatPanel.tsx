@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect, useCallback } from 'react';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -219,6 +219,44 @@ function ModePills({
 }
 
 // ---------------------------------------------------------------------------
+// localStorage helpers for chat panel conversation
+// ---------------------------------------------------------------------------
+
+const PANEL_STORAGE_KEY = 'di_chat_panel_conversation';
+
+interface StoredPanelMessage {
+  id: string;
+  role: 'nova' | 'user';
+  content: string;
+  timestamp: string;
+}
+
+function loadPanelConversation(): Message[] {
+  if (typeof window === 'undefined') return [WELCOME_MESSAGE];
+  try {
+    const raw = localStorage.getItem(PANEL_STORAGE_KEY);
+    if (!raw) return [WELCOME_MESSAGE];
+    const stored = JSON.parse(raw) as StoredPanelMessage[];
+    return stored.map((m) => ({ ...m, timestamp: new Date(m.timestamp) }));
+  } catch {
+    return [WELCOME_MESSAGE];
+  }
+}
+
+function savePanelConversation(messages: Message[]): void {
+  if (typeof window === 'undefined') return;
+  try {
+    const serialized: StoredPanelMessage[] = messages.map((m) => ({
+      ...m,
+      timestamp: m.timestamp instanceof Date ? m.timestamp.toISOString() : String(m.timestamp),
+    }));
+    localStorage.setItem(PANEL_STORAGE_KEY, JSON.stringify(serialized));
+  } catch {
+    // silent fail
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Chat mode
 // ---------------------------------------------------------------------------
 
@@ -231,11 +269,35 @@ function ChatMode({
 }) {
   const [messages, setMessages] = useState<Message[]>([WELCOME_MESSAGE]);
   const [input, setInput] = useState('');
+  const [isStreaming, setIsStreaming] = useState(false);
+  const [streamingId, setStreamingId] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const abortRef = useRef<AbortController | null>(null);
+  const mountedRef = useRef(false);
 
-  const handleSend = () => {
+  // Load persisted conversation on mount
+  useEffect(() => {
+    const stored = loadPanelConversation();
+    setMessages(stored);
+    mountedRef.current = true;
+  }, []);
+
+  // Persist conversation whenever messages change (skip initial render)
+  useEffect(() => {
+    if (!mountedRef.current) return;
+    savePanelConversation(messages);
+  }, [messages]);
+
+  // Auto-scroll when messages change
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages, isStreaming]);
+
+  const handleSend = useCallback(async () => {
     const text = input.trim();
-    if (!text) return;
+    if (!text || isStreaming) return;
 
     const userMsg: Message = {
       id: `user-${Date.now()}`,
@@ -243,22 +305,129 @@ function ChatMode({
       content: text,
       timestamp: new Date(),
     };
-    const novaMsg: Message = {
-      id: `nova-${Date.now()}`,
+
+    // Build API message history (exclude welcome message, map roles)
+    const contextNote = currentModule
+      ? `[Context: ${currentModule} > ${currentPage}]`
+      : `[Context: ${currentPage}]`;
+
+    const apiMessages = messages
+      .filter((m) => m.id !== 'nova-welcome')
+      .map((m) => ({
+        role: m.role === 'user' ? 'user' : 'assistant',
+        content: m.content,
+      }));
+
+    // Append the new user message with context prefix on first message
+    apiMessages.push({
+      role: 'user',
+      content: messages.length <= 1
+        ? `${contextNote} ${text}`
+        : text,
+    });
+
+    const novaId = `nova-${Date.now()}`;
+
+    setMessages((prev) => [...prev, userMsg, {
+      id: novaId,
       role: 'nova',
-      content: `I received your message about "${text}". Live streaming is not yet connected — this is a UI placeholder.`,
+      content: '',
       timestamp: new Date(),
-    };
-
-    setMessages((prev) => [...prev, userMsg, novaMsg]);
+    }]);
     setInput('');
+    setIsStreaming(true);
+    setStreamingId(novaId);
 
-    setTimeout(() => {
-      if (scrollRef.current) {
-        scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    const controller = new AbortController();
+    abortRef.current = controller;
+
+    try {
+      // Try streaming endpoint first
+      const streamRes = await fetch('/api/chat/stream', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: apiMessages }),
+        signal: controller.signal,
+      });
+
+      if (streamRes.ok && streamRes.body) {
+        const reader = streamRes.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+        let accumulated = '';
+        let currentEvent = '';
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = '';
+
+          for (const line of lines) {
+            if (line.startsWith('event: ')) {
+              currentEvent = line.slice(7).trim();
+            } else if (line.startsWith('data: ')) {
+              const dataStr = line.slice(6);
+              try {
+                const data = JSON.parse(dataStr) as Record<string, unknown>;
+                if (currentEvent === 'delta') {
+                  accumulated += data.text as string;
+                  setMessages((prev) =>
+                    prev.map((m) => m.id === novaId ? { ...m, content: accumulated } : m)
+                  );
+                } else if (currentEvent === 'error') {
+                  throw new Error(data.message as string ?? 'Stream error');
+                }
+              } catch {
+                // partial or non-JSON line — continue
+              }
+            }
+          }
+        }
+        return;
       }
-    }, 50);
-  };
+
+      // Fallback to non-streaming endpoint
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: apiMessages }),
+        signal: controller.signal,
+      });
+
+      if (!res.ok) {
+        const errText = await res.text().catch(() => 'Unknown error');
+        throw new Error(`API error ${res.status}: ${errText}`);
+      }
+
+      const data = await res.json() as {
+        content?: string;
+        error?: string;
+      };
+
+      if (data.error) throw new Error(data.error);
+
+      setMessages((prev) =>
+        prev.map((m) => m.id === novaId ? { ...m, content: data.content ?? '' } : m)
+      );
+    } catch (err) {
+      if ((err as { name?: string }).name === 'AbortError') return;
+      const errMsg = err instanceof Error ? err.message : 'Something went wrong. Please try again.';
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === novaId
+            ? { ...m, content: `Error: ${errMsg}` }
+            : m
+        )
+      );
+    } finally {
+      setIsStreaming(false);
+      setStreamingId(null);
+      abortRef.current = null;
+    }
+  }, [input, isStreaming, messages, currentModule, currentPage]);
 
   const contextChips: string[] = [];
   if (currentModule) contextChips.push(currentModule);
@@ -301,6 +470,7 @@ function ChatMode({
       >
         {messages.map((msg) => {
           const isUser = msg.role === 'user';
+          const isTyping = !isUser && msg.id === streamingId && msg.content === '';
           return (
             <div
               key={msg.id}
@@ -324,7 +494,31 @@ function ChatMode({
                   border: isUser ? 'none' : '1px solid rgba(254,80,0,0.2)',
                 }}
               >
-                {msg.content}
+                {isTyping ? (
+                  <span style={{ display: 'inline-flex', gap: 3, alignItems: 'center', height: 18 }}>
+                    {[0, 1, 2].map((i) => (
+                      <span
+                        key={i}
+                        style={{
+                          width: 5,
+                          height: 5,
+                          borderRadius: '50%',
+                          background: '#FE5000',
+                          opacity: 0.7,
+                          animation: `novaDot 1.2s ease-in-out ${i * 0.2}s infinite`,
+                        }}
+                      />
+                    ))}
+                    <style>{`
+                      @keyframes novaDot {
+                        0%, 80%, 100% { transform: scale(0.7); opacity: 0.4; }
+                        40% { transform: scale(1); opacity: 1; }
+                      }
+                    `}</style>
+                  </span>
+                ) : (
+                  msg.content
+                )}
               </div>
             </div>
           );
@@ -393,6 +587,7 @@ function ChatMode({
         <input
           type="text"
           value={input}
+          disabled={isStreaming}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
@@ -400,7 +595,7 @@ function ChatMode({
               handleSend();
             }
           }}
-          placeholder="Ask Nova about this module..."
+          placeholder={isStreaming ? 'Nova is thinking...' : 'Ask Nova about this module...'}
           style={{
             flex: 1,
             background: '#1c1c1f',
@@ -410,21 +605,24 @@ function ChatMode({
             fontSize: 13,
             color: '#e4e4e7',
             outline: 'none',
+            opacity: isStreaming ? 0.6 : 1,
           }}
         />
         <button
           onClick={handleSend}
+          disabled={isStreaming || !input.trim()}
           style={{
             width: 34,
             height: 34,
             borderRadius: 8,
-            background: '#FE5000',
+            background: isStreaming || !input.trim() ? '#3f3f46' : '#FE5000',
             border: 'none',
-            cursor: 'pointer',
+            cursor: isStreaming || !input.trim() ? 'not-allowed' : 'pointer',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             flexShrink: 0,
+            transition: 'background 0.15s ease',
           }}
           aria-label="Send"
         >
