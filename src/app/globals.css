@@ -84,3 +84,76 @@ body {
 .animate-blink {
   animation: blink 0.8s step-end infinite;
 }
+
+/* ─── DataOS Design Tokens (spec §6) ─────────────────────────────────────── */
+
+:root {
+  /* Brand */
+  --delta-orange: #FE5000;
+  --delta-black: #000000;
+
+  /* Backgrounds */
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #0f0f11;
+  --bg-surface: #18181b;
+  --bg-elevated: #27272a;
+  --bg-input: rgba(255, 255, 255, 0.05);
+
+  /* Borders */
+  --border-default: #27272a;
+  --border-active: #FE5000;
+
+  /* Text */
+  --text-primary: #e4e4e7;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
+  --text-disabled: #52525b;
+
+  /* Status */
+  --status-green: #22c55e;
+  --status-yellow: #eab308;
+  --status-red: #ef4444;
+  --status-blue: #3b82f6;
+  --status-purple: #a855f7;
+
+  /* Typography */
+  --font-sans: Inter, system-ui, sans-serif;
+  --font-heading: Georgia, serif;
+  --font-mono: 'SF Mono', 'Fira Code', monospace;
+
+  --text-xs: 10px;
+  --text-sm: 12px;
+  --text-base: 14px;
+  --text-lg: 16px;
+  --text-xl: 20px;
+  --text-2xl: 24px;
+  --text-3xl: 32px;
+}
+
+/* Density: Executive (default — 1.5× multiplier) */
+.density-executive {
+  --space-xs: 6px;
+  --space-sm: 12px;
+  --space-md: 24px;
+  --space-lg: 32px;
+  --space-xl: 48px;
+
+  --card-radius: 12px;
+  --card-padding: 20px;
+  --table-row-height: 48px;
+  --kpi-value-size: 28px;
+}
+
+/* Density: Operator (compact — 0.75× multiplier) */
+.density-operator {
+  --space-xs: 3px;
+  --space-sm: 6px;
+  --space-md: 12px;
+  --space-lg: 20px;
+  --space-xl: 28px;
+
+  --card-radius: 6px;
+  --card-padding: 12px;
+  --table-row-height: 28px;
+  --kpi-value-size: 14px;
+}

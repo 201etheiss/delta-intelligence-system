@@ -1,0 +1,183 @@
+export interface ModulePage {
+  href: string;
+  label: string;
+}
+
+export interface ModuleGroup {
+  id: string;
+  label: string;
+  icon: string;
+  defaultPagePath: string;
+  pages: ModulePage[];
+}
+
+export const MODULE_GROUPS: ModuleGroup[] = [
+  {
+    id: 'finance',
+    label: 'Finance',
+    icon: 'DollarSign',
+    defaultPagePath: '/finance',
+    pages: [
+      { href: '/finance', label: 'Finance' },
+      { href: '/financial-statements', label: 'Financial Statements' },
+      { href: '/journal-entries', label: 'Journal Entries' },
+      { href: '/close-tracker', label: 'Close Tracker' },
+      { href: '/cash-flow', label: 'Cash Flow' },
+      { href: '/budgets', label: 'Budgets' },
+      { href: '/reconciliations', label: 'Reconciliations' },
+      { href: '/ap/invoices', label: 'AP Invoices' },
+      { href: '/ar/collections', label: 'AR Collections' },
+      { href: '/tax', label: 'Tax' },
+      { href: '/commentary', label: 'Commentary' },
+      { href: '/expenses', label: 'Expenses' },
+      { href: '/otc', label: 'OTC' },
+      { href: '/late-posted', label: 'Late Posted' },
+      { href: '/packages', label: 'Packages' },
+      { href: '/brief', label: 'Brief' },
+    ],
+  },
+  {
+    id: 'operations',
+    label: 'Operations',
+    icon: 'Truck',
+    defaultPagePath: '/fleet',
+    pages: [
+      { href: '/fleet-map', label: 'Fleet Map' },
+      { href: '/fleet', label: 'Fleet' },
+      { href: '/assets/fixed', label: 'Fixed Assets' },
+      { href: '/inventory', label: 'Inventory' },
+      { href: '/contracts', label: 'Contracts' },
+    ],
+  },
+  {
+    id: 'intelligence',
+    label: 'Intelligence',
+    icon: 'BarChart3',
+    defaultPagePath: '/executive',
+    pages: [
+      { href: '/executive', label: 'Executive' },
+      { href: '/market', label: 'Market' },
+      { href: '/sales', label: 'Sales' },
+      { href: '/customer', label: 'Customer' },
+      { href: '/analytics', label: 'Analytics' },
+      { href: '/analytics/visualizations', label: 'Visualizations' },
+      { href: '/reports', label: 'Reports' },
+      { href: '/reports/templates', label: 'Report Templates' },
+      { href: '/digest', label: 'Digest' },
+    ],
+  },
+  {
+    id: 'organization',
+    label: 'Organization',
+    icon: 'Users',
+    defaultPagePath: '/people',
+    pages: [
+      { href: '/people', label: 'People' },
+      { href: '/hr', label: 'HR' },
+      { href: '/workstreams', label: 'Workstreams' },
+      { href: '/integrations', label: 'Integrations' },
+    ],
+  },
+  {
+    id: 'compliance',
+    label: 'Compliance',
+    icon: 'Shield',
+    defaultPagePath: '/vault',
+    pages: [
+      { href: '/vault', label: 'Vault' },
+      { href: '/audit', label: 'Audit' },
+      { href: '/controls', label: 'Controls' },
+      { href: '/exceptions', label: 'Exceptions' },
+    ],
+  },
+  {
+    id: 'admin',
+    label: 'Admin',
+    icon: 'Settings',
+    defaultPagePath: '/admin/users',
+    pages: [
+      { href: '/admin/users', label: 'Users' },
+      { href: '/admin/permissions', label: 'Permissions' },
+      { href: '/admin/integrations', label: 'Integrations' },
+      { href: '/admin/health', label: 'Health' },
+      { href: '/admin/audit', label: 'Audit' },
+      { href: '/admin/usage', label: 'Usage' },
+      { href: '/settings', label: 'Settings' },
+      { href: '/api-docs', label: 'API Docs' },
+    ],
+  },
+  {
+    id: 'platform',
+    label: 'Platform',
+    icon: 'Layers',
+    defaultPagePath: '/platform',
+    pages: [
+      { href: '/platform', label: 'Platform' },
+      { href: '/dashboards', label: 'Dashboards' },
+      { href: '/dashboards/[id]', label: 'Dashboard' },
+      { href: '/workspaces', label: 'Workspaces' },
+      { href: '/sources', label: 'Sources' },
+      { href: '/glossary', label: 'Glossary' },
+      { href: '/documents', label: 'Documents' },
+      { href: '/shared', label: 'Shared' },
+      { href: '/shared/[id]', label: 'Shared Item' },
+      { href: '/history', label: 'History' },
+      { href: '/onboarding', label: 'Onboarding' },
+    ],
+  },
+];
+
+/**
+ * Matches a pathname to its module group.
+ *
+ * Strategy:
+ * 1. Check exact matches first against all registered hrefs.
+ * 2. For dynamic segments (hrefs containing [param]), convert the pattern to a
+ *    prefix-style check so /dashboards/abc matches /dashboards/[id].
+ * 3. Fall back to longest-prefix match across all static hrefs to handle nested
+ *    routes not explicitly listed (e.g. /admin/audit/detail → admin group).
+ */
+export function findModuleForPath(pathname: string): ModuleGroup | undefined {
+  // Normalise: strip trailing slash except for root "/"
+  const normalised = pathname.length > 1 ? pathname.replace(/\/$/, '') : pathname;
+
+  // 1. Exact match
+  for (const group of MODULE_GROUPS) {
+    for (const page of group.pages) {
+      if (page.href === normalised) {
+        return group;
+      }
+    }
+  }
+
+  // 2. Dynamic segment match — convert [param] patterns to prefix check
+  for (const group of MODULE_GROUPS) {
+    for (const page of group.pages) {
+      if (page.href.includes('[')) {
+        // Build prefix from the static part before the dynamic segment
+        const prefix = page.href.replace(/\/\[[^\]]+\].*$/, '');
+        if (prefix && normalised.startsWith(prefix + '/')) {
+          return group;
+        }
+      }
+    }
+  }
+
+  // 3. Longest static prefix match for unlisted nested routes
+  let bestMatch: ModuleGroup | undefined;
+  let bestLength = 0;
+
+  for (const group of MODULE_GROUPS) {
+    for (const page of group.pages) {
+      if (page.href.includes('[')) continue; // skip dynamic entries here
+      if (normalised.startsWith(page.href + '/') || normalised === page.href) {
+        if (page.href.length > bestLength) {
+          bestLength = page.href.length;
+          bestMatch = group;
+        }
+      }
+    }
+  }
+
+  return bestMatch;
+}
