@@ -10,7 +10,9 @@ import {
   generateZIP,
   stripMarkdown,
   parseMarkdownTables,
+  type DocxTemplate,
 } from '@/lib/file-export';
+import { generateReportInsights } from '@/lib/nova/report-insights';
 import { ReportExportSchema, validateRequest } from '@/lib/validation';
 
 interface ExportRequest {
@@ -20,6 +22,9 @@ interface ExportRequest {
   }>;
   format: 'csv' | 'xlsx' | 'docx' | 'pdf' | 'pptx' | 'md' | 'txt' | 'json' | 'html';
   bundle?: boolean; // if true and multiple reports, return ZIP
+  template?: 'executive-summary' | 'financial-analysis' | 'operations' | 'intelligence-briefing';
+  depth?: 'summary' | 'detailed' | 'comprehensive';
+  dateRange?: { from: string; to: string };
 }
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
@@ -35,14 +40,36 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       return NextResponse.json({ error: validated.error }, { status: 400 });
     }
     const body = validated.data as ExportRequest;
-    const { reports, format, bundle } = body;
+    const { reports, format, bundle, template, depth, dateRange } = body;
+
+    // For comprehensive DOCX with template, inject Nova insights before generation
+    const enrichedReports = await Promise.all(reports.map(async (report) => {
+      if (format === 'docx' && template && depth === 'comprehensive') {
+        try {
+          const insights = await generateReportInsights({
+            template,
+            dateRange: dateRange ?? { from: '', to: new Date().toISOString().slice(0, 10) },
+            data: { title: report.title, content: report.content },
+          });
+          // Prepend Nova analysis as an executive section at the top
+          const enrichedContent = insights
+            ? `## Nova Analysis\n\n${insights}\n\n---\n\n${report.content}`
+            : report.content;
+          return { ...report, content: enrichedContent };
+        } catch {
+          // Insight generation failure is non-blocking
+          return report;
+        }
+      }
+      return report;
+    }));
 
     // Generate all file contents
     const entries: Array<{ filename: string; content: Buffer | string }> = [];
-    for (const report of reports) {
+    for (const report of enrichedReports) {
       const safeName = stripMarkdown(report.title).replace(/[^a-zA-Z0-9_-]/g, '_').substring(0, 50);
       const ext = getExtension(format);
-      const fileContent = await generateFileContent(report.content, report.title, format);
+      const fileContent = await generateFileContent(report.content, report.title, format, template);
       entries.push({ filename: `${safeName}.${ext}`, content: fileContent });
     }
 
@@ -96,14 +123,19 @@ function getContentType(format: string): string {
   return map[format] ?? 'application/octet-stream';
 }
 
-async function generateFileContent(markdown: string, title: string, format: string): Promise<Buffer | string> {
+async function generateFileContent(
+  markdown: string,
+  title: string,
+  format: string,
+  template?: ExportRequest['template'],
+): Promise<Buffer | string> {
   switch (format) {
     case 'csv':
       return generateCSV(markdown);
     case 'xlsx':
       return generateXLSX(markdown, title);
     case 'docx':
-      return await generateDOCX(markdown, title);
+      return await generateDOCX(markdown, title, (template ?? 'default') as DocxTemplate);
     case 'pdf':
       return await generatePDF(markdown, title);
     case 'html':

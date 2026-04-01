@@ -102,12 +102,18 @@ export function generateXLSX(markdown: string, title: string): Buffer {
 
 // ─── DOCX Helpers ─────────────────────────────────────────────────
 
+// Brand constants — Delta360 spec: #FE5000 orange, Georgia headings, Times New Roman body
+const DOCX_FONT_BODY = 'Times New Roman';
+const DOCX_FONT_HEADING = 'Georgia';
+const DOCX_FONT_TABLE = 'Arial';
+/** @deprecated Use DOCX_FONT_BODY for paragraphs; kept for legacy PDF/PPTX sections */
 const DOCX_FONT = 'Helvetica';
-const DOCX_ORANGE = 'FF5C00';
-const DOCX_GRAY_BORDER = 'D4D4D8';
-const DOCX_LIGHT_GRAY = 'F4F4F5';
+const DOCX_ORANGE = 'FE5000';
+const DOCX_BLACK = '000000';
+const DOCX_GRAY_BORDER = 'CCCCCC';
+const DOCX_LIGHT_GRAY = 'F5F5F5';
 const DOCX_WHITE = 'FFFFFF';
-const DOCX_TABLE_WIDTH = 9400; // twips, fits standard margins
+const DOCX_TABLE_WIDTH = 9360; // twips — US Letter (12240) minus 2" margins = 10240, minus gutter
 
 /** Parse inline markdown into an array of TextRun objects preserving bold. */
 function parseInlineMarkdown(text: string, baseSizeHalf: number, font: string): TextRun[] {
@@ -123,79 +129,156 @@ function parseInlineMarkdown(text: string, baseSizeHalf: number, font: string): 
   return runs;
 }
 
+/** Build a section-bar heading paragraph (orange bottom-border, Georgia font). */
+function makeSectionHeading(text: string, level: 1 | 2 | 3): Paragraph {
+  if (level === 1) {
+    return new Paragraph({
+      heading: HeadingLevel.HEADING_1,
+      spacing: { before: 360, after: 120 },
+      border: {
+        bottom: { style: BorderStyle.SINGLE, size: 8, color: DOCX_ORANGE, space: 4 },
+      },
+      children: [new TextRun({ text, bold: true, size: 36, font: DOCX_FONT_HEADING, color: DOCX_BLACK })],
+    });
+  }
+  if (level === 2) {
+    return new Paragraph({
+      heading: HeadingLevel.HEADING_2,
+      spacing: { before: 280, after: 100 },
+      border: {
+        bottom: { style: BorderStyle.SINGLE, size: 4, color: DOCX_ORANGE, space: 4 },
+      },
+      children: [new TextRun({ text, bold: true, size: 28, font: DOCX_FONT_HEADING, color: DOCX_BLACK })],
+    });
+  }
+  return new Paragraph({
+    heading: HeadingLevel.HEADING_3,
+    spacing: { before: 200, after: 80 },
+    children: [new TextRun({ text, bold: true, size: 24, font: DOCX_FONT_HEADING, color: DOCX_BLACK })],
+  });
+}
+
+/** Build an institutional table from headers + rows arrays. */
+function makeInstitutionalTable(headers: string[], dataRows: string[][]): Table {
+  const colWidth = Math.floor(DOCX_TABLE_WIDTH / Math.max(headers.length, 1));
+  const cellMargins = { top: 60, bottom: 60, left: 100, right: 100, marginUnitType: WidthType.DXA };
+
+  const headerRow = new TableRow({
+    tableHeader: true,
+    children: headers.map(h => new TableCell({
+      children: [new Paragraph({
+        spacing: { before: 20, after: 20 },
+        children: [new TextRun({ text: stripMarkdown(h), bold: true, size: 20, font: DOCX_FONT_TABLE, color: DOCX_WHITE })],
+      })],
+      width: { size: colWidth, type: WidthType.DXA },
+      shading: { fill: DOCX_ORANGE, type: ShadingType.CLEAR, color: 'auto' },
+      margins: cellMargins,
+    })),
+  });
+
+  const bodyRows = dataRows.map((row, ri) => new TableRow({
+    children: row.map(cell => new TableCell({
+      children: [new Paragraph({
+        spacing: { before: 20, after: 20 },
+        children: parseInlineMarkdown(cell, 20, DOCX_FONT_TABLE),
+        alignment: /^\$|^\d|^[+-]/.test(cell.trim()) ? AlignmentType.RIGHT : AlignmentType.LEFT,
+      })],
+      width: { size: colWidth, type: WidthType.DXA },
+      shading: ri % 2 === 0
+        ? { fill: DOCX_WHITE, type: ShadingType.CLEAR, color: 'auto' }
+        : { fill: DOCX_LIGHT_GRAY, type: ShadingType.CLEAR, color: 'auto' },
+      margins: cellMargins,
+    })),
+  }));
+
+  return new Table({
+    rows: [headerRow, ...bodyRows],
+    width: { size: DOCX_TABLE_WIDTH, type: WidthType.DXA },
+    borders: {
+      top: { style: BorderStyle.SINGLE, size: 1, color: DOCX_GRAY_BORDER },
+      bottom: { style: BorderStyle.SINGLE, size: 1, color: DOCX_GRAY_BORDER },
+      left: { style: BorderStyle.SINGLE, size: 1, color: DOCX_GRAY_BORDER },
+      right: { style: BorderStyle.SINGLE, size: 1, color: DOCX_GRAY_BORDER },
+      insideHorizontal: { style: BorderStyle.SINGLE, size: 1, color: DOCX_GRAY_BORDER },
+      insideVertical: { style: BorderStyle.SINGLE, size: 1, color: DOCX_GRAY_BORDER },
+    },
+  });
+}
+
+/** Build a cover-page block for institutional reports. */
+function makeCoverPage(title: string, subtitle: string, dateStr: string, preparedBy = 'Delta Intelligence'): Paragraph[] {
+  return [
+    new Paragraph({
+      spacing: { after: 800 },
+      children: [
+        new TextRun({ text: 'DELTA360', bold: true, size: 28, font: DOCX_FONT_HEADING, color: DOCX_ORANGE }),
+      ],
+    }),
+    new Paragraph({
+      spacing: { after: 1200 },
+      border: { bottom: { style: BorderStyle.SINGLE, size: 12, color: DOCX_ORANGE, space: 4 } },
+      children: [],
+    }),
+    new Paragraph({
+      spacing: { after: 240 },
+      children: [new TextRun({ text: title, bold: true, size: 64, font: DOCX_FONT_HEADING, color: DOCX_BLACK })],
+    }),
+    new Paragraph({
+      spacing: { after: 200 },
+      children: [new TextRun({ text: subtitle, size: 28, font: DOCX_FONT_BODY, color: '555555' })],
+    }),
+    new Paragraph({ spacing: { after: 1600 }, children: [] }),
+    new Paragraph({
+      spacing: { after: 80 },
+      children: [new TextRun({ text: `Prepared by: ${preparedBy}`, size: 22, font: DOCX_FONT_BODY, color: '555555' })],
+    }),
+    new Paragraph({
+      spacing: { after: 80 },
+      children: [new TextRun({ text: `Date: ${dateStr}`, size: 22, font: DOCX_FONT_BODY, color: '555555' })],
+    }),
+    new Paragraph({
+      spacing: { after: 200 },
+      children: [new TextRun({ text: 'CONFIDENTIAL', bold: true, size: 22, font: DOCX_FONT_BODY, color: DOCX_ORANGE })],
+    }),
+  ];
+}
+
 // ─── DOCX Export ──────────────────────────────────────────────────
 
-export async function generateDOCX(markdown: string, title: string): Promise<Buffer> {
-  const cleanTitle = stripMarkdown(title);
-  const dateStr = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+export type DocxTemplate =
+  | 'executive-summary'
+  | 'financial-analysis'
+  | 'operations'
+  | 'intelligence-briefing'
+  | 'default';
+
+/**
+ * Parse markdown lines into Paragraph/Table children for the document body.
+ * Uses institutional typography: Georgia headings, Times New Roman body.
+ */
+function parseMarkdownBody(markdown: string): (Paragraph | Table)[] {
   const lines = markdown.split('\n');
   const children: (Paragraph | Table)[] = [];
-
-  // ── Branded header: "Delta Intelligence" in orange + date ──
-  children.push(new Paragraph({
-    spacing: { after: 40 },
-    children: [
-      new TextRun({ text: 'DELTA INTELLIGENCE', bold: true, size: 20, font: DOCX_FONT, color: DOCX_ORANGE }),
-      new TextRun({ text: `    ${dateStr}`, size: 18, font: DOCX_FONT, color: '71717A' }),
-    ],
-  }));
-
-  // ── Horizontal rule (orange border bottom) ──
-  children.push(new Paragraph({
-    spacing: { after: 200 },
-    border: {
-      bottom: { style: BorderStyle.SINGLE, size: 6, color: DOCX_ORANGE, space: 4 },
-    },
-    children: [],
-  }));
-
-  // ── Document title ──
-  children.push(new Paragraph({
-    heading: HeadingLevel.HEADING_1,
-    spacing: { after: 120 },
-    children: [new TextRun({ text: cleanTitle, bold: true, size: 36, font: DOCX_FONT, color: '09090B' })],
-  }));
-
-  children.push(new Paragraph({
-    spacing: { after: 200 },
-    children: [new TextRun({
-      text: `Generated by Delta Intelligence | ${dateStr}`,
-      size: 18, color: '71717A', font: DOCX_FONT, italics: true,
-    })],
-  }));
-
-  // ── Parse markdown body ──
   let i = 0;
+
   while (i < lines.length) {
     const line = lines[i].trim();
 
-    // Headings (check ### before ## before #)
+    // Headings — Georgia font with orange section bars
     if (line.startsWith('### ')) {
-      children.push(new Paragraph({
-        heading: HeadingLevel.HEADING_3,
-        spacing: { before: 200, after: 80 },
-        children: [new TextRun({ text: stripMarkdown(line.replace(/^###\s+/, '')), bold: true, size: 22, font: DOCX_FONT })],
-      }));
+      children.push(makeSectionHeading(stripMarkdown(line.replace(/^###\s+/, '')), 3));
       i++; continue;
     }
     if (line.startsWith('## ')) {
-      children.push(new Paragraph({
-        heading: HeadingLevel.HEADING_2,
-        spacing: { before: 240, after: 100 },
-        children: [new TextRun({ text: stripMarkdown(line.replace(/^##\s+/, '')), bold: true, size: 26, font: DOCX_FONT, color: '18181B' })],
-      }));
+      children.push(makeSectionHeading(stripMarkdown(line.replace(/^##\s+/, '')), 2));
       i++; continue;
     }
     if (line.startsWith('# ')) {
-      children.push(new Paragraph({
-        heading: HeadingLevel.HEADING_1,
-        spacing: { before: 300, after: 120 },
-        children: [new TextRun({ text: stripMarkdown(line.replace(/^#\s+/, '')), bold: true, size: 30, font: DOCX_FONT, color: '09090B' })],
-      }));
+      children.push(makeSectionHeading(stripMarkdown(line.replace(/^#\s+/, '')), 1));
       i++; continue;
     }
 
-    // Tables with branded styling
+    // Tables with institutional styling
     if (line.startsWith('|') && line.endsWith('|')) {
       const tableLines: string[] = [];
       while (i < lines.length && lines[i].trim().startsWith('|')) {
@@ -207,52 +290,8 @@ export async function generateDOCX(markdown: string, title: string): Promise<Buf
         const headers = parseLine(tableLines[0]);
         const isSep = /^\|[\s\-:]+(\|[\s\-:]+)+\|?$/.test(tableLines[1]);
         const dataRows = (isSep ? tableLines.slice(2) : tableLines.slice(1)).map(parseLine);
-        const colWidth = Math.floor(DOCX_TABLE_WIDTH / headers.length);
-        const cellMargins = { top: 40, bottom: 40, left: 80, right: 80, marginUnitType: WidthType.DXA };
-
-        // Header row: orange background, white text
-        const headerRow = new TableRow({
-          tableHeader: true,
-          children: headers.map(h => new TableCell({
-            children: [new Paragraph({
-              spacing: { before: 20, after: 20 },
-              children: [new TextRun({ text: stripMarkdown(h), bold: true, size: 18, font: DOCX_FONT, color: DOCX_WHITE })],
-            })],
-            width: { size: colWidth, type: WidthType.DXA },
-            shading: { fill: DOCX_ORANGE, type: ShadingType.CLEAR, color: 'auto' },
-            margins: cellMargins,
-          })),
-        });
-
-        // Data rows: alternating white / light gray
-        const bodyRows = dataRows.map((row, ri) => new TableRow({
-          children: row.map(cell => new TableCell({
-            children: [new Paragraph({
-              spacing: { before: 20, after: 20 },
-              children: parseInlineMarkdown(cell, 18, DOCX_FONT),
-              alignment: /^\$|^\d|^[+-]/.test(cell.trim()) ? AlignmentType.RIGHT : AlignmentType.LEFT,
-            })],
-            width: { size: colWidth, type: WidthType.DXA },
-            shading: ri % 2 === 0
-              ? { fill: DOCX_WHITE, type: ShadingType.CLEAR, color: 'auto' }
-              : { fill: DOCX_LIGHT_GRAY, type: ShadingType.CLEAR, color: 'auto' },
-            margins: cellMargins,
-          })),
-        }));
-
-        children.push(new Table({
-          rows: [headerRow, ...bodyRows],
-          width: { size: DOCX_TABLE_WIDTH, type: WidthType.DXA },
-          borders: {
-            top: { style: BorderStyle.SINGLE, size: 1, color: DOCX_GRAY_BORDER },
-            bottom: { style: BorderStyle.SINGLE, size: 1, color: DOCX_GRAY_BORDER },
-            left: { style: BorderStyle.SINGLE, size: 1, color: DOCX_GRAY_BORDER },
-            right: { style: BorderStyle.SINGLE, size: 1, color: DOCX_GRAY_BORDER },
-            insideHorizontal: { style: BorderStyle.SINGLE, size: 1, color: DOCX_GRAY_BORDER },
-            insideVertical: { style: BorderStyle.SINGLE, size: 1, color: DOCX_GRAY_BORDER },
-          },
-        }));
-        children.push(new Paragraph({ spacing: { after: 120 }, children: [] }));
+        children.push(makeInstitutionalTable(headers, dataRows));
+        children.push(new Paragraph({ spacing: { after: 160 }, children: [] }));
       }
       continue;
     }
@@ -260,24 +299,22 @@ export async function generateDOCX(markdown: string, title: string): Promise<Buf
     // Horizontal rule
     if (line === '---' || line === '***') {
       children.push(new Paragraph({
-        spacing: { before: 100, after: 100 },
-        border: {
-          bottom: { style: BorderStyle.SINGLE, size: 2, color: DOCX_GRAY_BORDER, space: 4 },
-        },
+        spacing: { before: 120, after: 120 },
+        border: { bottom: { style: BorderStyle.SINGLE, size: 2, color: DOCX_GRAY_BORDER, space: 4 } },
         children: [],
       }));
       i++; continue;
     }
 
-    // Bullet points (unordered list)
+    // Bullet points
     if (/^[-*]\s+/.test(line)) {
       const bulletText = line.replace(/^[-*]\s+/, '');
       children.push(new Paragraph({
         spacing: { before: 40, after: 40 },
-        indent: { left: convertInchesToTwip(0.35), hanging: convertInchesToTwip(0.2) },
+        indent: { left: convertInchesToTwip(0.4), hanging: convertInchesToTwip(0.2) },
         children: [
-          new TextRun({ text: '\u2022  ', size: 20, font: DOCX_FONT }),
-          ...parseInlineMarkdown(bulletText, 20, DOCX_FONT),
+          new TextRun({ text: '\u2022  ', size: 22, font: DOCX_FONT_BODY }),
+          ...parseInlineMarkdown(bulletText, 22, DOCX_FONT_BODY),
         ],
       }));
       i++; continue;
@@ -290,10 +327,10 @@ export async function generateDOCX(markdown: string, title: string): Promise<Buf
       const numText = numMatch?.[2] ?? line;
       children.push(new Paragraph({
         spacing: { before: 40, after: 40 },
-        indent: { left: convertInchesToTwip(0.35), hanging: convertInchesToTwip(0.2) },
+        indent: { left: convertInchesToTwip(0.4), hanging: convertInchesToTwip(0.2) },
         children: [
-          new TextRun({ text: `${num}.  `, bold: true, size: 20, font: DOCX_FONT }),
-          ...parseInlineMarkdown(numText, 20, DOCX_FONT),
+          new TextRun({ text: `${num}.  `, bold: true, size: 22, font: DOCX_FONT_BODY }),
+          ...parseInlineMarkdown(numText, 22, DOCX_FONT_BODY),
         ],
       }));
       i++; continue;
@@ -301,75 +338,158 @@ export async function generateDOCX(markdown: string, title: string): Promise<Buf
 
     // Empty line
     if (!line) {
-      children.push(new Paragraph({ spacing: { after: 80 }, children: [] }));
+      children.push(new Paragraph({ spacing: { after: 100 }, children: [] }));
       i++; continue;
     }
 
-    // Regular paragraph with inline bold support
+    // Regular paragraph — Times New Roman 11pt
     children.push(new Paragraph({
-      spacing: { after: 80 },
-      children: parseInlineMarkdown(line, 20, DOCX_FONT),
+      spacing: { after: 100, line: 276, lineRule: 'auto' },
+      children: parseInlineMarkdown(line, 22, DOCX_FONT_BODY),
     }));
     i++;
   }
 
-  // ── Build document with header, footer (page numbers), and properties ──
+  return children;
+}
+
+export async function generateDOCX(
+  markdown: string,
+  title: string,
+  template: DocxTemplate = 'default',
+): Promise<Buffer> {
+  const cleanTitle = stripMarkdown(title);
+  const dateStr = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+  // ── Build cover page based on template ──
+  const coverChildren: (Paragraph | Table)[] = (() => {
+    switch (template) {
+      case 'executive-summary':
+        return makeCoverPage(cleanTitle, 'Executive Summary Report', dateStr);
+      case 'financial-analysis':
+        return makeCoverPage(cleanTitle, 'Financial Analysis Report', dateStr);
+      case 'operations':
+        return makeCoverPage(cleanTitle, 'Operations Report', dateStr);
+      case 'intelligence-briefing':
+        return makeCoverPage(cleanTitle, 'Intelligence Briefing', dateStr);
+      default:
+        return [];
+    }
+  })();
+
+  const hasCover = coverChildren.length > 0;
+
+  // ── Default header block (used when no cover, or after cover) ──
+  const defaultHeaderBlock: (Paragraph | Table)[] = hasCover ? [] : [
+    new Paragraph({
+      spacing: { after: 40 },
+      children: [
+        new TextRun({ text: 'DELTA360', bold: true, size: 22, font: DOCX_FONT_HEADING, color: DOCX_ORANGE }),
+        new TextRun({ text: `    ${dateStr}`, size: 18, font: DOCX_FONT_BODY, color: '71717A' }),
+      ],
+    }),
+    new Paragraph({
+      spacing: { after: 200 },
+      border: { bottom: { style: BorderStyle.SINGLE, size: 6, color: DOCX_ORANGE, space: 4 } },
+      children: [],
+    }),
+    new Paragraph({
+      heading: HeadingLevel.HEADING_1,
+      spacing: { after: 120 },
+      children: [new TextRun({ text: cleanTitle, bold: true, size: 48, font: DOCX_FONT_HEADING, color: DOCX_BLACK })],
+    }),
+    new Paragraph({
+      spacing: { after: 240 },
+      children: [new TextRun({
+        text: `Generated by Delta Intelligence | ${dateStr}`,
+        size: 18, color: '71717A', font: DOCX_FONT_BODY, italics: true,
+      })],
+    }),
+  ];
+
+  // ── Parse markdown body ──
+  const bodyChildren = parseMarkdownBody(markdown);
+
+  // ── All content children ──
+  const allChildren: (Paragraph | Table)[] = [
+    ...defaultHeaderBlock,
+    ...bodyChildren,
+  ];
+
+  // ── Build document sections ──
+  // If cover page exists, put it in its own section so it gets a page break
+  const pageMargins = {
+    top: convertInchesToTwip(1),
+    bottom: convertInchesToTwip(1),
+    left: convertInchesToTwip(1),
+    right: convertInchesToTwip(1),
+  };
+
+  const headerParagraph = new Paragraph({
+    alignment: AlignmentType.LEFT,
+    spacing: { after: 80 },
+    border: { bottom: { style: BorderStyle.SINGLE, size: 2, color: DOCX_ORANGE, space: 4 } },
+    children: [
+      new TextRun({ text: 'DELTA360', bold: true, size: 16, font: DOCX_FONT_HEADING, color: DOCX_ORANGE }),
+      new TextRun({ text: `\t${cleanTitle}`, size: 14, font: DOCX_FONT_BODY, color: '71717A' }),
+    ],
+    tabStops: [{ type: TabStopType.RIGHT, position: TabStopPosition.MAX }],
+  });
+
+  const footerParagraph = new Paragraph({
+    alignment: AlignmentType.LEFT,
+    spacing: { before: 80 },
+    border: { top: { style: BorderStyle.SINGLE, size: 1, color: DOCX_GRAY_BORDER, space: 4 } },
+    children: [
+      new TextRun({ text: 'Delta Intelligence  |  Confidential', size: 14, font: DOCX_FONT_BODY, color: 'A1A1AA' }),
+      new TextRun({ text: '\tPage ', size: 14, font: DOCX_FONT_BODY, color: 'A1A1AA' }),
+      new TextRun({ children: [PageNumber.CURRENT], size: 14, font: DOCX_FONT_BODY, color: 'A1A1AA' }),
+      new TextRun({ text: ' of ', size: 14, font: DOCX_FONT_BODY, color: 'A1A1AA' }),
+      new TextRun({ children: [PageNumber.TOTAL_PAGES], size: 14, font: DOCX_FONT_BODY, color: 'A1A1AA' }),
+    ],
+    tabStops: [{ type: TabStopType.RIGHT, position: TabStopPosition.MAX }],
+  });
+
+  const sections = hasCover
+    ? [
+        // Cover section — no header/footer
+        {
+          properties: { page: { margin: pageMargins } },
+          children: coverChildren,
+        },
+        // Body section — with header/footer
+        {
+          properties: { page: { margin: pageMargins } },
+          headers: { default: new Header({ children: [headerParagraph] }) },
+          footers: { default: new Footer({ children: [footerParagraph] }) },
+          children: allChildren,
+        },
+      ]
+    : [
+        {
+          properties: { page: { margin: pageMargins } },
+          headers: { default: new Header({ children: [headerParagraph] }) },
+          footers: { default: new Footer({ children: [footerParagraph] }) },
+          children: allChildren,
+        },
+      ];
+
   const doc = new Document({
     creator: 'Delta Intelligence',
     title: cleanTitle,
     description: `${cleanTitle} - Generated by Delta Intelligence, Delta360 Enterprise AI Platform`,
-    sections: [{
-      properties: {
-        page: {
-          margin: {
-            top: convertInchesToTwip(1),
-            bottom: convertInchesToTwip(1),
-            left: convertInchesToTwip(1),
-            right: convertInchesToTwip(1),
-          },
-        },
-      },
-      headers: {
-        default: new Header({
-          children: [new Paragraph({
-            alignment: AlignmentType.LEFT,
-            spacing: { after: 80 },
-            border: {
-              bottom: { style: BorderStyle.SINGLE, size: 2, color: DOCX_ORANGE, space: 4 },
-            },
-            children: [
-              new TextRun({ text: 'Delta Intelligence', bold: true, size: 16, font: DOCX_FONT, color: DOCX_ORANGE }),
-              new TextRun({ text: `\t${cleanTitle}`, size: 14, font: DOCX_FONT, color: '71717A' }),
-            ],
-            tabStops: [
-              { type: TabStopType.RIGHT, position: TabStopPosition.MAX },
-            ],
-          })],
-        }),
-      },
-      footers: {
-        default: new Footer({
-          children: [new Paragraph({
-            alignment: AlignmentType.CENTER,
-            spacing: { before: 80 },
-            border: {
-              top: { style: BorderStyle.SINGLE, size: 1, color: DOCX_GRAY_BORDER, space: 4 },
-            },
-            children: [
-              new TextRun({ text: 'Delta Intelligence  |  Page ', size: 14, font: DOCX_FONT, color: 'A1A1AA' }),
-              new TextRun({ children: [PageNumber.CURRENT], size: 14, font: DOCX_FONT, color: 'A1A1AA' }),
-              new TextRun({ text: ' of ', size: 14, font: DOCX_FONT, color: 'A1A1AA' }),
-              new TextRun({ children: [PageNumber.TOTAL_PAGES], size: 14, font: DOCX_FONT, color: 'A1A1AA' }),
-              new TextRun({ text: `  |  ${dateStr}`, size: 14, font: DOCX_FONT, color: 'A1A1AA' }),
-            ],
-          })],
-        }),
-      },
-      children,
-    }],
+    sections,
   });
 
   return Buffer.from(await Packer.toBuffer(doc));
+}
+
+// ─── Typed export interfaces for templates ─────────────────────────
+
+export interface ReportOptions {
+  template?: DocxTemplate;
+  depth?: 'summary' | 'detailed' | 'comprehensive';
+  dateRange?: { from: string; to: string };
 }
 
 // ─── PDF Export (real PDF via jspdf) ───────────────────────────────

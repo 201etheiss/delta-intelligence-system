@@ -10,7 +10,54 @@ import {
   Loader2,
   Sparkles,
   RefreshCw,
+  BarChart2,
+  Truck,
+  Zap,
+  BookOpen,
+  ChevronRight,
 } from 'lucide-react';
+
+// ─── Template definitions ────────────────────────────────────────────
+
+type TemplateId = 'executive-summary' | 'financial-analysis' | 'operations' | 'intelligence-briefing';
+type ExportDepth = 'summary' | 'detailed' | 'comprehensive';
+type ExportFormat = 'docx' | 'pdf' | 'xlsx' | 'csv';
+
+interface ReportTemplate {
+  id: TemplateId;
+  label: string;
+  description: string;
+  icon: React.ReactNode;
+  badge?: string;
+}
+
+const REPORT_TEMPLATES: ReportTemplate[] = [
+  {
+    id: 'executive-summary',
+    label: 'Executive Summary',
+    description: 'Cover page, key findings, data tables, recommendations, appendix.',
+    icon: <BookOpen size={20} className="text-[#FE5000]" />,
+  },
+  {
+    id: 'financial-analysis',
+    label: 'Financial Analysis',
+    description: 'KPI table, BS/IS/Cash Flow, variance analysis, notes.',
+    icon: <BarChart2 size={20} className="text-[#FE5000]" />,
+  },
+  {
+    id: 'operations',
+    label: 'Operations Report',
+    description: 'Fleet status, delivery metrics, utilization, alerts.',
+    icon: <Truck size={20} className="text-[#FE5000]" />,
+  },
+  {
+    id: 'intelligence-briefing',
+    label: 'Intelligence Briefing',
+    description: 'Situation, changes since last brief, action items, risk factors.',
+    icon: <Zap size={20} className="text-[#FE5000]" />,
+    badge: 'Nova',
+  },
+];
 
 function renderContent(raw: string): string {
   let html = raw
@@ -107,6 +154,14 @@ export default function ReportsPage() {
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
 
+  // Template selector state
+  const [selectedTemplate, setSelectedTemplate] = useState<TemplateId | null>(null);
+  const [exportDepth, setExportDepth] = useState<ExportDepth>('detailed');
+  const [exportFormat, setExportFormat] = useState<ExportFormat>('docx');
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
+  const [showTemplatePanel, setShowTemplatePanel] = useState(false);
+
   const [showSaveTemplate, setShowSaveTemplate] = useState(false);
   const [templateName, setTemplateName] = useState('');
   const [templateDesc, setTemplateDesc] = useState('');
@@ -177,14 +232,23 @@ export default function ReportsPage() {
     }
   }, [prompt, report, refinement]);
 
-  const handleExport = useCallback(async (format: 'csv' | 'pdf' | 'docx' | 'xlsx') => {
+  const handleExport = useCallback(async (format?: ExportFormat) => {
     if (!report) return;
+    const fmt = format ?? exportFormat;
 
     try {
+      const body: Record<string, unknown> = {
+        reports: [{ title: reportTitle, content: report }],
+        format: fmt,
+      };
+      if (selectedTemplate) body.template = selectedTemplate;
+      if (exportDepth) body.depth = exportDepth;
+      if (dateFrom && dateTo) body.dateRange = { from: dateFrom, to: dateTo };
+
       const res = await fetch('/api/reports/export', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ report, format, title: reportTitle }),
+        body: JSON.stringify(body),
       });
 
       if (!res.ok) {
@@ -195,13 +259,12 @@ export default function ReportsPage() {
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
 
-      if (format === 'pdf') {
+      if (fmt === 'pdf') {
         window.open(url, '_blank');
       } else {
         const a = document.createElement('a');
         a.href = url;
-        const ext = format === 'docx' ? 'html' : format === 'xlsx' ? 'csv' : format;
-        a.download = `${reportTitle.replace(/\s+/g, '_')}.${ext}`;
+        a.download = `${reportTitle.replace(/\s+/g, '_')}.${fmt}`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -211,7 +274,7 @@ export default function ReportsPage() {
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Export failed');
     }
-  }, [report, reportTitle]);
+  }, [report, reportTitle, selectedTemplate, exportDepth, exportFormat, dateFrom, dateTo]);
 
   const handleCopy = useCallback(() => {
     if (!report) return;
@@ -264,6 +327,58 @@ export default function ReportsPage() {
         </div>
 
         <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
+
+          {/* Template selector toggle */}
+          <div>
+            <button
+              onClick={() => setShowTemplatePanel(v => !v)}
+              className="w-full flex items-center justify-between rounded-lg px-3 py-2 text-xs font-medium border border-zinc-300 dark:border-[#3F3F46] text-zinc-700 dark:text-zinc-300 hover:border-[#FE5000] hover:text-[#FE5000] transition-colors"
+            >
+              <span className="flex items-center gap-1.5">
+                <FileBarChart size={14} />
+                {selectedTemplate
+                  ? REPORT_TEMPLATES.find(t => t.id === selectedTemplate)?.label
+                  : 'Select report template (optional)'}
+              </span>
+              <ChevronRight size={14} className={`transition-transform ${showTemplatePanel ? 'rotate-90' : ''}`} />
+            </button>
+
+            {showTemplatePanel && (
+              <div className="mt-2 space-y-2">
+                {REPORT_TEMPLATES.map(tmpl => (
+                  <button
+                    key={tmpl.id}
+                    onClick={() => { setSelectedTemplate(tmpl.id); setShowTemplatePanel(false); }}
+                    className={`w-full text-left rounded-lg border px-3 py-2.5 transition-colors ${
+                      selectedTemplate === tmpl.id
+                        ? 'border-[#FE5000] bg-[#FE5000]/5'
+                        : 'border-zinc-200 dark:border-[#3F3F46] hover:border-[#FE5000]/60'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2 mb-0.5">
+                      {tmpl.icon}
+                      <span className="text-xs font-semibold text-zinc-900 dark:text-white">{tmpl.label}</span>
+                      {tmpl.badge && (
+                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-[#FE5000] text-white uppercase tracking-wide">
+                          {tmpl.badge}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-snug">{tmpl.description}</p>
+                  </button>
+                ))}
+                {selectedTemplate && (
+                  <button
+                    onClick={() => setSelectedTemplate(null)}
+                    className="w-full text-[11px] text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors"
+                  >
+                    Clear template
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+
           <div>
             <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
               Describe the report you want...
@@ -316,32 +431,105 @@ export default function ReportsPage() {
           )}
 
           {report && (
-            <div className="pt-2 border-t border-zinc-200 dark:border-[#27272A]">
-              <p className="text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-2">Export</p>
+            <div className="pt-2 border-t border-zinc-200 dark:border-[#27272A] space-y-3">
+              <p className="text-xs font-medium text-zinc-700 dark:text-zinc-300">Export Options</p>
+
+              {/* Format selector */}
+              <div className="grid grid-cols-4 gap-1 rounded-lg border border-zinc-200 dark:border-[#3F3F46] p-1 bg-zinc-50 dark:bg-[#27272A]">
+                {(['docx', 'pdf', 'xlsx', 'csv'] as ExportFormat[]).map(fmt => (
+                  <button
+                    key={fmt}
+                    onClick={() => setExportFormat(fmt)}
+                    className={`rounded px-2 py-1 text-[11px] font-semibold uppercase transition-colors ${
+                      exportFormat === fmt
+                        ? 'bg-[#FE5000] text-white'
+                        : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
+                    }`}
+                  >
+                    {fmt}
+                  </button>
+                ))}
+              </div>
+
+              {/* Depth selector */}
+              <div>
+                <p className="text-[11px] text-zinc-500 dark:text-zinc-400 mb-1">Depth</p>
+                <div className="grid grid-cols-3 gap-1 rounded-lg border border-zinc-200 dark:border-[#3F3F46] p-1 bg-zinc-50 dark:bg-[#27272A]">
+                  {(['summary', 'detailed', 'comprehensive'] as ExportDepth[]).map(d => (
+                    <button
+                      key={d}
+                      onClick={() => setExportDepth(d)}
+                      className={`rounded px-2 py-1 text-[11px] font-medium capitalize transition-colors ${
+                        exportDepth === d
+                          ? 'bg-[#FE5000] text-white'
+                          : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
+                      }`}
+                    >
+                      {d}
+                    </button>
+                  ))}
+                </div>
+                {exportDepth === 'comprehensive' && (
+                  <p className="text-[10px] text-[#FE5000] mt-1">Nova will generate executive narrative</p>
+                )}
+              </div>
+
+              {/* Date range (shown when financial or executive template) */}
+              {(selectedTemplate === 'financial-analysis' || selectedTemplate === 'executive-summary') && (
+                <div className="space-y-1.5">
+                  <p className="text-[11px] text-zinc-500 dark:text-zinc-400">Date Range</p>
+                  <div className="flex gap-2">
+                    <input
+                      type="date"
+                      value={dateFrom}
+                      onChange={e => setDateFrom(e.target.value)}
+                      className="flex-1 rounded border border-zinc-300 dark:border-[#3F3F46] bg-white dark:bg-[#27272A] px-2 py-1 text-xs text-zinc-900 dark:text-white"
+                    />
+                    <input
+                      type="date"
+                      value={dateTo}
+                      onChange={e => setDateTo(e.target.value)}
+                      className="flex-1 rounded border border-zinc-300 dark:border-[#3F3F46] bg-white dark:bg-[#27272A] px-2 py-1 text-xs text-zinc-900 dark:text-white"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Export + Copy buttons */}
               <div className="grid grid-cols-2 gap-2">
                 <button
-                  onClick={() => handleExport('csv')}
-                  className="flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium border border-zinc-300 dark:border-[#3F3F46] text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-[#27272A] transition-colors"
+                  onClick={() => handleExport()}
+                  className="flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold bg-[#FE5000] text-white hover:bg-[#CC4000] transition-colors"
                 >
-                  <FileSpreadsheet size={14} /> CSV
-                </button>
-                <button
-                  onClick={() => handleExport('pdf')}
-                  className="flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium border border-zinc-300 dark:border-[#3F3F46] text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-[#27272A] transition-colors"
-                >
-                  <FileText size={14} /> PDF
-                </button>
-                <button
-                  onClick={() => handleExport('xlsx')}
-                  className="flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium border border-zinc-300 dark:border-[#3F3F46] text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-[#27272A] transition-colors"
-                >
-                  <Download size={14} /> XLSX
+                  <Download size={14} /> Export {exportFormat.toUpperCase()}
                 </button>
                 <button
                   onClick={handleCopy}
                   className="flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium border border-zinc-300 dark:border-[#3F3F46] text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-[#27272A] transition-colors"
                 >
-                  <Copy size={14} /> {copied ? 'Copied!' : 'Copy'}
+                  <Copy size={14} /> {copied ? 'Copied!' : 'Copy MD'}
+                </button>
+              </div>
+
+              {/* Quick-access individual format buttons */}
+              <div className="grid grid-cols-3 gap-1.5">
+                <button
+                  onClick={() => handleExport('csv')}
+                  className="flex items-center justify-center gap-1 rounded-lg px-2 py-1.5 text-[11px] font-medium border border-zinc-200 dark:border-[#3F3F46] text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:border-zinc-400 transition-colors"
+                >
+                  <FileSpreadsheet size={12} /> CSV
+                </button>
+                <button
+                  onClick={() => handleExport('xlsx')}
+                  className="flex items-center justify-center gap-1 rounded-lg px-2 py-1.5 text-[11px] font-medium border border-zinc-200 dark:border-[#3F3F46] text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:border-zinc-400 transition-colors"
+                >
+                  <FileSpreadsheet size={12} /> XLSX
+                </button>
+                <button
+                  onClick={() => handleExport('pdf')}
+                  className="flex items-center justify-center gap-1 rounded-lg px-2 py-1.5 text-[11px] font-medium border border-zinc-200 dark:border-[#3F3F46] text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:border-zinc-400 transition-colors"
+                >
+                  <FileText size={12} /> PDF
                 </button>
               </div>
             </div>

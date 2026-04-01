@@ -53,6 +53,13 @@ export const ReportExportSchema = z.object({
   })).min(1),
   format: z.enum(['xlsx', 'csv', 'docx', 'pdf', 'pptx', 'md', 'txt', 'json', 'html']),
   bundle: z.boolean().optional(),
+  // Template and generation options (for DOCX institutional output)
+  template: z.enum(['executive-summary', 'financial-analysis', 'operations', 'intelligence-briefing']).optional(),
+  depth: z.enum(['summary', 'detailed', 'comprehensive']).optional(),
+  dateRange: z.object({
+    from: z.string(),
+    to: z.string(),
+  }).optional(),
 });
 
 export const FeedbackSchema = z.object({
