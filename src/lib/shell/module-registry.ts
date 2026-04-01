@@ -111,6 +111,7 @@ export const MODULE_GROUPS: ModuleGroup[] = [
       { href: '/admin/audit', label: 'Audit' },
       { href: '/admin/usage', label: 'Usage' },
       { href: '/admin/team-intelligence', label: 'Team Intelligence' },
+      { href: '/admin/event-monitor', label: 'Event Monitor' },
       { href: '/settings', label: 'Settings' },
       { href: '/api-docs', label: 'API Docs' },
     ],

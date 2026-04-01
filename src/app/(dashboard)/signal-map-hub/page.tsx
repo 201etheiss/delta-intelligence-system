@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState, useCallback } from 'react';
 import {
   Radar,
   ExternalLink,
@@ -8,6 +9,8 @@ import {
   FileText,
   BarChart3,
   Activity,
+  RefreshCw,
+  AlertCircle,
 } from 'lucide-react';
 
 const BASE_URL = 'http://localhost:3000';
@@ -103,10 +106,62 @@ const STATUS_COLORS: Record<IntegrationStatus['status'], string> = {
 
 const ACCENT = '#00D4AA';
 
+interface SpokeHealthData {
+  status: 'healthy' | 'degraded' | 'down';
+  responseTimeMs: number;
+  checkedAt: string;
+  error?: string;
+}
+
 export default function SignalMapHubPage() {
+  const [spokeHealth, setSpokeHealth] = useState<SpokeHealthData | null>(null);
+  const [healthLoading, setHealthLoading] = useState(false);
+
+  const fetchHealth = useCallback(async () => {
+    setHealthLoading(true);
+    try {
+      const res = await fetch('/api/spokes/signal-map');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.health) {
+          setSpokeHealth(data.health as SpokeHealthData);
+        }
+      }
+    } catch {
+      setSpokeHealth({ status: 'down', responseTimeMs: 0, checkedAt: new Date().toISOString(), error: 'Fetch failed' });
+    } finally {
+      setHealthLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchHealth();
+  }, [fetchHealth]);
+
   function openApp(path: string = '') {
     window.open(BASE_URL + path, '_blank');
   }
+
+  const healthToStatus = (h: SpokeHealthData | null): IntegrationStatus['status'] => {
+    if (!h) return 'connected';
+    if (h.status === 'healthy') return 'connected';
+    if (h.status === 'degraded') return 'degraded';
+    return 'offline';
+  };
+
+  const liveIntegrations: IntegrationStatus[] = INTEGRATIONS.map((item) => {
+    if (item.label === 'Supabase') {
+      const override = healthToStatus(spokeHealth);
+      return {
+        ...item,
+        status: override,
+        detail: spokeHealth
+          ? `${override === 'connected' ? 'Healthy' : override} (${spokeHealth.responseTimeMs}ms)`
+          : item.detail,
+      };
+    }
+    return item;
+  });
 
   return (
     <div className="min-h-screen bg-[#0f0f11] text-[#FAFAFA] p-6 space-y-6">
@@ -241,9 +296,27 @@ export default function SignalMapHubPage() {
 
         {/* Integration Status */}
         <div className="rounded-xl bg-[#18181b] border border-[#27272a] p-5">
-          <h2 className="text-sm font-medium text-[#A1A1AA] mb-4 uppercase tracking-wide">Integration Status</h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-sm font-medium text-[#A1A1AA] uppercase tracking-wide">Integration Status</h2>
+            <button
+              onClick={fetchHealth}
+              disabled={healthLoading}
+              className="flex items-center gap-1.5 text-xs text-[#71717A] hover:text-[#00D4AA] transition-colors disabled:opacity-50"
+            >
+              <RefreshCw className={`w-3 h-3 ${healthLoading ? 'animate-spin' : ''}`} />
+              {healthLoading ? 'Checking...' : 'Refresh'}
+            </button>
+          </div>
+          {spokeHealth?.status === 'down' && (
+            <div className="flex items-center gap-2 mb-3 px-3 py-2 rounded-lg bg-[#EF4444]/10 border border-[#EF4444]/20">
+              <AlertCircle className="w-4 h-4 text-[#EF4444] shrink-0" />
+              <span className="text-xs text-[#EF4444]">
+                Spoke unreachable{spokeHealth.error ? `: ${spokeHealth.error}` : ''}
+              </span>
+            </div>
+          )}
           <ul className="space-y-3">
-            {INTEGRATIONS.map((item) => (
+            {liveIntegrations.map((item) => (
               <li key={item.label} className="flex items-start justify-between gap-2">
                 <div className="flex items-start gap-2">
                   <CheckCircle2
@@ -264,6 +337,11 @@ export default function SignalMapHubPage() {
               </li>
             ))}
           </ul>
+          {spokeHealth?.checkedAt && (
+            <p className="mt-3 text-xs text-[#3F3F46]">
+              Last checked: {new Date(spokeHealth.checkedAt).toLocaleTimeString()}
+            </p>
+          )}
         </div>
 
       </div>

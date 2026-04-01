@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState, useCallback } from 'react';
 import {
   Globe,
   ExternalLink,
@@ -12,6 +13,9 @@ import {
   Server,
   GitBranch,
   KeyRound,
+  CheckCircle2,
+  RefreshCw,
+  AlertCircle,
 } from 'lucide-react';
 
 const ACCENT = '#FE5000';
@@ -145,7 +149,52 @@ const ARCH_NOTES: ArchNote[] = [
   { icon: CreditCard, text: 'Supabase (auth/db/storage) + Stripe (ACH/card) + Samsara (tracking) — integrations scaffolded' },
 ];
 
+interface SpokeHealthData {
+  status: 'healthy' | 'degraded' | 'down';
+  responseTimeMs: number;
+  checkedAt: string;
+  error?: string;
+}
+
+const HEALTH_STATUS_COLORS: Record<string, string> = {
+  connected: '#22C55E',
+  degraded: '#F59E0B',
+  offline: '#EF4444',
+};
+
 export default function PortalHubPage() {
+  const [spokeHealth, setSpokeHealth] = useState<SpokeHealthData | null>(null);
+  const [healthLoading, setHealthLoading] = useState(false);
+
+  const fetchHealth = useCallback(async () => {
+    setHealthLoading(true);
+    try {
+      const res = await fetch('/api/spokes/delta-portal');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.health) {
+          setSpokeHealth(data.health as SpokeHealthData);
+        }
+      }
+    } catch {
+      setSpokeHealth({ status: 'down', responseTimeMs: 0, checkedAt: new Date().toISOString(), error: 'Fetch failed' });
+    } finally {
+      setHealthLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchHealth();
+  }, [fetchHealth]);
+
+  const portalStatus = !spokeHealth
+    ? 'connected'
+    : spokeHealth.status === 'healthy'
+      ? 'connected'
+      : spokeHealth.status === 'degraded'
+        ? 'degraded'
+        : 'offline';
+
   return (
     <div className="min-h-screen bg-[#0f0f11] text-[#FAFAFA] p-6 space-y-6">
 
@@ -232,6 +281,51 @@ export default function PortalHubPage() {
             );
           })}
         </div>
+      </div>
+
+      {/* Spoke Health */}
+      <div className="rounded-xl bg-[#18181b] border border-[#27272a] p-5 mb-0">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-sm font-medium text-[#A1A1AA] uppercase tracking-wide">Spoke Health</h2>
+          <button
+            onClick={fetchHealth}
+            disabled={healthLoading}
+            className="flex items-center gap-1.5 text-xs text-[#71717A] hover:text-[#FE5000] transition-colors disabled:opacity-50"
+          >
+            <RefreshCw className={`w-3 h-3 ${healthLoading ? 'animate-spin' : ''}`} />
+            {healthLoading ? 'Checking...' : 'Refresh'}
+          </button>
+        </div>
+        {spokeHealth?.status === 'down' && (
+          <div className="flex items-center gap-2 mb-3 px-3 py-2 rounded-lg bg-[#EF4444]/10 border border-[#EF4444]/20">
+            <AlertCircle className="w-4 h-4 text-[#EF4444] shrink-0" />
+            <span className="text-xs text-[#EF4444]">
+              Portal spoke unreachable{spokeHealth.error ? `: ${spokeHealth.error}` : ''}
+            </span>
+          </div>
+        )}
+        <div className="flex items-center gap-3">
+          <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: HEALTH_STATUS_COLORS[portalStatus] }} />
+          <div>
+            <p className="text-sm text-[#D4D4D8]">Portal App</p>
+            <p className="text-xs text-[#71717A]">
+              {spokeHealth
+                ? `${portalStatus === 'connected' ? 'Healthy' : portalStatus} (${spokeHealth.responseTimeMs}ms)`
+                : 'Checking...'}
+            </p>
+          </div>
+          <span
+            className="ml-auto text-xs font-medium capitalize"
+            style={{ color: HEALTH_STATUS_COLORS[portalStatus] }}
+          >
+            {portalStatus}
+          </span>
+        </div>
+        {spokeHealth?.checkedAt && (
+          <p className="mt-3 text-xs text-[#3F3F46]">
+            Last checked: {new Date(spokeHealth.checkedAt).toLocaleTimeString()}
+          </p>
+        )}
       </div>
 
       {/* Architecture Notes */}

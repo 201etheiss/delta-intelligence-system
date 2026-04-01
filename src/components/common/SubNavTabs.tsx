@@ -75,6 +75,7 @@ const TAB_GROUPS: TabGroup[] = [
       { href: '/admin/users', label: 'Users' },
       { href: '/admin/integrations', label: 'Integrations' },
       { href: '/admin/audit', label: 'Audit Log' },
+      { href: '/admin/event-monitor', label: 'Events' },
       { href: '/settings', label: 'Settings' },
       { href: '/platform', label: 'Platform' },
       { href: '/api-docs', label: 'API Docs' },
