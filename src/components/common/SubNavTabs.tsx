@@ -80,6 +80,24 @@ const TAB_GROUPS: TabGroup[] = [
       { href: '/api-docs', label: 'API Docs' },
     ],
   },
+  {
+    label: 'Equipment',
+    tabs: [
+      { href: '/equipment-hub', label: 'Equipment Hub' },
+    ],
+  },
+  {
+    label: 'Portal',
+    tabs: [
+      { href: '/portal-hub', label: 'Portal Hub' },
+    ],
+  },
+  {
+    label: 'Signal Map',
+    tabs: [
+      { href: '/signal-map-hub', label: 'Signal Map Hub' },
+    ],
+  },
 ];
 
 function isTabActive(href: string, pathname: string): boolean {
