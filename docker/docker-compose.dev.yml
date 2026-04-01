@@ -1,0 +1,26 @@
+version: '3.9'
+
+# Dev overrides — use with: docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+services:
+  supabase-db:
+    environment:
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - '5433:5432'
+
+  timescaledb:
+    environment:
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - '5434:5432'
+
+  neo4j:
+    environment:
+      NEO4J_AUTH: neo4j/devpassword
+    ports:
+      - '7474:7474'
+      - '7687:7687'
+
+  redis:
+    ports:
+      - '6380:6379'

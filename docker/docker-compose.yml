@@ -1,0 +1,82 @@
+version: '3.9'
+
+services:
+  supabase-db:
+    image: pgvector/pgvector:pg15
+    container_name: di-supabase-db
+    restart: unless-stopped
+    ports:
+      - '5433:5432'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${SUPABASE_DB_PASSWORD:-postgres}
+      POSTGRES_DB: delta_intelligence
+    volumes:
+      - supabase-data:/var/lib/postgresql/data
+      - ./supabase/migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  timescaledb:
+    image: timescale/timescaledb:latest-pg15
+    container_name: di-timescaledb
+    restart: unless-stopped
+    ports:
+      - '5434:5432'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${TIMESCALE_DB_PASSWORD:-postgres}
+      POSTGRES_DB: delta_timeseries
+    volumes:
+      - timescale-data:/var/lib/postgresql/data
+      - ./timescaledb/init.sql:/docker-entrypoint-initdb.d/001_init.sql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  neo4j:
+    image: neo4j:5-community
+    container_name: di-neo4j
+    restart: unless-stopped
+    ports:
+      - '7474:7474'
+      - '7687:7687'
+    environment:
+      NEO4J_AUTH: ${NEO4J_AUTH:-neo4j/changeme123}
+      NEO4J_PLUGINS: '["apoc"]'
+    volumes:
+      - neo4j-data:/data
+      - neo4j-logs:/logs
+    healthcheck:
+      test: ['CMD', 'neo4j', 'status']
+      interval: 15s
+      timeout: 10s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: di-redis
+    restart: unless-stopped
+    ports:
+      - '6380:6379'
+    command: redis-server /usr/local/etc/redis/redis.conf
+    volumes:
+      - redis-data:/data
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  supabase-data:
+  timescale-data:
+  neo4j-data:
+  neo4j-logs:
+  redis-data:
