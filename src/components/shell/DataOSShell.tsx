@@ -4,9 +4,11 @@ import { useCallback, useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { DensityProvider, useDensity, useDensityToggle } from '@/components/density/DensityProvider';
 import { NovaBar } from '@/components/shell/NovaBar';
+import { NovaCommandPalette } from '@/components/shell/NovaCommandPalette';
 import StatusRail from '@/components/shell/StatusRail';
 import { ModuleTabs } from '@/components/shell/ModuleTabs';
 import Workspace from '@/components/shell/Workspace';
+import ChatPanel from '@/components/shell/ChatPanel';
 import LoadingBar from '@/components/common/LoadingBar';
 import { findModuleForPath, MODULE_GROUPS } from '@/lib/shell/module-registry';
 import type { ModuleGroup } from '@/lib/shell/module-registry';
@@ -104,6 +106,12 @@ function ShellInner({ children }: { children: React.ReactNode }) {
     const handler = (e: KeyboardEvent) => {
       const meta = e.metaKey || e.ctrlKey;
 
+      // Cmd+K — toggle chat panel
+      if (meta && e.key === 'k') {
+        e.preventDefault();
+        setChatOpen((prev) => !prev);
+      }
+
       // Cmd+P — toggle command palette
       if (meta && e.key === 'p') {
         e.preventDefault();
@@ -118,9 +126,10 @@ function ShellInner({ children }: { children: React.ReactNode }) {
         localStorage.setItem('di_dark_mode', String(isDark));
       }
 
-      // Escape — close palette
+      // Escape — close palette and chat
       if (e.key === 'Escape') {
         setPaletteOpen(false);
+        setChatOpen(false);
       }
     };
 
@@ -250,7 +259,21 @@ function ShellInner({ children }: { children: React.ReactNode }) {
             {children}
           </Workspace>
         </div>
+
+        {/* ChatPanel — right slide-out */}
+        <ChatPanel
+          isOpen={chatOpen}
+          currentModule={activeModule?.id ?? null}
+          currentPage={currentPage}
+          onClose={handleChatToggle}
+        />
       </div>
+
+      {/* NovaCommandPalette — full-screen overlay */}
+      <NovaCommandPalette
+        isOpen={paletteOpen}
+        onClose={() => setPaletteOpen(false)}
+      />
     </div>
   );
 }
