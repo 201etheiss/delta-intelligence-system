@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { LayoutGrid, List, SlidersHorizontal, Plus } from 'lucide-react';
-import { MODULE_GROUPS } from '@/lib/shell/module-registry';
+import { MODULE_GROUPS, SPOKE_MODULES, ALL_MODULES } from '@/lib/shell/module-registry';
 import { getSessionState, getModuleUsage, saveSessionState } from '@/lib/shell/session-state';
 import { IntelligenceSummary } from './IntelligenceSummary';
 import { ActivityTimeline } from './ActivityTimeline';
@@ -11,7 +11,7 @@ import { ModuleTile } from './ModuleTile';
 import { ModuleCustomizer } from './ModuleCustomizer';
 import type { ModuleGroup } from '@/lib/shell/module-registry';
 
-// Placeholder stats per module id
+// Stats per module id
 const MODULE_STATS: Record<string, string> = {
   finance: '16 pages · AP, AR, GL, Close',
   operations: '5 pages · Fleet, Assets, Inventory',
@@ -20,9 +20,12 @@ const MODULE_STATS: Record<string, string> = {
   compliance: '4 pages · Vault, Audit, Controls',
   admin: '8 pages · Users, Permissions, Health',
   platform: '10 pages · Dashboards, Sources, Docs',
+  'delta-portal': 'Spoke · Orders, Tracking, Invoices',
+  'equipment-tracker': 'Spoke · Assets, Maintenance, GPS',
+  'signal-map': 'Spoke · OTED Assessment, Reports',
 };
 
-// Placeholder alert counts per module id
+// Alert counts per module id
 const MODULE_ALERTS: Record<string, number> = {
   finance: 4,
   operations: 0,
@@ -31,9 +34,12 @@ const MODULE_ALERTS: Record<string, number> = {
   compliance: 1,
   admin: 2,
   platform: 0,
+  'delta-portal': 0,
+  'equipment-tracker': 0,
+  'signal-map': 0,
 };
 
-// All modules are live for now
+// Module status
 const MODULE_STATUS: Record<string, 'live' | 'dev' | 'deployed' | 'planned'> = {
   finance: 'live',
   operations: 'live',
@@ -42,6 +48,9 @@ const MODULE_STATUS: Record<string, 'live' | 'dev' | 'deployed' | 'planned'> = {
   compliance: 'live',
   admin: 'live',
   platform: 'live',
+  'delta-portal': 'dev',
+  'equipment-tracker': 'deployed',
+  'signal-map': 'deployed',
 };
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
@@ -96,9 +105,15 @@ function ModuleGrid({
           module={m}
           isPinned={pinnedIds.has(m.id)}
           alertCount={MODULE_ALERTS[m.id] ?? 0}
-          stats={MODULE_STATS[m.id] ?? ''}
-          status={MODULE_STATUS[m.id] ?? 'live'}
-          onClick={() => onNavigate(m.defaultPagePath)}
+          stats={MODULE_STATS[m.id] ?? (m.description ?? '')}
+          status={m.status ?? MODULE_STATUS[m.id] ?? 'live'}
+          onClick={() => {
+            if (m.isSpoke && m.externalUrl) {
+              window.open(m.externalUrl, '_blank', 'noopener');
+            } else {
+              onNavigate(m.defaultPagePath);
+            }
+          }}
           onPin={() => onPin(m.id)}
         />
       ))}
@@ -147,18 +162,19 @@ export function HomeGrid() {
   const orderedModules: ModuleGroup[] = (() => {
     if (moduleOrder.length > 0) {
       const orderMap = new Map(moduleOrder.map((id, i) => [id, i]));
-      return [...MODULE_GROUPS].sort((a, b) => {
+      return [...ALL_MODULES].sort((a, b) => {
         const ia = orderMap.get(a.id) ?? 999;
         const ib = orderMap.get(b.id) ?? 999;
         return ia - ib;
       });
     }
-    // Sort by usage frequency
-    return [...MODULE_GROUPS].sort((a, b) => {
+    // Internal modules sorted by usage, then spokes at the end
+    const internal = [...MODULE_GROUPS].sort((a, b) => {
       const ua = usage[a.id]?.openCount ?? 0;
       const ub = usage[b.id]?.openCount ?? 0;
       return ub - ua;
     });
+    return [...internal, ...SPOKE_MODULES];
   })();
 
   const pinnedModules = orderedModules.filter((m) => pinnedIds.has(m.id));
@@ -348,7 +364,7 @@ export function HomeGrid() {
 
       {/* Customizer modal */}
       {customizerOpen && (
-        <ModuleCustomizer modules={MODULE_GROUPS} onClose={handleCustomizerClose} />
+        <ModuleCustomizer modules={ALL_MODULES} onClose={handleCustomizerClose} />
       )}
     </div>
   );

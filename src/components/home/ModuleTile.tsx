@@ -10,6 +10,10 @@ import {
   Settings,
   Layers,
   Star,
+  Globe,
+  Wrench,
+  Radar,
+  ExternalLink,
   type LucideProps,
 } from 'lucide-react';
 
@@ -22,12 +26,18 @@ const ICON_MAP: Record<string, React.ComponentType<LucideProps>> = {
   Shield,
   Settings,
   Layers,
+  Globe,
+  Wrench,
+  Radar,
 };
 
 const DOMAIN_COLORS: Record<string, string> = {
   finance: '#22C55E',
   operations: '#3B82F6',
   intelligence: '#8B5CF6',
+  'delta-portal': '#FE5000',
+  'equipment-tracker': '#71717A',
+  'signal-map': '#06B6D4',
   organization: '#F59E0B',
   compliance: '#EF4444',
   admin: '#6B7280',

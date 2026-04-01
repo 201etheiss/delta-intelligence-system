@@ -9,6 +9,14 @@ export interface ModuleGroup {
   icon: string;
   defaultPagePath: string;
   pages: ModulePage[];
+  /** If true, this is an external spoke module (opens in new tab) */
+  isSpoke?: boolean;
+  /** External URL for spoke modules */
+  externalUrl?: string;
+  /** Description shown on module tile */
+  description?: string;
+  /** Deployment status */
+  status?: 'live' | 'dev' | 'deployed' | 'planned';
 }
 
 export const MODULE_GROUPS: ModuleGroup[] = [
@@ -126,6 +134,49 @@ export const MODULE_GROUPS: ModuleGroup[] = [
     ],
   },
 ];
+
+// ---------------------------------------------------------------------------
+// Spoke Modules — external applications connected to the DI hub
+// ---------------------------------------------------------------------------
+
+export const SPOKE_MODULES: ModuleGroup[] = [
+  {
+    id: 'delta-portal',
+    label: 'Delta Portal',
+    icon: 'Globe',
+    defaultPagePath: '',
+    pages: [],
+    isSpoke: true,
+    externalUrl: 'http://localhost:3000', // Delta Portal dev server
+    description: 'Customer orders, product catalog, delivery tracking, invoices',
+    status: 'dev',
+  },
+  {
+    id: 'equipment-tracker',
+    label: 'Equipment Tracker',
+    icon: 'Wrench',
+    defaultPagePath: '',
+    pages: [],
+    isSpoke: true,
+    externalUrl: 'https://equipment-tracker-tau.vercel.app',
+    description: 'Asset management, maintenance scheduling, GPS tracking',
+    status: 'deployed',
+  },
+  {
+    id: 'signal-map',
+    label: 'Signal Map',
+    icon: 'Radar',
+    defaultPagePath: '',
+    pages: [],
+    isSpoke: true,
+    externalUrl: 'http://localhost:3000/admin', // OTED assessment platform
+    description: 'OTED assessment platform, reports, scoring',
+    status: 'deployed',
+  },
+];
+
+/** All modules — internal + spoke */
+export const ALL_MODULES: ModuleGroup[] = [...MODULE_GROUPS, ...SPOKE_MODULES];
 
 /**
  * Matches a pathname to its module group.
