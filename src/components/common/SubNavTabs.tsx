@@ -99,12 +99,21 @@ function findActiveGroup(pathname: string): TabGroup | null {
   return null;
 }
 
-export default function SubNavTabs() {
+interface SubNavTabsProps {
+  /** When provided, filter TAB_GROUPS to only show this group's tabs. */
+  group?: string;
+}
+
+export default function SubNavTabs({ group }: SubNavTabsProps = {}) {
   const pathname = usePathname();
   const scrollRef = useRef<HTMLDivElement>(null);
   const activeTabRef = useRef<HTMLAnchorElement>(null);
 
-  const activeGroup = pathname ? findActiveGroup(pathname) : null;
+  const activeGroup = group
+    ? TAB_GROUPS.find((g) => g.label === group) ?? null
+    : pathname
+      ? findActiveGroup(pathname)
+      : null;
 
   // Scroll active tab into view on mount/change
   useEffect(() => {
