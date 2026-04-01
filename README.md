@@ -1,6 +1,6 @@
 # Delta Intelligence
 
-Enterprise AI-powered intelligence platform for Delta360 Energy. Full ERP replacement system with 20 accounting engines, 8 data service integrations, 86 plugins, and agentic AI automation.
+Enterprise AI-powered intelligence platform for Delta360. Full ERP replacement system with 20 accounting engines, 8 data service integrations, 86 plugins, and agentic AI automation.
 
 ## Architecture
 
