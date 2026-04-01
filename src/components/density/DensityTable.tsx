@@ -162,12 +162,12 @@ export function DensityTable({ columns, data, sectionGroupBy }: DensityTableProp
               {rows.map((row, i) => (
                 <tr
                   key={i}
-                  style={{ height: '28px', cursor: 'default' }}
+                  style={{ height: '28px', cursor: 'default', background: i % 2 === 1 ? 'rgba(255,255,255,0.02)' : 'transparent' }}
                   onMouseEnter={(e) => {
                     (e.currentTarget as HTMLTableRowElement).style.background = '#18181b';
                   }}
                   onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLTableRowElement).style.background = 'transparent';
+                    (e.currentTarget as HTMLTableRowElement).style.background = i % 2 === 1 ? 'rgba(255,255,255,0.02)' : 'transparent';
                   }}
                 >
                   {columns.map((col) => (

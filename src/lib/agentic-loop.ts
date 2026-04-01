@@ -11,6 +11,7 @@ import { createCalendarEvent, parseTime, findUserEmail, KNOWN_EMPLOYEES } from '
 import type { UserRole, ToolPermission } from '@/lib/config/roles';
 import { canUseTool, ROLES, checkServiceAccess, resolveServiceAdmin } from '@/lib/config/roles';
 import { logAudit } from '@/lib/audit-log';
+import { signalMapTool, handleSignalMapTool } from '@/lib/chat/signal-map-tool';
 
 const queryGatewayTool: Anthropic.Tool = {
   name: 'query_gateway',
@@ -198,7 +199,7 @@ export async function runAgenticLoop(config: AgenticLoopConfig): Promise<Agentic
     onToolCall,
   } = config;
 
-  const tools = config.tools ?? [queryGatewayTool, generateWorkbookToolDef, sfCreateTool, sfUpdateTool, calendarCreateTool, checkAvailabilityTool, readEmailTool, sendEmailTool, manageEmailTool];
+  const tools = config.tools ?? [queryGatewayTool, generateWorkbookToolDef, sfCreateTool, sfUpdateTool, calendarCreateTool, checkAvailabilityTool, readEmailTool, sendEmailTool, manageEmailTool, signalMapTool];
 
   // Filter tools by role permissions
   const filteredTools = tools.filter(tool => {
@@ -797,6 +798,26 @@ export async function runAgenticLoop(config: AgenticLoopConfig): Promise<Agentic
                 type: 'tool_result' as const,
                 tool_use_id: toolUse.id,
                 content: JSON.stringify({ success: false, error: err instanceof Error ? err.message : 'Gateway query failed' }),
+              };
+            }
+          }
+
+          // Built-in: lookup_signal_map
+          if (toolUse.name === 'lookup_signal_map') {
+            const input = toolUse.input as { email: string; detail_level?: string };
+            try {
+              const result = await handleSignalMapTool(input);
+              logAudit({ userEmail: config.userEmail ?? 'system', role, action: 'query', detail: `signal-map:${input.email}`, tool: 'lookup_signal_map', success: true });
+              return {
+                type: 'tool_result' as const,
+                tool_use_id: toolUse.id,
+                content: result,
+              };
+            } catch (err) {
+              return {
+                type: 'tool_result' as const,
+                tool_use_id: toolUse.id,
+                content: JSON.stringify({ success: false, error: err instanceof Error ? err.message : 'Signal Map lookup failed' }),
               };
             }
           }

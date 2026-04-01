@@ -24,15 +24,20 @@ function getDeltaArrow(direction: 'up' | 'down' | 'neutral' | undefined): string
 
 export function DensityKPI({ label, value, delta, deltaDirection }: DensityKPIProps) {
   const mode = useDensity();
+  const [hovered, setHovered] = React.useState(false);
 
   if (mode === 'executive') {
     return (
       <div
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
         style={{
           background: '#0f0f11',
-          border: '1px solid #27272a',
+          border: hovered ? '1px solid rgba(254,80,0,0.4)' : '1px solid #27272a',
           borderRadius: '12px',
           padding: '16px',
+          boxShadow: hovered ? '0 0 16px rgba(254,80,0,0.12)' : 'none',
+          transition: 'border-color 0.2s ease, box-shadow 0.2s ease',
         }}
       >
         <div

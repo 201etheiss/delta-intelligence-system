@@ -194,7 +194,7 @@ export function HomeGrid() {
     >
       {/* Page title */}
       <div>
-        <h1 style={{ fontSize: '18px', fontWeight: 700, color: '#E4E4E7', margin: 0 }}>
+        <h1 style={{ fontSize: '18px', fontWeight: 700, color: '#E4E4E7', margin: 0, fontFamily: 'Georgia, serif' }}>
           Delta Intelligence
         </h1>
         <p style={{ fontSize: '12px', color: '#71717A', margin: '3px 0 0' }}>

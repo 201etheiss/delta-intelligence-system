@@ -17,13 +17,17 @@ export function DensityInsight({ text, actionLabel, onAction }: DensityInsightPr
     return (
       <div
         style={{
-          background: 'rgba(254, 80, 0, 0.05)',
-          border: '1px solid rgba(254, 80, 0, 0.15)',
+          background: 'linear-gradient(135deg, rgba(254,80,0,0.07) 0%, rgba(254,80,0,0.03) 100%)',
+          border: '1px solid transparent',
+          backgroundClip: 'padding-box',
+          backgroundOrigin: 'border-box',
           borderRadius: '8px',
           padding: '12px 16px',
           display: 'flex',
           alignItems: 'flex-start',
           gap: '10px',
+          boxShadow: 'inset 0 0 0 1px rgba(254,80,0,0.25)',
+          position: 'relative',
         }}
       >
         <div

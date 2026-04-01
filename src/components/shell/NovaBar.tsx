@@ -47,6 +47,8 @@ export function NovaBar({
   const userAvatarRef = useRef<HTMLButtonElement>(null);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [alertCount, setAlertCount] = useState<number>(3);
+  const [activeBotsCount, setActiveBotsCount] = useState<number>(0);
+  const [automationCount, setAutomationCount] = useState<number>(0);
 
   const alertPillRef = useRef<HTMLButtonElement>(null);
   const botPillRef = useRef<HTMLButtonElement>(null);
@@ -102,6 +104,15 @@ export function NovaBar({
       .catch(() => {
         setAlertCount(3);
       });
+
+    fetch('/api/automations')
+      .then((r) => r.json())
+      .then((data: unknown) => {
+        const list = (data as { automations?: Array<{ enabled: boolean; lastRunStatus: string | null }> })?.automations ?? [];
+        setAutomationCount(list.length);
+        setActiveBotsCount(list.filter((a) => a.enabled && a.lastRunStatus !== 'error').length);
+      })
+      .catch(() => {/* keep defaults */});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -153,7 +164,7 @@ export function NovaBar({
         alignItems: 'center',
         padding: '0 16px',
         gap: '10px',
-        background: 'linear-gradient(90deg, #1a1a2e 0%, #16213e 50%, #1a1a2e 100%)',
+        background: 'linear-gradient(90deg, #111113 0%, #18181b 50%, #111113 100%)',
         borderBottom: '1px solid #FE5000',
         position: 'relative',
         zIndex: 100,
@@ -288,7 +299,7 @@ export function NovaBar({
             }}
           >
             <Bot size={12} />
-            4 Bots Active
+            {activeBotsCount} Bots Active
           </button>
           <BotPopover
             open={activePopover === 'bots'}
@@ -322,7 +333,7 @@ export function NovaBar({
             }}
           >
             <Zap size={12} />
-            8 Automations
+            {automationCount} Automations
           </button>
           <AutomationPopover
             open={activePopover === 'automations'}

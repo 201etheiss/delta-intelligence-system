@@ -101,7 +101,7 @@ export function ModuleTile({
         background: '#18181B',
         cursor: 'pointer',
         transform: hovered ? 'translateY(-2px)' : 'translateY(0)',
-        transition: 'border-color 0.15s, transform 0.15s, box-shadow 0.15s',
+        transition: 'all 0.2s ease',
         boxShadow: hovered ? '0 4px 12px rgba(0,0,0,0.3)' : '0 1px 3px rgba(0,0,0,0.2)',
         outline: 'none',
       }}

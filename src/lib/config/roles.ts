@@ -20,7 +20,8 @@ export type ToolPermission =
   | 'view_financials'
   | 'view_fleet'
   | 'view_hr'
-  | 'configure_system';
+  | 'configure_system'
+  | 'lookup_signal_map';
 
 /** Granular endpoint access per service — keys are service IDs, values are allowed endpoint patterns */
 export type EndpointPermissions = Record<string, string[]>;
@@ -42,6 +43,7 @@ export const ALL_CAPABILITIES: ToolPermission[] = [
   'export_data',
   'generate_report',
   'manage_users',
+  'lookup_signal_map',
   'view_audit_log',
   'approve_entries',
   'create_entries',
@@ -265,6 +267,7 @@ export const ALL_MODULES: { category: string; pages: { path: string; label: stri
       { path: '/admin/health', label: 'Health' },
       { path: '/admin/audit', label: 'Admin Audit' },
       { path: '/admin/integrations', label: 'Admin Integrations' },
+      { path: '/admin/team-intelligence', label: 'Team Intelligence' },
     ],
   },
 ];
@@ -375,13 +378,13 @@ export const ROLES: Record<UserRole, RoleConfig> = {
     services: ['paylocity', 'ascend', 'samsara'],
     gatewayKeyEnv: 'GATEWAY_ADMIN_KEY',
     dashboardWidgets: ['headcount', 'departments', 'cost-centers', 'fleet-status'],
-    tools: ['query_gateway', 'generate_workbook', 'create_calendar_event', 'check_availability', 'read_email', 'send_email', 'export_data', 'view_hr', 'view_fleet'],
+    tools: ['query_gateway', 'generate_workbook', 'create_calendar_event', 'check_availability', 'read_email', 'send_email', 'export_data', 'view_hr', 'view_fleet', 'lookup_signal_map'],
     endpoints: {
       paylocity: ['*'],
       ascend: ['/departments', '/cost-centers', '/customers'],
       samsara: ['/drivers', '/drivers/:id', '/vehicles', '/vehicles/:id'],
     },
-    modules: ['/cockpit', '/chat', '/assistant', '/brief', '/digest', '/search', '/dashboards', '/hr', '/people', '/fleet', '/analytics', '/reports', '/documents', '/history', '/settings'],
+    modules: ['/cockpit', '/chat', '/assistant', '/brief', '/digest', '/search', '/dashboards', '/hr', '/people', '/fleet', '/analytics', '/reports', '/documents', '/history', '/settings', '/admin/team-intelligence'],
     crossMailboxAccess: false,
     sfWriteAccess: false,
     sendAsOthers: false,

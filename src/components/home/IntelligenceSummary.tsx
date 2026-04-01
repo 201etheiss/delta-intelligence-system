@@ -42,7 +42,7 @@ export function IntelligenceSummary() {
         style={{
           borderRadius: '8px',
           border: '1px solid rgba(254,80,0,0.25)',
-          background: 'rgba(254,80,0,0.05)',
+          background: 'linear-gradient(135deg, rgba(254,80,0,0.08) 0%, rgba(254,80,0,0.03) 100%)',
           padding: '14px 16px',
         }}
       >
@@ -73,7 +73,7 @@ export function IntelligenceSummary() {
             </Link>
           </>
         ) : (
-          <p style={{ fontSize: '13px', fontWeight: 600, color: '#E4E4E7', margin: '6px 0 0' }}>
+          <p style={{ fontSize: '13px', fontWeight: 600, color: '#E4E4E7', margin: '6px 0 0', fontFamily: 'Georgia, serif' }}>
             {greeting}
           </p>
         )}
@@ -84,7 +84,7 @@ export function IntelligenceSummary() {
         style={{
           borderRadius: '8px',
           border: '1px solid rgba(59,130,246,0.25)',
-          background: 'rgba(59,130,246,0.05)',
+          background: 'linear-gradient(135deg, rgba(59,130,246,0.08) 0%, rgba(59,130,246,0.03) 100%)',
           padding: '14px 16px',
         }}
       >
@@ -114,7 +114,7 @@ export function IntelligenceSummary() {
         style={{
           borderRadius: '8px',
           border: '1px solid rgba(234,179,8,0.25)',
-          background: 'rgba(234,179,8,0.05)',
+          background: 'linear-gradient(135deg, rgba(234,179,8,0.08) 0%, rgba(234,179,8,0.03) 100%)',
           padding: '14px 16px',
         }}
       >

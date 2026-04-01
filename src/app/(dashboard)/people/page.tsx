@@ -12,7 +12,9 @@ import {
   AlertCircle,
   Mail,
   Phone,
+  X,
 } from 'lucide-react';
+import { SignalMapCard } from '@/components/people/SignalMapCard';
 
 // ── Types ─────────────────────────────────────────────────────
 
@@ -65,11 +67,18 @@ function getDirectReports(personId: string, people: PersonRecord[]): PersonRecor
 
 // ── Components ────────────────────────────────────────────────
 
-function PersonCard({ person }: { person: PersonRecord }) {
+function PersonCard({ person, onSelect, isSelected }: { person: PersonRecord; onSelect?: (p: PersonRecord) => void; isSelected?: boolean }) {
   const phone = person.mobilePhone ?? (person.businessPhones.length > 0 ? person.businessPhones[0] : null);
 
   return (
-    <div className="bg-[#18181B] border border-[#27272A] rounded-lg p-4 hover:border-[#3F3F46] transition-colors">
+    <div
+      onClick={() => onSelect?.(person)}
+      className={`bg-[#18181B] border rounded-lg p-4 transition-colors cursor-pointer ${
+        isSelected
+          ? 'border-[#FE5000]/50 bg-[#FE5000]/5'
+          : 'border-[#27272A] hover:border-[#3F3F46]'
+      }`}
+    >
       <div className="flex items-start gap-3">
         <div className="w-10 h-10 rounded-full bg-[#27272A] flex items-center justify-center shrink-0">
           <User size={18} className="text-[#A1A1AA]" />
@@ -168,6 +177,7 @@ export default function PeoplePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [useFallback, setUseFallback] = useState(false);
+  const [selectedPerson, setSelectedPerson] = useState<PersonRecord | null>(null);
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -390,7 +400,12 @@ export default function PeoplePage() {
         {view === 'directory' && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {filteredPeople.map((person) => (
-              <PersonCard key={person.id} person={person} />
+              <PersonCard
+                key={person.id}
+                person={person}
+                onSelect={(p) => setSelectedPerson(selectedPerson?.id === p.id ? null : p)}
+                isSelected={selectedPerson?.id === person.id}
+              />
             ))}
             {filteredPeople.length === 0 && (
               <div className="col-span-full text-center py-12 text-zinc-600">
@@ -398,6 +413,30 @@ export default function PeoplePage() {
                 <p className="text-sm">No people match your filters</p>
               </div>
             )}
+          </div>
+        )}
+
+        {/* Person Detail Panel with Signal Map */}
+        {selectedPerson && (
+          <div className="mt-6 bg-[#18181B] border border-[#27272A] rounded-lg p-5">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-[#27272A] flex items-center justify-center">
+                  <User size={18} className="text-[#A1A1AA]" />
+                </div>
+                <div>
+                  <div className="text-sm font-semibold text-white">{selectedPerson.displayName}</div>
+                  <div className="text-xs text-[#71717A]">{selectedPerson.jobTitle ?? '--'} {selectedPerson.department ? `| ${selectedPerson.department}` : ''}</div>
+                </div>
+              </div>
+              <button
+                onClick={() => setSelectedPerson(null)}
+                className="text-zinc-500 hover:text-white transition-colors"
+              >
+                <X size={16} />
+              </button>
+            </div>
+            <SignalMapCard email={selectedPerson.mail} />
           </div>
         )}
       </div>
