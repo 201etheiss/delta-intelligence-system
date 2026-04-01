@@ -17,6 +17,7 @@ import { getPreferences } from '@/lib/user-preferences';
 import { checkRateLimit, CHAT_LIMIT } from '@/lib/rate-limit';
 import { ChatRequestSchema, validateRequest } from '@/lib/validation';
 import { saveConversation, type ConversationMessage } from '@/lib/conversations';
+import { buildNovaPromptSection } from '@/lib/nova-contexts';
 
 const VALID_ROLES: UserRole[] = ['admin', 'accounting', 'sales', 'operations', 'hr', 'readonly'];
 
@@ -41,6 +42,7 @@ interface ChatRequest {
   preferredModel?: string;
   dataSources?: string[];
   documents?: Array<{ name: string; content: string }>;
+  moduleContext?: string;
 }
 
 interface ChatResponse {
@@ -160,6 +162,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       console.log(`[CHAT] ${body.documents.length} document(s) attached: ${body.documents.map((d) => d.name).join(', ')}`);
     }
 
+    // Build Nova domain context section (module-specific or full cross-domain)
+    const novaContextSection = buildNovaPromptSection(body.moduleContext);
+
     // Use array format with cache_control for Anthropic prompt caching
     const systemPromptBlocks: Anthropic.TextBlockParam[] = [
       {
@@ -171,7 +176,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       },
       {
         type: 'text' as const,
-        text: dynamicPrompt + dateRangeNote + documentContext,
+        text: dynamicPrompt + dateRangeNote + documentContext + novaContextSection,
       },
     ];
 

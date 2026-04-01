@@ -23,6 +23,7 @@ import {
   runAgenticLoop,
 } from '@/lib/agentic-loop';
 import { generateWorkbookTool as generateWorkbookToolDef } from '@/lib/workbook-generator';
+import { buildNovaPromptSection } from '@/lib/nova-contexts';
 
 const VALID_ROLES: UserRole[] = ['admin', 'accounting', 'sales', 'operations', 'hr', 'readonly'];
 
@@ -45,6 +46,7 @@ interface ChatRequest {
   preferredModel?: string;
   dataSources?: string[];
   documents?: Array<{ name: string; content: string }>;
+  moduleContext?: string;
 }
 
 /** All available tools for the streaming endpoint */
@@ -299,6 +301,9 @@ export async function POST(request: NextRequest): Promise<Response> {
           console.log(`[STREAM] ${body.documents.length} document(s) attached: ${body.documents.map((d) => d.name).join(', ')}`);
         }
 
+        // Build Nova domain context section (module-specific or full cross-domain)
+        const novaContextSection = buildNovaPromptSection(body.moduleContext);
+
         const systemPrompt: Anthropic.TextBlockParam[] = [
           {
             type: 'text' as const,
@@ -309,7 +314,7 @@ export async function POST(request: NextRequest): Promise<Response> {
           },
           {
             type: 'text' as const,
-            text: dynamicPrompt + documentContext,
+            text: dynamicPrompt + documentContext + novaContextSection,
           },
         ];
 

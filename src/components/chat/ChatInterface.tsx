@@ -126,6 +126,8 @@ interface ChatInterfaceProps {
   role?: string;
   /** Compact mode for embedding in the 380px side panel. Hides artifact panel, help tooltip, workspace features, and adjusts layout. */
   compact?: boolean;
+  /** Active module ID (e.g. 'finance', 'operations'). When provided, Nova receives domain-specific context. When absent, Nova gets full cross-domain context. */
+  moduleContext?: string;
 }
 
 interface WorkspaceConfig {
@@ -142,7 +144,7 @@ interface WorkspaceConfig {
   samplePrompts?: string[];
 }
 
-export default function ChatInterface({ isAdmin = false, role = 'readonly', compact = false }: ChatInterfaceProps) {
+export default function ChatInterface({ isAdmin = false, role = 'readonly', compact = false, moduleContext }: ChatInterfaceProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -315,6 +317,7 @@ export default function ChatInterface({ isAdmin = false, role = 'readonly', comp
         ...(workspace?.preferredModel && selectedModel === 'auto' ? { preferredModel: workspace.preferredModel } : {}),
         ...(workspace?.dataSources && workspace.dataSources.length > 0 ? { dataSources: workspace.dataSources } : {}),
         ...(uploadedDocuments.length > 0 ? { documents: uploadedDocuments.map((d) => ({ name: d.name, content: d.content })) } : {}),
+        ...(moduleContext ? { moduleContext } : {}),
       };
 
       const res = await fetch('/api/chat/stream', {
