@@ -11,6 +11,12 @@ import {
   AlertTriangle,
 } from 'lucide-react';
 import { AIInsightsBanner } from '@/components/common/AIInsightsBanner';
+import { useDensity } from '@/components/density/DensityProvider';
+import { DensityKPI } from '@/components/density/DensityKPI';
+import { DensityTable } from '@/components/density/DensityTable';
+import { DensityChart } from '@/components/density/DensityChart';
+import { DensityInsight } from '@/components/density/DensityInsight';
+import { DensitySection } from '@/components/density/DensitySection';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -808,10 +814,289 @@ function VarianceView({ data }: { data: VarianceData }) {
 }
 
 // ---------------------------------------------------------------------------
+// Density-aware views
+// ---------------------------------------------------------------------------
+
+function ExecutiveBalanceSheetView({ data }: { data: BalanceSheetData }) {
+  const totalAssets = data.totalAssets ?? 0;
+  const totalLiabilities = data.totalLiabilities ?? 0;
+  const totalEquity = data.totalEquity ?? 0;
+  const currentRatio =
+    totalLiabilities > 0
+      ? parseFloat((totalAssets / totalLiabilities).toFixed(2))
+      : 0;
+
+  const pyAssets = data.priorYear?.totalAssets ?? 0;
+  const pyLiab = data.priorYear?.totalLiabilities ?? 0;
+  const pyEquity = data.priorYear?.totalEquity ?? 0;
+
+  const assetDelta = pyAssets > 0 ? yoyPct(totalAssets, pyAssets) : null;
+  const liabDelta = pyLiab > 0 ? yoyPct(totalLiabilities, pyLiab) : null;
+  const equityDelta = pyEquity > 0 ? yoyPct(totalEquity, pyEquity) : null;
+
+  // Build asset composition chart data from asset sections
+  const assetSections = data.assets ?? [];
+  const chartData = assetSections.map((s) => ({
+    label: (s.title ?? s.label ?? 'Other').replace('ASSETS', '').trim() || 'Assets',
+    value: Math.abs(s.total ?? 0),
+  }));
+
+  // Anomaly insight: liabilities growing faster than assets
+  let insightText = 'Balance sheet is balanced.';
+  if (data.priorYear) {
+    const assetGrowth = pyAssets > 0 ? (totalAssets - pyAssets) / Math.abs(pyAssets) : 0;
+    const liabGrowth = pyLiab > 0 ? (totalLiabilities - pyLiab) / Math.abs(pyLiab) : 0;
+    if (liabGrowth > assetGrowth + 0.05) {
+      insightText = 'Liabilities are growing faster than assets YoY — monitor leverage ratio.';
+    } else if (equityDelta !== null && equityDelta < -10) {
+      insightText = 'Equity declined more than 10% YoY — review retained earnings and distributions.';
+    } else if (assetDelta !== null && assetDelta > 10) {
+      insightText = `Total assets grew ${assetDelta.toFixed(1)}% YoY — strong asset base expansion.`;
+    }
+  }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px' }}>
+        <DensityKPI
+          label="Total Assets"
+          value={fmtCompact(totalAssets)}
+          delta={assetDelta !== null ? `${assetDelta >= 0 ? '+' : ''}${assetDelta.toFixed(1)}% YoY` : undefined}
+          deltaDirection={assetDelta !== null ? (assetDelta >= 0 ? 'up' : 'down') : undefined}
+        />
+        <DensityKPI
+          label="Total Liabilities"
+          value={fmtCompact(totalLiabilities)}
+          delta={liabDelta !== null ? `${liabDelta >= 0 ? '+' : ''}${liabDelta.toFixed(1)}% YoY` : undefined}
+          deltaDirection={liabDelta !== null ? (liabDelta >= 0 ? 'down' : 'up') : undefined}
+        />
+        <DensityKPI
+          label="Net Equity"
+          value={fmtCompact(totalEquity)}
+          delta={equityDelta !== null ? `${equityDelta >= 0 ? '+' : ''}${equityDelta.toFixed(1)}% YoY` : undefined}
+          deltaDirection={equityDelta !== null ? (equityDelta >= 0 ? 'up' : 'down') : undefined}
+        />
+        <DensityKPI
+          label="Current Ratio"
+          value={currentRatio.toFixed(2)}
+          delta={currentRatio >= 1.5 ? 'Healthy' : currentRatio >= 1.0 ? 'Adequate' : 'Low'}
+          deltaDirection={currentRatio >= 1.5 ? 'up' : currentRatio >= 1.0 ? 'neutral' : 'down'}
+        />
+      </div>
+
+      {chartData.length > 0 && (
+        <DensitySection title="Asset Composition">
+          <DensityChart type="bar" data={chartData} height={160} title="Asset Sections" />
+        </DensitySection>
+      )}
+
+      <DensityInsight text={insightText} />
+    </div>
+  );
+}
+
+function ExecutiveIncomeStatementView({ data }: { data: IncomeStatementData }) {
+  const revenue = data.revenue?.total ?? 0;
+  const grossProfit = data.grossProfit ?? 0;
+  const operatingIncome = data.operatingIncome ?? 0;
+  const netIncome = data.netIncome ?? 0;
+
+  const pyRevenue = data.priorYear?.revenue ?? 0;
+  const pyGross = data.priorYear?.grossProfit ?? 0;
+  const pyOp = data.priorYear?.operatingIncome ?? 0;
+  const pyNet = data.priorYear?.netIncome ?? 0;
+
+  const revDelta = pyRevenue > 0 ? yoyPct(revenue, pyRevenue) : null;
+  const grossDelta = pyGross > 0 ? yoyPct(grossProfit, pyGross) : null;
+  const opDelta = pyOp !== 0 ? yoyPct(operatingIncome, pyOp) : null;
+  const netDelta = pyNet !== 0 ? yoyPct(netIncome, pyNet) : null;
+
+  const grossMarginPct = revenue > 0 ? (grossProfit / revenue) * 100 : 0;
+
+  // Waterfall chart data
+  const chartData = [
+    { label: 'Revenue', value: Math.abs(revenue) },
+    { label: 'Gross', value: Math.abs(grossProfit) },
+    { label: 'Op Income', value: Math.abs(operatingIncome) },
+    { label: 'Net Income', value: Math.abs(netIncome) },
+  ];
+
+  let insightText = `Gross margin: ${grossMarginPct.toFixed(1)}%.`;
+  if (netIncome < 0) {
+    insightText = `Net loss of ${fmtCompact(Math.abs(netIncome))} this period. Review operating expenses.`;
+  } else if (revDelta !== null && revDelta < -5) {
+    insightText = `Revenue declined ${Math.abs(revDelta).toFixed(1)}% YoY — investigate demand or pricing changes.`;
+  } else if (grossMarginPct < 15) {
+    insightText = `Gross margin at ${grossMarginPct.toFixed(1)}% — below typical threshold. COGS pressure may need attention.`;
+  }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px' }}>
+        <DensityKPI
+          label="Revenue"
+          value={fmtCompact(revenue)}
+          delta={revDelta !== null ? `${revDelta >= 0 ? '+' : ''}${revDelta.toFixed(1)}% YoY` : undefined}
+          deltaDirection={revDelta !== null ? (revDelta >= 0 ? 'up' : 'down') : undefined}
+        />
+        <DensityKPI
+          label="Gross Profit"
+          value={fmtCompact(grossProfit)}
+          delta={grossDelta !== null ? `${grossDelta >= 0 ? '+' : ''}${grossDelta.toFixed(1)}% YoY` : undefined}
+          deltaDirection={grossDelta !== null ? (grossDelta >= 0 ? 'up' : 'down') : undefined}
+        />
+        <DensityKPI
+          label="Operating Income"
+          value={fmtCompact(operatingIncome)}
+          delta={opDelta !== null ? `${opDelta >= 0 ? '+' : ''}${opDelta.toFixed(1)}% YoY` : undefined}
+          deltaDirection={opDelta !== null ? (opDelta >= 0 ? 'up' : 'down') : undefined}
+        />
+        <DensityKPI
+          label="Net Income"
+          value={fmtCompact(netIncome)}
+          delta={netDelta !== null ? `${netDelta >= 0 ? '+' : ''}${netDelta.toFixed(1)}% YoY` : undefined}
+          deltaDirection={netDelta !== null ? (netIncome >= 0 ? 'up' : 'down') : undefined}
+        />
+      </div>
+
+      <DensitySection title="P&L Waterfall">
+        <DensityChart type="bar" data={chartData} height={140} title="Revenue to Net Income" />
+      </DensitySection>
+
+      <DensityInsight text={insightText} />
+    </div>
+  );
+}
+
+function ExecutiveGenericView({ title, summary }: { title: string; summary: string }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      <DensityInsight text={`${title}: ${summary}`} />
+    </div>
+  );
+}
+
+// Operator ledger view for balance sheet (dense table with section headers)
+function OperatorBalanceSheetLedger({ data }: { data: BalanceSheetData }) {
+  type LedgerRow = Record<string, unknown>;
+
+  const buildRows = (): LedgerRow[] => {
+    const rows: LedgerRow[] = [];
+    const addSection = (section: BSSection, sectionLabel: string) => {
+      for (const acct of section.accounts ?? []) {
+        const pyBalance = section.priorYearAmounts?.[acct.accountNumber] ?? 0;
+        const variance = acct.balance - pyBalance;
+        const variancePct = pyBalance !== 0 ? (variance / Math.abs(pyBalance)) * 100 : null;
+        rows.push({
+          section: sectionLabel.toUpperCase(),
+          acct: acct.accountNumber,
+          name: acct.accountName,
+          balance: fmtAcct(acct.balance),
+          prior: fmtAcct(pyBalance),
+          variance: fmtAcct(variance),
+          variancePct: variancePct !== null ? `${variancePct >= 0 ? '+' : ''}${variancePct.toFixed(1)}%` : '--',
+        });
+      }
+      rows.push({
+        section: sectionLabel.toUpperCase(),
+        acct: '',
+        name: `Total ${section.title ?? section.label ?? ''}`,
+        balance: fmtAcct(section.total),
+        prior: fmtAcct(section.priorYearTotal ?? 0),
+        variance: fmtAcct(section.total - (section.priorYearTotal ?? 0)),
+        variancePct: '--',
+      });
+    };
+
+    for (const s of data.assets ?? []) addSection(s, s.title ?? s.label ?? 'ASSETS');
+    for (const s of data.liabilities ?? []) addSection(s, s.title ?? s.label ?? 'LIABILITIES');
+    for (const s of data.equity ?? []) addSection(s, s.title ?? s.label ?? 'EQUITY');
+    return rows;
+  };
+
+  const columns = [
+    { key: 'acct', label: 'Acct #', align: 'left' as const },
+    { key: 'name', label: 'Account Name', align: 'left' as const },
+    { key: 'balance', label: 'Balance', align: 'right' as const },
+    { key: 'prior', label: 'Prior Yr', align: 'right' as const },
+    { key: 'variance', label: 'Variance', align: 'right' as const },
+    { key: 'variancePct', label: 'YoY %', align: 'right' as const },
+  ];
+
+  return (
+    <DensityTable
+      columns={columns}
+      data={buildRows()}
+      sectionGroupBy="section"
+    />
+  );
+}
+
+function OperatorIncomeStatementLedger({ data }: { data: IncomeStatementData }) {
+  type LedgerRow = Record<string, unknown>;
+
+  const buildRows = (): LedgerRow[] => {
+    const rows: LedgerRow[] = [];
+    const addSection = (section: ISSection, sectionLabel: string) => {
+      for (const acct of section.accounts ?? []) {
+        const pyAmount = section.priorYearAmounts?.[acct.accountNumber] ?? 0;
+        const variance = acct.amount - pyAmount;
+        const variancePct = pyAmount !== 0 ? (variance / Math.abs(pyAmount)) * 100 : null;
+        rows.push({
+          section: sectionLabel.toUpperCase(),
+          acct: acct.accountNumber,
+          name: acct.accountName,
+          amount: fmtAcct(acct.amount),
+          prior: fmtAcct(pyAmount),
+          variance: fmtAcct(variance),
+          variancePct: variancePct !== null ? `${variancePct >= 0 ? '+' : ''}${variancePct.toFixed(1)}%` : '--',
+        });
+      }
+      rows.push({
+        section: sectionLabel.toUpperCase(),
+        acct: '',
+        name: `Total ${section.title ?? section.label ?? ''}`,
+        amount: fmtAcct(section.total),
+        prior: fmtAcct(section.priorYearTotal ?? 0),
+        variance: fmtAcct(section.total - (section.priorYearTotal ?? 0)),
+        variancePct: '--',
+      });
+    };
+
+    const emptySection: ISSection = { accounts: [], total: 0 };
+    addSection(data.revenue ?? emptySection, data.revenue?.title ?? 'REVENUE');
+    addSection(data.cogs ?? emptySection, data.cogs?.title ?? 'COST OF GOODS SOLD');
+    addSection(data.operatingExpenses ?? emptySection, data.operatingExpenses?.title ?? 'OPERATING EXPENSES');
+    if ((data.otherIncomeExpense?.accounts ?? []).length > 0) {
+      addSection(data.otherIncomeExpense ?? emptySection, data.otherIncomeExpense?.title ?? 'OTHER INCOME/EXPENSE');
+    }
+    return rows;
+  };
+
+  const columns = [
+    { key: 'acct', label: 'Acct #', align: 'left' as const },
+    { key: 'name', label: 'Account Name', align: 'left' as const },
+    { key: 'amount', label: 'Amount', align: 'right' as const },
+    { key: 'prior', label: 'Prior Yr', align: 'right' as const },
+    { key: 'variance', label: 'Variance', align: 'right' as const },
+    { key: 'variancePct', label: 'YoY %', align: 'right' as const },
+  ];
+
+  return (
+    <DensityTable
+      columns={columns}
+      data={buildRows()}
+      sectionGroupBy="section"
+    />
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Page
 // ---------------------------------------------------------------------------
 
 export default function FinancialStatementsPage() {
+  const density = useDensity();
   const periods = getPeriodOptions();
   const [period, setPeriod] = useState(periods[0]?.value ?? '2026-03');
   const [activeTab, setActiveTab] = useState<TabId>('balance-sheet');
@@ -956,14 +1241,70 @@ export default function FinancialStatementsPage() {
 
         {!loading && !error && data !== null ? (
           <>
-            {activeTab === 'balance-sheet' && <BalanceSheetView data={data as BalanceSheetData} />}
-            {activeTab === 'income-statement' && (
-              <IncomeStatementView data={data as IncomeStatementData} />
+            {density === 'executive' ? (
+              <>
+                {activeTab === 'balance-sheet' && (
+                  <ExecutiveBalanceSheetView data={data as BalanceSheetData} />
+                )}
+                {activeTab === 'income-statement' && (
+                  <ExecutiveIncomeStatementView data={data as IncomeStatementData} />
+                )}
+                {activeTab === 'trial-balance' && (
+                  <ExecutiveGenericView
+                    title="Trial Balance"
+                    summary={`${((data as TrialBalanceData).accounts ?? []).length} accounts. Total debits: ${fmtCompact((data as TrialBalanceData).totalDebit ?? 0)}.`}
+                  />
+                )}
+                {activeTab === 'flash' && <FlashReportView data={data as FlashReportData} />}
+                {activeTab === 'cash-flow-statement' && (
+                  <ExecutiveGenericView
+                    title="Cash Flow"
+                    summary={`Ending cash: ${fmtCompact((data as CashFlowData).endingCash ?? 0)}. Net change: ${fmtCompact((data as CashFlowData).netChange ?? 0)}.`}
+                  />
+                )}
+                {activeTab === 'variance' && (
+                  <ExecutiveGenericView
+                    title="Ascend Variance"
+                    summary={`IS variance: ${fmtCompact((data as VarianceData).incomeStatement?.totalVariance ?? 0)}. BS variance: ${fmtCompact((data as VarianceData).balanceSheet?.totalVariance ?? 0)}.`}
+                  />
+                )}
+              </>
+            ) : (
+              <>
+                {activeTab === 'balance-sheet' && (
+                  <>
+                    <OperatorBalanceSheetLedger data={data as BalanceSheetData} />
+                    <div className="mt-4 border-t border-zinc-700 pt-3 flex justify-between font-mono text-sm font-bold text-white">
+                      <span>Total Assets</span>
+                      <span>{fmtAcct((data as BalanceSheetData).totalAssets ?? 0)}</span>
+                    </div>
+                    <div className="flex justify-between font-mono text-sm font-semibold text-zinc-200 mt-1">
+                      <span>Total Liabilities</span>
+                      <span>{fmtAcct((data as BalanceSheetData).totalLiabilities ?? 0)}</span>
+                    </div>
+                    <div className="flex justify-between font-mono text-sm font-semibold text-zinc-200 mt-1">
+                      <span>Total Equity</span>
+                      <span>{fmtAcct((data as BalanceSheetData).totalEquity ?? 0)}</span>
+                    </div>
+                  </>
+                )}
+                {activeTab === 'income-statement' && (
+                  <>
+                    <OperatorIncomeStatementLedger data={data as IncomeStatementData} />
+                    <div className="mt-4 border-t border-zinc-700 pt-3 flex justify-between font-mono text-sm font-bold text-white">
+                      <span>Net Income</span>
+                      <span className={(data as IncomeStatementData).netIncome >= 0 ? 'text-green-400' : 'text-red-400'}>
+                        {fmtAcct((data as IncomeStatementData).netIncome ?? 0)}
+                      </span>
+                    </div>
+                  </>
+                )}
+                {activeTab === 'trial-balance' && <TrialBalanceView data={data as TrialBalanceData} />}
+                {activeTab === 'flash' && <FlashReportView data={data as FlashReportData} />}
+                {activeTab === 'cash-flow-statement' && <CashFlowView data={data as CashFlowData} />}
+                {activeTab === 'variance' && <VarianceView data={data as VarianceData} />}
+              </>
             )}
-            {activeTab === 'trial-balance' && <TrialBalanceView data={data as TrialBalanceData} />}
-            {activeTab === 'flash' && <FlashReportView data={data as FlashReportData} />}
-            {activeTab === 'cash-flow-statement' && <CashFlowView data={data as CashFlowData} />}
-            {activeTab === 'variance' && <VarianceView data={data as VarianceData} />}
           </>
         ) : null}
 

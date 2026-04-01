@@ -18,6 +18,12 @@ import {
   X,
 } from 'lucide-react';
 import { AIInsightsBanner } from '@/components/common/AIInsightsBanner';
+import { useDensity } from '@/components/density/DensityProvider';
+import { DensityKPI } from '@/components/density/DensityKPI';
+import { DensityTable } from '@/components/density/DensityTable';
+import { DensityChart } from '@/components/density/DensityChart';
+import { DensityInsight } from '@/components/density/DensityInsight';
+import { DensitySection } from '@/components/density/DensitySection';
 
 // ── Types ─────────────────────────────────────────────────────
 
@@ -256,6 +262,7 @@ function CreateInvoiceModal({
 // ── Main Page ─────────────────────────────────────────────────
 
 export default function APInvoicesPage() {
+  const density = useDensity();
   const [invoices, setInvoices] = useState<APInvoice[]>([]);
   const [aging, setAging] = useState<AgingSummary | null>(null);
   const [vendors, setVendors] = useState<Array<{ name: string; total: number }>>([]);
@@ -356,6 +363,108 @@ export default function APInvoicesPage() {
     (s, inv) => s + (typeof inv.amount === 'number' ? inv.amount : 0),
     0
   );
+
+  // ── Executive density view ────────────────────────────────────
+  if (density === 'executive') {
+    const agingChartData = aging
+      ? [
+          { label: 'Current', value: aging.current.total, color: '#22c55e' },
+          { label: '1-30d', value: aging.days30.total, color: '#eab308' },
+          { label: '31-60d', value: aging.days60.total, color: '#f97316' },
+          { label: '61-90+d', value: aging.days90plus.total, color: '#ef4444' },
+        ]
+      : [];
+
+    return (
+      <div className="h-full overflow-y-auto px-5 py-4 space-y-4">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-lg font-bold text-white">AP Console</h1>
+            <p className="text-xs text-zinc-400 mt-0.5">
+              Executive view — aging overview and top vendors
+            </p>
+          </div>
+          <button
+            onClick={loadData}
+            className="flex items-center gap-1.5 px-3 py-2 text-sm text-zinc-400 border border-[#27272A] rounded hover:bg-[#27272A]"
+          >
+            <RefreshCw size={14} />
+            Refresh
+          </button>
+        </div>
+
+        <AIInsightsBanner module="ap-invoices" compact />
+
+        {/* KPI Cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <DensityKPI
+            label="Total Outstanding"
+            value={aging ? fmt(aging.totalOutstanding) : '--'}
+            delta={overdueCount > 0 ? `${overdueCount} overdue` : 'All current'}
+            deltaDirection={overdueCount > 0 ? 'down' : 'up'}
+          />
+          <DensityKPI
+            label="Pending Approval"
+            value={String(pendingApproval.length)}
+            delta={fmt(pendingApprovalTotal)}
+            deltaDirection="neutral"
+          />
+          <DensityKPI
+            label="Past Due"
+            value={String(overdueCount)}
+            delta={overdueCount > 0 ? fmt(overdueTotal) : undefined}
+            deltaDirection={overdueCount > 0 ? 'down' : undefined}
+          />
+          <DensityKPI
+            label="Invoices"
+            value={String((invoices ?? []).length)}
+            delta={lastRefresh ? `Updated ${lastRefresh.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}` : undefined}
+            deltaDirection="neutral"
+          />
+        </div>
+
+        {/* Aging Chart */}
+        {agingChartData.length > 0 && (
+          <DensitySection title="AP Aging Distribution">
+            <DensityChart type="bar" data={agingChartData} height={140} title="Invoice Aging Buckets" />
+          </DensitySection>
+        )}
+
+        {/* Top Vendors */}
+        {(vendors ?? []).length > 0 && (
+          <DensitySection title="Top Vendors by Spend">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+              {(vendors ?? []).map((v, i) => (
+                <DensityKPI
+                  key={`exec-vendor-${v.name}-${i}`}
+                  label={v.name}
+                  value={fmt(v.total)}
+                />
+              ))}
+            </div>
+          </DensitySection>
+        )}
+
+        {/* Overdue alert */}
+        {overdueCount > 0 && (
+          <DensityInsight
+            text={`${overdueCount} invoice${overdueCount > 1 ? 's' : ''} totaling ${fmt(overdueTotal)} are past due. Immediate payment review recommended.`}
+            actionLabel="View Overdue"
+            onAction={() => setShowOverdue(true)}
+          />
+        )}
+
+        <CreateInvoiceModal
+          open={showCreate}
+          onClose={() => setShowCreate(false)}
+          onCreated={loadData}
+        />
+      </div>
+    );
+  }
+
+  // ── Operator density view (full invoice queue) ─────────────────
 
   return (
     <div className="h-full overflow-y-auto px-5 py-4 space-y-4">
@@ -549,7 +658,45 @@ export default function APInvoicesPage() {
         </label>
       </div>
 
-      {/* Invoice Table */}
+      {/* Operator Invoice Queue — DensityTable */}
+      <DensitySection title="Invoice Queue">
+        <DensityTable
+          columns={[
+            { key: 'vendor', label: 'Vendor' },
+            { key: 'invoiceNumber', label: 'Invoice #' },
+            { key: 'agingBucket', label: 'Aging' },
+            { key: 'amount', label: 'Amount', align: 'right' },
+            { key: 'status', label: 'Status' },
+            { key: 'dueDate', label: 'Due Date' },
+          ]}
+          data={(invoices ?? []).map((inv) => {
+            const today = new Date().toISOString().slice(0, 10);
+            const daysOverdue = inv.dueDate < today && inv.status !== 'paid'
+              ? Math.round((Date.now() - new Date(inv.dueDate).getTime()) / 86400000)
+              : 0;
+            const agingBucket = inv.status === 'paid'
+              ? 'Paid'
+              : daysOverdue === 0
+              ? 'Current'
+              : daysOverdue <= 30
+              ? '1-30d'
+              : daysOverdue <= 60
+              ? '31-60d'
+              : '61-90+d';
+            return {
+              vendor: inv.vendorName,
+              invoiceNumber: inv.invoiceNumber,
+              agingBucket,
+              amount: fmt(inv.amount),
+              status: STATUS_CONFIG[inv.status]?.label ?? inv.status,
+              dueDate: inv.dueDate,
+            };
+          })}
+          sectionGroupBy="agingBucket"
+        />
+      </DensitySection>
+
+      {/* Full Invoice Table (detailed operator view) */}
       <div className="bg-[#18181B] border border-[#27272A] rounded-lg overflow-hidden">
         <table className="w-full">
           <thead>

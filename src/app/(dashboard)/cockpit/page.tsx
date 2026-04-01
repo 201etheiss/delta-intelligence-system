@@ -22,6 +22,11 @@ import {
 } from 'lucide-react';
 import IntelligenceWidget from '@/components/dashboard/IntelligenceWidget';
 import { AIInsightsBanner } from '@/components/common/AIInsightsBanner';
+import { useDensity } from '@/components/density/DensityProvider';
+import { DensityKPI } from '@/components/density/DensityKPI';
+import { DensityChart } from '@/components/density/DensityChart';
+import { DensityInsight } from '@/components/density/DensityInsight';
+import { DensitySection } from '@/components/density/DensitySection';
 
 // ── Types ─────────────────────────────────────────────────────
 
@@ -193,6 +198,7 @@ function Skeleton({ className }: { className?: string }) {
 // ── Page ─────────────────────────────────────────────────────
 
 export default function CockpitPage() {
+  const density = useDensity();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [closeDays, setCloseDays] = useState<CloseDay[]>([]);
@@ -273,6 +279,127 @@ export default function CockpitPage() {
   const totalCloseTasks = closeDays.reduce((s, d) => s + d.tasks, 0);
   const totalCloseCompleted = closeDays.reduce((s, d) => s + d.completed, 0);
   const overallClose = pct(totalCloseCompleted, totalCloseTasks);
+  const totalExceptions = exceptions.reduce((s, b) => s + b.count, 0);
+
+  // ── Executive density view ────────────────────────────────────
+  if (density === 'executive') {
+    const jeChartData = jePipeline
+      ? [
+          { label: 'Draft', value: jePipeline.draft, color: '#a1a1aa' },
+          { label: 'Review', value: jePipeline.inReview, color: '#3b82f6' },
+          { label: 'Approved', value: jePipeline.approved, color: '#22c55e' },
+          { label: 'Posted', value: jePipeline.posted, color: '#10b981' },
+          { label: 'Rejected', value: jePipeline.rejected, color: '#ef4444' },
+        ]
+      : [];
+
+    return (
+      <div className="px-5 py-4 space-y-4 overflow-y-auto h-full bg-white dark:bg-[#09090B]">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-lg font-bold text-[#09090B] dark:text-white flex items-center gap-2">
+              <Gauge size={20} className="text-[#FF5C00]" />
+              Controller Cockpit
+            </h2>
+            <p className="mt-0.5 text-sm text-[#71717A]">
+              Executive view — key alerts and status summary
+              {lastRefresh && <span className="ml-2 text-[#A1A1AA]">Updated {lastRefresh}</span>}
+            </p>
+          </div>
+          <button
+            onClick={loadAll}
+            className="flex items-center gap-1.5 text-xs text-[#A1A1AA] hover:text-[#FF5C00] border border-[#27272A] rounded-lg px-3 py-1.5 transition-colors"
+          >
+            <RefreshCw size={14} />
+            Refresh
+          </button>
+        </div>
+
+        <AIInsightsBanner module="cockpit" compact />
+
+        {error && (
+          <div className="flex items-center gap-2 rounded-lg border border-red-500/20 bg-red-500/5 px-3 py-2">
+            <AlertTriangle size={16} className="text-red-500 shrink-0" />
+            <span className="text-sm text-red-400">{error}</span>
+            <button onClick={loadAll} className="ml-auto text-xs text-red-400 hover:text-red-300 underline">Retry</button>
+          </div>
+        )}
+
+        {/* Alert KPI Cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <DensityKPI
+            label="Close Progress"
+            value={`${overallClose}%`}
+            delta={totalCloseTasks > 0 ? `${totalCloseCompleted}/${totalCloseTasks} tasks` : 'No active close'}
+            deltaDirection={overallClose >= 100 ? 'up' : overallClose >= 50 ? 'neutral' : 'down'}
+          />
+          {jePipeline && (
+            <DensityKPI
+              label="JE Pipeline"
+              value={String(jePipeline.draft + jePipeline.inReview)}
+              delta={`${jePipeline.posted} posted, ${jePipeline.rejected} rejected`}
+              deltaDirection={jePipeline.rejected > 0 ? 'down' : 'neutral'}
+            />
+          )}
+          {recon && (
+            <DensityKPI
+              label="Reconciliations"
+              value={String(recon.exception)}
+              delta={`${recon.completed} complete, ${recon.inProgress} in-progress`}
+              deltaDirection={recon.exception > 0 ? 'down' : 'up'}
+            />
+          )}
+          <DensityKPI
+            label="Open Exceptions"
+            value={String(totalExceptions)}
+            delta={totalExceptions > 0 ? 'Review aging' : 'Clear'}
+            deltaDirection={totalExceptions > 0 ? 'down' : 'up'}
+          />
+        </div>
+
+        {/* Financial KPIs */}
+        {kpis && (
+          <DensitySection title="Financial KPIs">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+              <DensityKPI label="Revenue YTD" value={fmt(kpis.revenueYTD)} />
+              <DensityKPI label="Gross Profit YTD" value={fmt(kpis.grossProfitYTD)} />
+              <DensityKPI label="AR Outstanding" value={fmt(kpis.arOutstanding)} />
+              <DensityKPI label="COGS YTD" value={fmt(kpis.cogsYTD)} />
+            </div>
+          </DensitySection>
+        )}
+
+        {/* JE Status Chart */}
+        {jeChartData.length > 0 && (
+          <DensitySection title="JE Pipeline Status">
+            <DensityChart type="bar" data={jeChartData} height={120} title="Journal Entry Pipeline" />
+          </DensitySection>
+        )}
+
+        {/* Insight Cards for top issues */}
+        {recon && recon.exception > 0 && (
+          <DensityInsight
+            text={`${recon.exception} reconciliation exception${recon.exception > 1 ? 's' : ''} require attention. Review and resolve before close.`}
+            actionLabel="View Reconciliations"
+          />
+        )}
+        {jePipeline && jePipeline.rejected > 0 && (
+          <DensityInsight
+            text={`${jePipeline.rejected} journal entr${jePipeline.rejected > 1 ? 'ies' : 'y'} rejected. Investigate and resubmit before period close.`}
+            actionLabel="View JE Pipeline"
+          />
+        )}
+        {overallClose < 50 && totalCloseTasks > 0 && (
+          <DensityInsight
+            text={`Month-end close is ${overallClose}% complete with ${totalCloseTasks - totalCloseCompleted} tasks remaining.`}
+          />
+        )}
+      </div>
+    );
+  }
+
+  // ── Operator density view (full detailed panels) ───────────────
 
   return (
     <div className="px-5 py-4 space-y-4 overflow-y-auto h-full bg-white dark:bg-[#09090B]">

@@ -18,6 +18,11 @@ import {
   Activity,
 } from 'lucide-react';
 import { AIInsightsBanner } from '@/components/common/AIInsightsBanner';
+import { useDensity } from '@/components/density/DensityProvider';
+import { DensityKPI } from '@/components/density/DensityKPI';
+import { DensityTable } from '@/components/density/DensityTable';
+import { DensityChart } from '@/components/density/DensityChart';
+import { DensitySection } from '@/components/density/DensitySection';
 
 // ── Types ────────────────────────────────────────────────────
 
@@ -60,6 +65,7 @@ function SkeletonCard() {
 // ── Page ─────────────────────────────────────────────────────
 
 export default function OpsConsolePage() {
+  const density = useDensity();
   const [vehicles, setVehicles] = useState<VehicleItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -142,6 +148,99 @@ export default function OpsConsolePage() {
     },
   ];
 
+  // ── Executive density view ────────────────────────────────────
+  if (density === 'executive') {
+    const statusChartData = [
+      { label: 'Active', value: counts.active, color: '#22c55e' },
+      { label: 'Idle', value: counts.idle, color: '#eab308' },
+      { label: 'Maint.', value: counts.maintenance, color: '#3b82f6' },
+      { label: 'Offline', value: counts.offline, color: '#52525b' },
+    ];
+
+    return (
+      <div className="h-full overflow-y-auto bg-[#09090B] text-zinc-100 px-5 py-4">
+        <div className="max-w-7xl mx-auto space-y-4">
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-lg font-bold text-white">Operations Console</h1>
+              <p className="text-xs text-zinc-500 mt-0.5">
+                Executive view — fleet KPIs and status summary
+                {lastRefresh && (
+                  <span className="ml-3">
+                    Updated {lastRefresh.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                )}
+              </p>
+            </div>
+            <button
+              onClick={loadData}
+              disabled={loading}
+              className="flex items-center gap-1.5 text-xs text-zinc-400 hover:text-white border border-[#27272A] rounded-md px-3 py-1.5 transition-colors disabled:opacity-50"
+            >
+              <RefreshCw size={12} className={loading ? 'animate-spin' : ''} />
+              Refresh
+            </button>
+          </div>
+
+          <AIInsightsBanner module="fleet" compact />
+
+          {/* Fleet KPI Cards */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            <DensityKPI
+              label="Active Fleet"
+              value={`${counts.active} / ${counts.total}`}
+              delta={`${typeof utilizationPct === 'number' ? utilizationPct.toFixed(0) : '0'}% utilization`}
+              deltaDirection={utilizationPct >= 75 ? 'up' : utilizationPct >= 50 ? 'neutral' : 'down'}
+            />
+            <DensityKPI
+              label="Idle Vehicles"
+              value={String(counts.idle)}
+              delta={counts.idle > 0 ? 'May need dispatch' : 'All dispatched'}
+              deltaDirection={counts.idle > 3 ? 'down' : 'neutral'}
+            />
+            <DensityKPI
+              label="Maintenance"
+              value={String(counts.maintenance)}
+              delta={counts.maintenance > 0 ? 'Needs attention' : 'All clear'}
+              deltaDirection={counts.maintenance > 0 ? 'down' : 'up'}
+            />
+            <DensityKPI
+              label="Avg Fuel Efficiency"
+              value="--"
+              delta="Awaiting Samsara"
+              deltaDirection="neutral"
+            />
+          </div>
+
+          {/* Fleet map placeholder */}
+          <DensitySection title="Fleet Map">
+            <div className="flex items-center justify-center h-32 rounded-lg border border-dashed border-[#27272A] text-zinc-600 text-sm">
+              <MapPin size={16} className="mr-2" />
+              Live map — connect Samsara gateway on port 3847
+            </div>
+          </DensitySection>
+
+          {/* Delivery Status Chart */}
+          {counts.total > 0 && (
+            <DensitySection title="Fleet Status Distribution">
+              <DensityChart type="bar" data={statusChartData} height={120} title="Vehicle Status" />
+            </DensitySection>
+          )}
+
+          {error && (
+            <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 p-4 flex items-start gap-3">
+              <AlertCircle size={16} className="text-amber-400 mt-0.5 shrink-0" />
+              <p className="text-sm text-amber-300">{error}</p>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // ── Operator density view (full dispatch table) ────────────────
+
   return (
     <div className="h-full overflow-y-auto bg-[#09090B] text-zinc-100 px-5 py-4">
       <div className="max-w-7xl mx-auto space-y-4">
@@ -206,6 +305,29 @@ export default function OpsConsolePage() {
             </a>
           </div>
         </div>
+
+        {/* Operator Dispatch Table */}
+        {vehicles.length > 0 && (
+          <DensitySection title="Dispatch Queue">
+            <DensityTable
+              columns={[
+                { key: 'vehicle', label: 'Vehicle' },
+                { key: 'driver', label: 'Driver' },
+                { key: 'route', label: 'Route' },
+                { key: 'status', label: 'Status' },
+                { key: 'eta', label: 'ETA' },
+              ]}
+              data={vehicles.map((v) => ({
+                vehicle: v.name,
+                driver: '--',
+                route: '--',
+                status: v.status.charAt(0).toUpperCase() + v.status.slice(1),
+                eta: '--',
+              }))}
+              sectionGroupBy="status"
+            />
+          </DensitySection>
+        )}
 
         {/* KPI Cards */}
         {loading && vehicles.length === 0 ? (
