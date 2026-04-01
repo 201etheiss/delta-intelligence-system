@@ -151,7 +151,7 @@ export function getDigestLogs(): DigestResult[] {
 
 // ── HTML Template Helpers ─────────────────────────────────────
 
-const BRAND_ORANGE = '#FF5C00';
+const BRAND_ORANGE = '#FE5000';
 const BRAND_BLACK = '#000000';
 
 function wrapHtml(title: string, bodyContent: string): string {

@@ -125,7 +125,7 @@ export default function InteractiveTable({ table, onOpenInPanel, onExport }: Int
             value={filterText}
             onChange={(e) => { setFilterText(e.target.value); setPage(0); }}
             placeholder="Filter..."
-            className="text-[11px] px-2 py-1 border border-zinc-200 dark:border-zinc-600 rounded bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 placeholder-zinc-400 focus:outline-none focus:border-[#FF5C00]/40 w-32"
+            className="text-[11px] px-2 py-1 border border-zinc-200 dark:border-zinc-600 rounded bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 placeholder-zinc-400 focus:outline-none focus:border-[#FE5000]/40 w-32"
           />
         )}
         <span className="text-[10px] text-zinc-400 tabular-nums">
@@ -137,7 +137,7 @@ export default function InteractiveTable({ table, onOpenInPanel, onExport }: Int
           {onOpenInPanel && (
             <button
               onClick={() => onOpenInPanel(table)}
-              className="text-[10px] px-2 py-1 rounded border border-zinc-200 dark:border-zinc-600 text-zinc-500 dark:text-zinc-400 hover:border-[#FF5C00]/40 hover:text-[#FF5C00] transition-colors"
+              className="text-[10px] px-2 py-1 rounded border border-zinc-200 dark:border-zinc-600 text-zinc-500 dark:text-zinc-400 hover:border-[#FE5000]/40 hover:text-[#FE5000] transition-colors"
             >
               Expand
             </button>
@@ -168,7 +168,7 @@ export default function InteractiveTable({ table, onOpenInPanel, onExport }: Int
                       <span className="inline-flex items-center gap-1">
                         {h}
                         {sortCol === i ? (
-                          <span className="text-[#FF5C00]">
+                          <span className="text-[#FE5000]">
                             {sortDir === 'asc' ? '\u2191' : '\u2193'}
                           </span>
                         ) : (

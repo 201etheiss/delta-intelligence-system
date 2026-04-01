@@ -153,7 +153,7 @@ export default function ExceptionMonitor() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <AlertOctagon size={24} className="text-[#FF5C00]" />
+          <AlertOctagon size={24} className="text-[#FE5000]" />
           <div>
             <h1 className="text-lg font-semibold text-white">
               Exception Monitor
@@ -169,7 +169,7 @@ export default function ExceptionMonitor() {
         <button
           onClick={fetchExceptions}
           disabled={loading}
-          className="flex items-center gap-2 px-3 py-2 text-xs font-medium rounded-lg bg-[#18181B] border border-[#27272A] text-zinc-300 hover:border-[#FF5C00]/50 hover:text-white transition-colors disabled:opacity-50"
+          className="flex items-center gap-2 px-3 py-2 text-xs font-medium rounded-lg bg-[#18181B] border border-[#27272A] text-zinc-300 hover:border-[#FE5000]/50 hover:text-white transition-colors disabled:opacity-50"
         >
           <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
           Refresh
@@ -187,7 +187,7 @@ export default function ExceptionMonitor() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-        <KpiCard label="Total Open" value={totalCount} color="text-[#FF5C00]" icon={AlertOctagon} />
+        <KpiCard label="Total Open" value={totalCount} color="text-[#FE5000]" icon={AlertOctagon} />
         <KpiCard label="Critical" value={bySeverity.critical} color="text-red-400" icon={XCircle} />
         <KpiCard label="Avg Aging (days)" value={avgAging} color="text-yellow-400" icon={Clock} />
         <KpiCard label="Engines Affected" value={Object.keys(engineCounts).length} color="text-blue-400" icon={AlertTriangle} />
@@ -223,7 +223,7 @@ export default function ExceptionMonitor() {
             onClick={() => setActiveTab(tab.id)}
             className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
               activeTab === tab.id
-                ? 'bg-[#FF5C00]/10 text-[#FF5C00]'
+                ? 'bg-[#FE5000]/10 text-[#FE5000]'
                 : 'text-zinc-500 hover:text-zinc-300'
             }`}
           >

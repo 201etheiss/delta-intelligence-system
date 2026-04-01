@@ -71,7 +71,7 @@ export default function SharedResultsPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <Share2 size={24} className="text-[#FF5C00]" />
+            <Share2 size={24} className="text-[#FE5000]" />
             <div>
               <h1 className="text-lg font-semibold">Shared Results</h1>
               <p className="text-sm text-[#71717A] dark:text-[#A1A1AA]">
@@ -82,7 +82,7 @@ export default function SharedResultsPage() {
           {session?.user?.email && (
             <button
               onClick={handleShare}
-              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#FF5C00] text-white text-sm font-medium hover:bg-[#E54800] transition-colors"
+              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#FE5000] text-white text-sm font-medium hover:bg-[#CC4000] transition-colors"
             >
               <Share2 size={16} />
               Share Result
@@ -97,7 +97,7 @@ export default function SharedResultsPage() {
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Search shared results..."
-            className="w-full pl-10 pr-4 py-2.5 bg-[#18181B] border border-[#27272A] rounded-lg text-sm text-white placeholder-[#52525B] outline-none focus:border-[#FF5C00]/50"
+            className="w-full pl-10 pr-4 py-2.5 bg-[#18181B] border border-[#27272A] rounded-lg text-sm text-white placeholder-[#52525B] outline-none focus:border-[#FE5000]/50"
           />
           {search && (
             <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#52525B] hover:text-white">

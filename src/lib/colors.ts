@@ -2,13 +2,13 @@
  * Delta360 Brand & Theme Colors
  *
  * Centralized color constants. Import these instead of hardcoding hex values.
- * Brand guide: Orange #FF5C00, Black #000000, Inter font, zinc scale.
+ * Brand guide: Orange #FE5000, Black #000000, Inter font, zinc scale.
  */
 
 export const BRAND = {
-  orange: '#FF5C00',
-  orangeHover: '#E54800',
-  orangeLight: '#FF5C00/10',  // For Tailwind arbitrary values
+  orange: '#FE5000',
+  orangeHover: '#CC4000',
+  orangeLight: '#FE5000/10',  // For Tailwind arbitrary values
   black: '#000000',
   white: '#FFFFFF',
 } as const;
@@ -29,7 +29,7 @@ export const ZINC = {
 
 // Chart color palette (for Recharts, InlineChart, etc.)
 export const CHART_COLORS = [
-  '#FF5C00', // brand orange
+  '#FE5000', // brand orange
   '#3B82F6', // blue
   '#22C55E', // green
   '#EAB308', // yellow

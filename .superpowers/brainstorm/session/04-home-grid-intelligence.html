@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DI DataOS — Home Grid with Intelligence Summary</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0a0a0a; color: #e4e4e7; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 24px; }
+  h1 { color: #FE5000; font-size: 28px; margin-bottom: 8px; font-family: Georgia, serif; }
+  h2 { color: #a1a1aa; font-size: 18px; margin-bottom: 32px; font-weight: 400; }
+  h3 { color: #FE5000; font-size: 16px; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px; }
+  .subtitle { color: #71717a; font-size: 14px; margin-bottom: 24px; }
+  hr { border: none; border-top: 1px solid #27272a; margin: 40px 0; }
+
+  /* Full Shell Frame */
+  .shell {
+    background: #18181b; border: 1px solid #27272a; border-radius: 12px; overflow: hidden; margin-bottom: 32px;
+  }
+  .nova-bar {
+    background: linear-gradient(90deg, #1a1a2e 0%, #16213e 50%, #1a1a2e 100%);
+    border-bottom: 1px solid #FE5000; padding: 10px 16px;
+    display: flex; align-items: center; gap: 12px; font-size: 13px;
+  }
+  .nova-av { width: 30px; height: 30px; background: radial-gradient(circle, #FE5000, #cc4000); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; color: white; box-shadow: 0 0 12px rgba(254,80,0,0.3); }
+  .nova-input { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid #3f3f46; border-radius: 8px; padding: 7px 14px; color: #71717a; font-style: italic; font-size: 13px; }
+  .pill { padding: 4px 10px; border-radius: 5px; font-size: 11px; border: 1px solid transparent; }
+  .pill-o { background: rgba(254,80,0,0.08); border-color: rgba(254,80,0,0.2); color: #FE5000; }
+  .pill-p { background: rgba(168,85,247,0.08); border-color: rgba(168,85,247,0.2); color: #a855f7; }
+  .pill-g { background: rgba(34,197,94,0.08); border-color: rgba(34,197,94,0.2); color: #22c55e; }
+  .sm-icon { width: 30px; height: 30px; background: rgba(255,255,255,0.05); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #71717a; font-size: 14px; position: relative; }
+  .sm-badge { position: absolute; top: -2px; right: -2px; width: 14px; height: 14px; background: #FE5000; border-radius: 50%; font-size: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; }
+  .user-av { width: 30px; height: 30px; background: #27272a; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #a1a1aa; }
+
+  .main { display: flex; min-height: 700px; }
+  .rail { width: 46px; background: #111113; border-right: 1px solid #27272a; display: flex; flex-direction: column; align-items: center; padding: 10px 0; gap: 6px; }
+  .ri { width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 15px; color: #71717a; cursor: pointer; }
+  .ri.act { background: rgba(254,80,0,0.12); color: #FE5000; }
+  .rdiv { width: 20px; height: 1px; background: #27272a; margin: 3px 0; }
+  .hdot { width: 8px; height: 8px; border-radius: 50%; margin: 2px; }
+  .hg { background: #22c55e; box-shadow: 0 0 4px rgba(34,197,94,0.4); }
+  .hy { background: #eab308; box-shadow: 0 0 4px rgba(234,179,8,0.4); }
+
+  .workspace { flex: 1; display: flex; flex-direction: column; }
+  .tabs { background: #111113; border-bottom: 1px solid #27272a; display: flex; align-items: center; padding: 0 10px; height: 34px; }
+  .tab { padding: 7px 14px; font-size: 11px; color: #71717a; border-bottom: 2px solid transparent; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+  .tab.act { color: #e4e4e7; border-bottom-color: #FE5000; background: rgba(254,80,0,0.04); }
+  .content { flex: 1; padding: 24px; background: #0f0f11; overflow-y: auto; }
+
+  /* ====== INTELLIGENCE SUMMARY ====== */
+  .intel-summary {
+    background: linear-gradient(135deg, #1a1a2e 0%, #111827 60%, #1a1a2e 100%);
+    border: 1px solid #27272a;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .intel-summary::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, #FE5000 30%, #FE5000 70%, transparent);
+    opacity: 0.5;
+  }
+  .intel-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; }
+  .intel-greeting { font-size: 22px; font-weight: 700; }
+  .intel-subtitle { font-size: 13px; color: #71717a; margin-top: 4px; }
+  .intel-timestamp { font-size: 11px; color: #52525b; }
+
+  .intel-cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .intel-card {
+    background: rgba(0,0,0,0.3); border: 1px solid #27272a; border-radius: 8px; padding: 14px;
+  }
+  .intel-card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .intel-card-icon { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  .intel-card-title { font-size: 12px; font-weight: 600; }
+  .intel-card-body { font-size: 12px; color: #a1a1aa; line-height: 1.6; }
+  .intel-card-body strong { color: #e4e4e7; }
+
+  .ic-resume .intel-card-icon { background: rgba(254,80,0,0.15); color: #FE5000; }
+  .ic-resume .intel-card-title { color: #FE5000; }
+  .ic-changes .intel-card-icon { background: rgba(59,130,246,0.15); color: #3b82f6; }
+  .ic-changes .intel-card-title { color: #3b82f6; }
+  .ic-actions .intel-card-icon { background: rgba(234,179,8,0.15); color: #eab308; }
+  .ic-actions .intel-card-title { color: #eab308; }
+
+  .intel-activity { display: flex; gap: 16px; }
+  .activity-item {
+    flex: 1; display: flex; align-items: center; gap: 10px;
+    background: rgba(0,0,0,0.2); border-radius: 6px; padding: 8px 12px;
+    font-size: 11px; color: #a1a1aa; cursor: pointer;
+    border: 1px solid transparent; transition: border-color 0.2s;
+  }
+  .activity-item:hover { border-color: #3f3f46; }
+  .activity-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .ad-green { background: #22c55e; }
+  .ad-orange { background: #FE5000; }
+  .ad-blue { background: #3b82f6; }
+  .ad-purple { background: #a855f7; }
+  .activity-time { color: #52525b; margin-left: auto; white-space: nowrap; }
+
+  /* ====== MODULE GRID ====== */
+  .grid-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .grid-title { font-size: 14px; font-weight: 600; color: #a1a1aa; }
+  .grid-controls { display: flex; gap: 6px; }
+  .grid-btn { padding: 4px 10px; font-size: 11px; border-radius: 5px; background: #27272a; color: #71717a; cursor: pointer; }
+  .grid-btn.active { background: rgba(254,80,0,0.1); color: #FE5000; border: 1px solid rgba(254,80,0,0.2); }
+
+  .module-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+  .mtile {
+    background: #18181b; border: 1px solid #27272a; border-radius: 10px; padding: 16px;
+    cursor: pointer; transition: all 0.2s; position: relative;
+  }
+  .mtile:hover { border-color: #FE5000; transform: translateY(-2px); box-shadow: 0 4px 16px rgba(254,80,0,0.08); }
+  .mtile-pinned::after {
+    content: ''; position: absolute; top: 8px; right: 8px;
+    width: 16px; height: 16px; font-size: 10px;
+  }
+  .mtile-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 10px; }
+  .mtile-name { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
+  .mtile-desc { font-size: 11px; color: #71717a; margin-bottom: 8px; }
+  .mtile-footer { display: flex; align-items: center; gap: 6px; }
+  .mtile-badge { padding: 2px 7px; border-radius: 3px; font-size: 9px; font-weight: 600; }
+  .mb-live { background: rgba(34,197,94,0.12); color: #22c55e; }
+  .mb-dev { background: rgba(234,179,8,0.12); color: #eab308; }
+  .mtile-stat { font-size: 10px; color: #52525b; }
+  .mtile-pin { position: absolute; top: 10px; right: 10px; font-size: 12px; color: #FE5000; }
+  .mtile-notif { position: absolute; top: 10px; right: 28px; width: 16px; height: 16px; background: #ef4444; border-radius: 50%; font-size: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; }
+
+  .ti-fin .mtile-icon { background: rgba(34,197,94,0.12); color: #22c55e; }
+  .ti-ops .mtile-icon { background: rgba(59,130,246,0.12); color: #3b82f6; }
+  .ti-int .mtile-icon { background: rgba(168,85,247,0.12); color: #a855f7; }
+  .ti-com .mtile-icon { background: rgba(234,179,8,0.12); color: #eab308; }
+  .ti-adm .mtile-icon { background: rgba(239,68,68,0.12); color: #ef4444; }
+  .ti-por .mtile-icon { background: rgba(254,80,0,0.12); color: #FE5000; }
+  .ti-org .mtile-icon { background: rgba(6,182,212,0.12); color: #06b6d4; }
+  .ti-add { border: 2px dashed #27272a; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #52525b; }
+  .ti-add:hover { border-color: #FE5000; color: #FE5000; }
+
+  /* Annotations */
+  .anno-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .anno { background: #18181b; border: 1px solid #27272a; border-radius: 8px; padding: 16px; }
+  .anno h4 { font-size: 13px; color: #FE5000; margin-bottom: 8px; }
+  .anno p { font-size: 12px; color: #a1a1aa; line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<h1>Home Grid with Intelligence Summary</h1>
+<h2>Session continuity, change tracking, and action items — right when you land</h2>
+
+<div class="shell">
+  <div class="nova-bar">
+    <div class="nova-av">N</div>
+    <div class="nova-input">Ask Nova anything...</div>
+    <div class="pill pill-o">&#128161; 3 Alerts</div>
+    <div class="pill pill-p">&#129302; 4 Bots</div>
+    <div class="pill pill-g">&#9889; 8 Auto</div>
+    <div class="sm-icon">&#128276;<div class="sm-badge">7</div></div>
+    <div class="user-av">ET</div>
+  </div>
+
+  <div class="main">
+    <div class="rail">
+      <div class="ri act">&#127968;</div>
+      <div class="ri">&#128176;</div>
+      <div class="ri">&#128666;</div>
+      <div class="ri">&#128200;</div>
+      <div class="ri">&#128737;</div>
+      <div class="ri">&#9881;</div>
+      <div class="rdiv"></div>
+      <div class="ri">&#128172;</div>
+      <div class="ri">&#128269;</div>
+      <div style="flex:1;"></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 0;">
+        <div class="hdot hg"></div><div class="hdot hg"></div><div class="hdot hg"></div><div class="hdot hy"></div>
+      </div>
+    </div>
+
+    <div class="workspace">
+      <div class="tabs">
+        <div class="tab act">&#127968; Home</div>
+      </div>
+
+      <div class="content">
+        <!-- ====== INTELLIGENCE SUMMARY ====== -->
+        <div class="intel-summary">
+          <div class="intel-top">
+            <div>
+              <div class="intel-greeting">Good morning, Evan</div>
+              <div class="intel-subtitle">Here's what happened since you were last here &mdash; Tuesday at 11:42 PM</div>
+            </div>
+            <div class="intel-timestamp">April 1, 2026 &middot; 7:15 AM CDT</div>
+          </div>
+
+          <!-- Three Intelligence Cards -->
+          <div class="intel-cards">
+            <div class="intel-card ic-resume">
+              <div class="intel-card-header">
+                <div class="intel-card-icon">&#9654;</div>
+                <div class="intel-card-title">Resume Where You Left Off</div>
+              </div>
+              <div class="intel-card-body">
+                You were reviewing <strong>AP Aging</strong> in Financial Statements, looking at 61-90 day overdue invoices from Magellan Midstream.<br><br>
+                <span style="color:#FE5000;cursor:pointer;">&#8594; Jump back to AP Invoices</span>
+              </div>
+            </div>
+
+            <div class="intel-card ic-changes">
+              <div class="intel-card-header">
+                <div class="intel-card-icon">&#128260;</div>
+                <div class="intel-card-title">What Changed Overnight</div>
+              </div>
+              <div class="intel-card-body">
+                <strong>7 new invoices</strong> posted ($142K total)<br>
+                <strong>3 deliveries</strong> completed (Samsara confirmed)<br>
+                <strong>1 anomaly</strong>: DTN rack price spike on ULSD (+$0.12/gal)<br>
+                <strong>2 automation runs</strong> succeeded (Monthly Close prep, AR aging alert)
+              </div>
+            </div>
+
+            <div class="intel-card ic-actions">
+              <div class="intel-card-header">
+                <div class="intel-card-icon">&#9888;</div>
+                <div class="intel-card-title">Needs Your Attention</div>
+              </div>
+              <div class="intel-card-body">
+                <strong>4 AP invoices</strong> past Net-30 (Magellan, $142K)<br>
+                <strong>1 reconciliation</strong> exception flagged by Close bot<br>
+                <strong>2 Salesforce opps</strong> closing this week ($89K total)<br><br>
+                <span style="color:#eab308;cursor:pointer;">&#8594; View all 7 action items</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Activity Strip -->
+          <div class="intel-activity">
+            <div class="activity-item">
+              <div class="activity-dot ad-green"></div>
+              Monthly Close prep automation completed
+              <div class="activity-time">2h ago</div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot ad-orange"></div>
+              DTN rack price anomaly detected: ULSD +$0.12
+              <div class="activity-time">4h ago</div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot ad-blue"></div>
+              3 Samsara deliveries confirmed (BOL matched)
+              <div class="activity-time">6h ago</div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot ad-purple"></div>
+              AR aging alert: 2 accounts moved to 90+ days
+              <div class="activity-time">8h ago</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ====== MODULE GRID ====== -->
+        <div class="grid-header">
+          <div class="grid-title">Your Modules</div>
+          <div class="grid-controls">
+            <div class="grid-btn active">Grid</div>
+            <div class="grid-btn">List</div>
+            <div class="grid-btn">&#9881; Customize</div>
+          </div>
+        </div>
+
+        <!-- Pinned Section -->
+        <div style="font-size:11px;color:#52525b;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">&#9733; Pinned</div>
+        <div class="module-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px;">
+          <div class="mtile ti-fin">
+            <div class="mtile-pin">&#9733;</div>
+            <div class="mtile-notif">4</div>
+            <div class="mtile-icon">&#128176;</div>
+            <div class="mtile-name">Finance</div>
+            <div class="mtile-desc">GL, AP, AR, Statements, Close, Tax</div>
+            <div class="mtile-footer">
+              <div class="mtile-badge mb-live">LIVE</div>
+              <div class="mtile-stat">14 pages &middot; 4 alerts</div>
+            </div>
+          </div>
+          <div class="mtile ti-ops">
+            <div class="mtile-pin">&#9733;</div>
+            <div class="mtile-icon">&#128666;</div>
+            <div class="mtile-name">Operations</div>
+            <div class="mtile-desc">Fleet, Assets, Inventory, Contracts</div>
+            <div class="mtile-footer">
+              <div class="mtile-badge mb-live">LIVE</div>
+              <div class="mtile-stat">5 pages &middot; 160 vehicles</div>
+            </div>
+          </div>
+          <div class="mtile ti-int">
+            <div class="mtile-pin">&#9733;</div>
+            <div class="mtile-icon">&#128200;</div>
+            <div class="mtile-name">Intelligence</div>
+            <div class="mtile-desc">Executive, Market, Sales, Analytics</div>
+            <div class="mtile-footer">
+              <div class="mtile-badge mb-live">LIVE</div>
+              <div class="mtile-stat">8 pages &middot; 2 opps closing</div>
+            </div>
+          </div>
+          <div class="mtile ti-adm">
+            <div class="mtile-pin">&#9733;</div>
+            <div class="mtile-icon">&#9881;</div>
+            <div class="mtile-name">Admin</div>
+            <div class="mtile-desc">Users, Permissions, Health, Audit</div>
+            <div class="mtile-footer">
+              <div class="mtile-badge mb-live">LIVE</div>
+              <div class="mtile-stat">7 pages &middot; 37 users</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- All Modules Section -->
+        <div style="font-size:11px;color:#52525b;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">All Modules</div>
+        <div class="module-grid">
+          <div class="mtile ti-com">
+            <div class="mtile-icon">&#128737;</div>
+            <div class="mtile-name">Compliance</div>
+            <div class="mtile-desc">Evidence Vault, Audit, Controls</div>
+            <div class="mtile-footer">
+              <div class="mtile-badge mb-live">LIVE</div>
+              <div class="mtile-stat">4 pages</div>
+            </div>
+          </div>
+          <div class="mtile ti-org">
+            <div class="mtile-icon">&#128101;</div>
+            <div class="mtile-name">Organization</div>
+            <div class="mtile-desc">People, HR, Workstreams, Integrations</div>
+            <div class="mtile-footer">
+              <div class="mtile-badge mb-live">LIVE</div>
+              <div class="mtile-stat">4 pages &middot; 37 employees</div>
+            </div>
+          </div>
+          <div class="mtile ti-por">
+            <div class="mtile-icon">&#127760;</div>
+            <div class="mtile-name">Delta Portal</div>
+            <div class="mtile-desc">Customer orders, tracking, invoices</div>
+            <div class="mtile-footer">
+              <div class="mtile-badge mb-dev">IN DEV</div>
+              <div class="mtile-stat">spoke module</div>
+            </div>
+          </div>
+          <div class="mtile" style="border-color:#3f3f46;">
+            <div class="mtile-icon" style="background:rgba(113,113,122,0.12);color:#71717a;">&#128736;</div>
+            <div class="mtile-name">Equipment Tracker</div>
+            <div class="mtile-desc">Asset management, maintenance</div>
+            <div class="mtile-footer">
+              <div class="mtile-badge mb-live">DEPLOYED</div>
+              <div class="mtile-stat">spoke module</div>
+            </div>
+          </div>
+          <div class="mtile" style="border-color:#3f3f46;">
+            <div class="mtile-icon" style="background:rgba(113,113,122,0.12);color:#71717a;">&#128203;</div>
+            <div class="mtile-name">Platform</div>
+            <div class="mtile-desc">Dashboards, Sources, Glossary, Docs</div>
+            <div class="mtile-footer">
+              <div class="mtile-badge mb-live">LIVE</div>
+              <div class="mtile-stat">7 pages</div>
+            </div>
+          </div>
+          <div class="mtile" style="border-color:#3f3f46;">
+            <div class="mtile-icon" style="background:rgba(113,113,122,0.12);color:#71717a;">&#128218;</div>
+            <div class="mtile-name">Signal Map</div>
+            <div class="mtile-desc">OTED Assessment Platform</div>
+            <div class="mtile-footer">
+              <div class="mtile-badge mb-live">DEPLOYED</div>
+              <div class="mtile-stat">spoke module</div>
+            </div>
+          </div>
+          <div class="mtile ti-add">
+            <div style="font-size:24px;margin-bottom:6px;">+</div>
+            <div class="mtile-name">Add Module</div>
+            <div class="mtile-desc" style="color:inherit;">Marketplace</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<h3>Intelligence Summary Anatomy</h3>
+
+<div class="anno-grid">
+  <div class="anno">
+    <h4>&#9654; Resume Where You Left Off</h4>
+    <p>Tracks the user's last active module, page, and context (e.g., "reviewing AP aging for Magellan"). Stored as a lightweight session state object (module, page, scroll position, active filters, timestamp). One-click jump back. This is Nova's session continuity — it remembers what you were doing.</p>
+  </div>
+  <div class="anno">
+    <h4>&#128260; What Changed Overnight</h4>
+    <p>Aggregates events since last session: new invoices, completed deliveries, automation runs, data anomalies. Sourced from the Event Store once it's live — for now, pulled from gateway API diffs and automation logs. Grouped by category with counts. Clickable to drill into each change.</p>
+  </div>
+  <div class="anno">
+    <h4>&#9888; Needs Your Attention</h4>
+    <p>Action items surfaced by Nova: overdue invoices, reconciliation exceptions, closing opportunities, flagged anomalies. Each links directly to the relevant module/page. Badge count ("7 action items") persists on the Home tile in the Rail. This replaces the old dashboard's static KPI cards with dynamic, personalized intelligence.</p>
+  </div>
+  <div class="anno">
+    <h4>&#128200; Activity Timeline</h4>
+    <p>Horizontal strip of recent platform events — automation completions, anomaly detections, delivery confirmations, alert triggers. Real-time feed from the event stream. Clicking any item opens the relevant module. Timestamps are relative ("2h ago"). Filterable by source (automations, feeds, alerts).</p>
+  </div>
+</div>
+
+<hr>
+
+<h3>Module Grid Personalization</h3>
+
+<div class="anno-grid">
+  <div class="anno">
+    <h4>Per-User Configuration</h4>
+    <p><strong>Pinned modules</strong> float to top. <strong>Module order</strong> is draggable. <strong>Group visibility</strong> — users can hide modules they don't use. <strong>View mode</strong> — Grid (tiles) or List (compact rows). All stored in user preferences (existing <code>user-preferences.ts</code>). Admins can set role-based defaults (accountants see Finance pinned, ops sees Fleet pinned).</p>
+  </div>
+  <div class="anno">
+    <h4>Dynamic Groupings (Future)</h4>
+    <p>Module groups are data-driven, not hardcoded. Admin can create/rename/reorder groups. Users can override group assignments for their view. Groups can be role-scoped (HR group only visible to HR role). For now: 7 fixed groups matching the current nav structure. Schema supports arbitrary groups from day one so migration is config, not code.</p>
+  </div>
+</div>
+
+</body>
+</html>

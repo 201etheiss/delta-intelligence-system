@@ -123,7 +123,7 @@ export default function OpsConsolePage() {
       value: `${counts.active} / ${counts.total}`,
       subtext: `${typeof utilizationPct === 'number' ? utilizationPct.toFixed(0) : '0'}% utilization`,
       icon: Truck,
-      color: 'text-[#FF5C00]',
+      color: 'text-[#FE5000]',
     },
     {
       label: 'Idle Vehicles',
@@ -274,21 +274,21 @@ export default function OpsConsolePage() {
           <div className="flex items-center flex-wrap gap-3">
             <Link
               href="/fleet-map"
-              className="flex items-center gap-2 px-3 py-2 text-xs text-zinc-400 border border-[#27272A] rounded-lg hover:text-[#FF5C00] hover:border-[#FF5C00]/30 transition-colors"
+              className="flex items-center gap-2 px-3 py-2 text-xs text-zinc-400 border border-[#27272A] rounded-lg hover:text-[#FE5000] hover:border-[#FE5000]/30 transition-colors"
             >
               <MapPin size={14} />
               View Map
               <ArrowRight size={10} className="ml-1" />
             </Link>
             <button
-              className="flex items-center gap-2 px-3 py-2 text-xs text-zinc-400 border border-[#27272A] rounded-lg hover:text-[#FF5C00] hover:border-[#FF5C00]/30 transition-colors cursor-not-allowed opacity-60"
+              className="flex items-center gap-2 px-3 py-2 text-xs text-zinc-400 border border-[#27272A] rounded-lg hover:text-[#FE5000] hover:border-[#FE5000]/30 transition-colors cursor-not-allowed opacity-60"
               title="Maintenance scheduling coming soon"
             >
               <CalendarClock size={14} />
               Schedule Maintenance
             </button>
             <button
-              className="flex items-center gap-2 px-3 py-2 text-xs text-zinc-400 border border-[#27272A] rounded-lg hover:text-[#FF5C00] hover:border-[#FF5C00]/30 transition-colors cursor-not-allowed opacity-60"
+              className="flex items-center gap-2 px-3 py-2 text-xs text-zinc-400 border border-[#27272A] rounded-lg hover:text-[#FE5000] hover:border-[#FE5000]/30 transition-colors cursor-not-allowed opacity-60"
               title="Route optimization coming soon"
             >
               <Route size={14} />
@@ -298,7 +298,7 @@ export default function OpsConsolePage() {
               href="https://equipment-tracker-tau.vercel.app"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-3 py-2 text-xs text-zinc-400 border border-[#27272A] rounded-lg hover:text-[#FF5C00] hover:border-[#FF5C00]/30 transition-colors"
+              className="flex items-center gap-2 px-3 py-2 text-xs text-zinc-400 border border-[#27272A] rounded-lg hover:text-[#FE5000] hover:border-[#FE5000]/30 transition-colors"
             >
               <ExternalLink size={14} />
               Equipment Tracker
@@ -445,7 +445,7 @@ export default function OpsConsolePage() {
                   return (
                     <div
                       key={`${v.name}-${i}`}
-                      className="flex items-center gap-3 rounded-md border border-[#27272A] bg-[#09090B] p-3 hover:border-[#FF5C00]/20 transition-colors"
+                      className="flex items-center gap-3 rounded-md border border-[#27272A] bg-[#09090B] p-3 hover:border-[#FE5000]/20 transition-colors"
                     >
                       <div className={`w-8 h-8 rounded-md flex items-center justify-center ${style.bg}`}>
                         <Truck size={14} className={style.text} />
@@ -531,21 +531,21 @@ export default function OpsConsolePage() {
             <div className="space-y-2">
               <Link
                 href="/fleet-map"
-                className="flex items-center gap-3 rounded-lg border border-[#27272A] bg-[#18181B] p-3 hover:border-[#FF5C00]/40 transition-colors group"
+                className="flex items-center gap-3 rounded-lg border border-[#27272A] bg-[#18181B] p-3 hover:border-[#FE5000]/40 transition-colors group"
               >
-                <MapPin size={14} className="text-zinc-600 group-hover:text-[#FF5C00] transition-colors" />
+                <MapPin size={14} className="text-zinc-600 group-hover:text-[#FE5000] transition-colors" />
                 <span className="text-sm text-zinc-300 group-hover:text-white transition-colors">
                   Fleet Map
                 </span>
-                <ArrowRight size={12} className="ml-auto text-zinc-700 group-hover:text-[#FF5C00] transition-colors" />
+                <ArrowRight size={12} className="ml-auto text-zinc-700 group-hover:text-[#FE5000] transition-colors" />
               </Link>
               <a
                 href="https://equipment-tracker-tau.vercel.app"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 rounded-lg border border-[#27272A] bg-[#18181B] p-3 hover:border-[#FF5C00]/40 transition-colors group"
+                className="flex items-center gap-3 rounded-lg border border-[#27272A] bg-[#18181B] p-3 hover:border-[#FE5000]/40 transition-colors group"
               >
-                <ExternalLink size={14} className="text-zinc-600 group-hover:text-[#FF5C00] transition-colors" />
+                <ExternalLink size={14} className="text-zinc-600 group-hover:text-[#FE5000] transition-colors" />
                 <span className="text-sm text-zinc-300 group-hover:text-white transition-colors">
                   Equipment Tracker
                 </span>

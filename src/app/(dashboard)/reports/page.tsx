@@ -41,7 +41,7 @@ function renderContent(raw: string): string {
   html = html.replace(/^[-] (.+)$/gm, '<li class="ml-4 list-disc">$1</li>');
   html = html.replace(/^\d+\. (.+)$/gm, '<li class="ml-4 list-decimal">$1</li>');
   html = html.replace(/^### (.+)$/gm, '<h3 class="font-semibold text-sm mt-3 mb-1 text-zinc-900 dark:text-zinc-100">$1</h3>');
-  html = html.replace(/^## (.+)$/gm, '<h2 class="font-semibold text-base mt-4 mb-1 text-zinc-900 dark:text-zinc-100 border-b border-[#FF5C00] pb-1">$1</h2>');
+  html = html.replace(/^## (.+)$/gm, '<h2 class="font-semibold text-base mt-4 mb-1 text-zinc-900 dark:text-zinc-100 border-b border-[#FE5000] pb-1">$1</h2>');
   html = html.replace(/^# (.+)$/gm, '<h1 class="font-bold text-lg mt-3 mb-2 text-zinc-900 dark:text-zinc-100">$1</h1>');
 
   html = html.replace(
@@ -257,7 +257,7 @@ export default function ReportsPage() {
       <div className="w-[420px] shrink-0 flex flex-col border-r border-zinc-200 dark:border-[#27272A] bg-zinc-50 dark:bg-[#18181B]">
         <div className="px-5 py-4 border-b border-zinc-200 dark:border-[#27272A]">
           <div className="flex items-center gap-2 mb-1">
-            <FileBarChart size={18} className="text-[#FF5C00]" />
+            <FileBarChart size={18} className="text-[#FE5000]" />
             <h2 className="text-base font-semibold text-zinc-900 dark:text-white">AI Report Builder</h2>
           </div>
           <p className="text-xs text-zinc-500 dark:text-zinc-400">Describe the report, then iterate</p>
@@ -273,14 +273,14 @@ export default function ReportsPage() {
               onChange={(e) => setPrompt(e.target.value)}
               placeholder="e.g., AR aging by customer with 30/60/90 buckets, sorted by total outstanding"
               rows={4}
-              className="w-full rounded-lg border border-zinc-300 dark:border-[#3F3F46] bg-white dark:bg-[#27272A] px-3 py-2 text-sm text-zinc-900 dark:text-white placeholder-zinc-400 focus:border-[#FF5C00] focus:ring-1 focus:ring-[#FF5C00]/30 resize-none"
+              className="w-full rounded-lg border border-zinc-300 dark:border-[#3F3F46] bg-white dark:bg-[#27272A] px-3 py-2 text-sm text-zinc-900 dark:text-white placeholder-zinc-400 focus:border-[#FE5000] focus:ring-1 focus:ring-[#FE5000]/30 resize-none"
             />
           </div>
 
           <button
             onClick={generateReport}
             disabled={loading || !prompt.trim()}
-            className="w-full flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-xs font-semibold bg-[#FF5C00] text-white hover:bg-[#E54800] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="w-full flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-xs font-semibold bg-[#FE5000] text-white hover:bg-[#CC4000] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {loading ? (
               <><Loader2 size={16} className="animate-spin" /> Generating...</>
@@ -299,12 +299,12 @@ export default function ReportsPage() {
                 onChange={(e) => setRefinement(e.target.value)}
                 placeholder="e.g., add YoY column, sort by revenue desc, highlight overdue > $50K"
                 rows={2}
-                className="w-full rounded-lg border border-zinc-300 dark:border-[#3F3F46] bg-white dark:bg-[#27272A] px-3 py-2 text-sm text-zinc-900 dark:text-white placeholder-zinc-400 focus:border-[#FF5C00] focus:ring-1 focus:ring-[#FF5C00]/30 resize-none"
+                className="w-full rounded-lg border border-zinc-300 dark:border-[#3F3F46] bg-white dark:bg-[#27272A] px-3 py-2 text-sm text-zinc-900 dark:text-white placeholder-zinc-400 focus:border-[#FE5000] focus:ring-1 focus:ring-[#FE5000]/30 resize-none"
               />
               <button
                 onClick={refineReport}
                 disabled={refining || !refinement.trim()}
-                className="mt-2 w-full flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium border border-[#FF5C00] text-[#FF5C00] hover:bg-[#FF5C00]/5 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="mt-2 w-full flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium border border-[#FE5000] text-[#FE5000] hover:bg-[#FE5000]/5 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 {refining ? (
                   <><Loader2 size={14} className="animate-spin" /> Refining...</>
@@ -352,7 +352,7 @@ export default function ReportsPage() {
               {!showSaveTemplate ? (
                 <button
                   onClick={() => setShowSaveTemplate(true)}
-                  className="w-full text-xs text-zinc-500 hover:text-[#FF5C00] transition-colors"
+                  className="w-full text-xs text-zinc-500 hover:text-[#FE5000] transition-colors"
                 >
                   Save as Template
                 </button>
@@ -376,7 +376,7 @@ export default function ReportsPage() {
                     <button
                       onClick={handleSaveTemplate}
                       disabled={savingTemplate || !templateName.trim()}
-                      className="flex-1 rounded-lg px-3 py-1.5 text-xs font-medium bg-[#FF5C00] text-white hover:bg-[#E54800] disabled:opacity-50 transition-colors"
+                      className="flex-1 rounded-lg px-3 py-1.5 text-xs font-medium bg-[#FE5000] text-white hover:bg-[#CC4000] disabled:opacity-50 transition-colors"
                     >
                       {savingTemplate ? 'Saving...' : 'Save'}
                     </button>
@@ -423,7 +423,7 @@ export default function ReportsPage() {
         <div className="flex-1 overflow-y-auto">
           {report ? (
             <div className="max-w-[800px] mx-auto px-8 py-6">
-              <div className="h-1 w-16 bg-[#FF5C00] mb-6 rounded-full" />
+              <div className="h-1 w-16 bg-[#FE5000] mb-6 rounded-full" />
               <div
                 className="prose prose-sm max-w-none text-zinc-800 dark:text-zinc-200 leading-relaxed"
                 dangerouslySetInnerHTML={{ __html: renderedHtml }}

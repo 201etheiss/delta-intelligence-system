@@ -151,7 +151,7 @@ export default function VaultPage() {
           </button>
           <button
             onClick={() => setShowUpload(!showUpload)}
-            className="flex items-center gap-2 bg-[#FE5000] hover:bg-[#E54800] rounded-lg px-4 py-2 text-sm text-white transition-colors"
+            className="flex items-center gap-2 bg-[#FE5000] hover:bg-[#CC4000] rounded-lg px-4 py-2 text-sm text-white transition-colors"
           >
             <Upload className="w-4 h-4" />
             Upload

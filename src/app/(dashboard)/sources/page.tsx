@@ -175,7 +175,7 @@ export default function SourcesPage() {
             <button
               onClick={runCrawl}
               disabled={crawling}
-              className="px-4 py-1.5 text-xs font-medium rounded-lg bg-[#FF5C00] text-white hover:bg-[#E54800] disabled:opacity-50 transition-colors"
+              className="px-4 py-1.5 text-xs font-medium rounded-lg bg-[#FE5000] text-white hover:bg-[#CC4000] disabled:opacity-50 transition-colors"
             >
               {crawling ? 'Crawling...' : 'Re-index All'}
             </button>
@@ -211,7 +211,7 @@ export default function SourcesPage() {
             return (
               <div
                 key={source.id}
-                className="flex items-center gap-3 rounded-lg border border-[#27272A] bg-[#18181B] p-4 hover:border-[#FF5C00]/30 transition-all"
+                className="flex items-center gap-3 rounded-lg border border-[#27272A] bg-[#18181B] p-4 hover:border-[#FE5000]/30 transition-all"
               >
                 {/* Status dot */}
                 <div
@@ -221,7 +221,7 @@ export default function SourcesPage() {
 
                 {/* Icon */}
                 <div className="w-9 h-9 rounded-lg bg-[#27272A] flex items-center justify-center shrink-0">
-                  <source.icon size={16} className="text-[#FF5C00]" />
+                  <source.icon size={16} className="text-[#FE5000]" />
                 </div>
 
                 {/* Details */}

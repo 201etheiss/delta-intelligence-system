@@ -122,7 +122,7 @@ interface ModuleCategory {
 const MODULE_MAP: ModuleCategory[] = [
   {
     label: 'Intelligence',
-    color: '#FF5C00',
+    color: '#FE5000',
     modules: [
       { name: 'Chat', href: '/chat' },
       { name: 'Digest', href: '/digest' },
@@ -426,8 +426,8 @@ function OverviewCard({ label, value, sub, icon: Icon }: { label: string; value:
   return (
     <div className="rounded-lg border border-[#27272A] bg-[#18181B] p-4">
       <div className="flex items-center gap-2 mb-2">
-        <div className="w-7 h-7 rounded-lg bg-[#FF5C00]/10 flex items-center justify-center">
-          <Icon size={14} className="text-[#FF5C00]" />
+        <div className="w-7 h-7 rounded-lg bg-[#FE5000]/10 flex items-center justify-center">
+          <Icon size={14} className="text-[#FE5000]" />
         </div>
         <span className="text-[11px] uppercase tracking-wider text-[#71717A] font-medium">{label}</span>
       </div>
@@ -501,7 +501,7 @@ function EngineList({ engines }: { engines: string[] }) {
   return (
     <div className="rounded-lg border border-[#27272A] bg-[#18181B] p-3.5">
       <h3 className="text-xs font-semibold uppercase tracking-wider text-[#71717A] mb-2 flex items-center gap-2">
-        <Cpu size={14} className="text-[#FF5C00]" />
+        <Cpu size={14} className="text-[#FE5000]" />
         Accounting Engines ({engines.length}/20)
       </h3>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
@@ -523,7 +523,7 @@ function DataFlowDiagram() {
   return (
     <div className="rounded-lg border border-[#27272A] bg-[#18181B] p-3.5">
       <h3 className="text-xs font-semibold uppercase tracking-wider text-[#71717A] mb-2 flex items-center gap-2">
-        <Route size={14} className="text-[#FF5C00]" />
+        <Route size={14} className="text-[#FE5000]" />
         Data Flow
       </h3>
       <pre className="text-[11px] font-mono text-[#A1A1AA] leading-relaxed overflow-x-auto">
@@ -545,7 +545,7 @@ function ModuleMapSection({ categories }: { categories: ModuleCategory[] }) {
   return (
     <div className="rounded-lg border border-[#27272A] bg-[#18181B] p-3.5">
       <h3 className="text-xs font-semibold uppercase tracking-wider text-[#71717A] mb-2.5 flex items-center gap-2">
-        <Layers size={14} className="text-[#FF5C00]" />
+        <Layers size={14} className="text-[#FE5000]" />
         Module Map ({totalModules} pages across {categories.length} categories)
       </h3>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -561,7 +561,7 @@ function ModuleMapSection({ categories }: { categories: ModuleCategory[] }) {
                 <Link
                   key={mod.href}
                   href={mod.href}
-                  className="flex items-center gap-1.5 px-2 py-1 rounded text-[11px] text-[#A1A1AA] hover:text-[#FF5C00] hover:bg-[#27272A]/50 transition-colors"
+                  className="flex items-center gap-1.5 px-2 py-1 rounded text-[11px] text-[#A1A1AA] hover:text-[#FE5000] hover:bg-[#27272A]/50 transition-colors"
                 >
                   <ArrowRight size={8} className="shrink-0 opacity-50" />
                   {mod.name}
@@ -684,7 +684,7 @@ export default function PlatformPage() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-bold text-white flex items-center gap-2">
-            <Globe size={20} className="text-[#FF5C00]" />
+            <Globe size={20} className="text-[#FE5000]" />
             Platform Hub
           </h2>
           <p className="mt-0.5 text-sm text-[#71717A]">
@@ -698,7 +698,7 @@ export default function PlatformPage() {
         <button
           onClick={() => fetchStatus(true)}
           disabled={refreshing}
-          className="flex items-center gap-1.5 text-xs text-[#71717A] hover:text-[#FF5C00] transition-colors disabled:opacity-50"
+          className="flex items-center gap-1.5 text-xs text-[#71717A] hover:text-[#FE5000] transition-colors disabled:opacity-50"
         >
           <RefreshCw size={14} className={refreshing ? 'animate-spin' : ''} />
           Refresh
@@ -709,8 +709,8 @@ export default function PlatformPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <div className="rounded-lg border border-[#27272A] bg-[#18181B] p-4">
           <div className="flex items-center gap-2 mb-2">
-            <div className="w-7 h-7 rounded-lg bg-[#FF5C00]/10 flex items-center justify-center">
-              <Activity size={14} className="text-[#FF5C00]" />
+            <div className="w-7 h-7 rounded-lg bg-[#FE5000]/10 flex items-center justify-center">
+              <Activity size={14} className="text-[#FE5000]" />
             </div>
             <span className="text-[11px] uppercase tracking-wider text-[#71717A] font-medium">Overall Status</span>
           </div>
@@ -745,8 +745,8 @@ export default function PlatformPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <div className="rounded-lg border border-[#27272A] bg-[#18181B] p-4">
           <div className="flex items-center gap-2 mb-2">
-            <div className="w-7 h-7 rounded-lg bg-[#FF5C00]/10 flex items-center justify-center">
-              <Zap size={14} className="text-[#FF5C00]" />
+            <div className="w-7 h-7 rounded-lg bg-[#FE5000]/10 flex items-center justify-center">
+              <Zap size={14} className="text-[#FE5000]" />
             </div>
             <span className="text-[11px] uppercase tracking-wider text-[#71717A] font-medium">API Calls (24h)</span>
           </div>
@@ -760,8 +760,8 @@ export default function PlatformPage() {
 
         <div className="rounded-lg border border-[#27272A] bg-[#18181B] p-4">
           <div className="flex items-center gap-2 mb-2">
-            <div className="w-7 h-7 rounded-lg bg-[#FF5C00]/10 flex items-center justify-center">
-              <BarChart size={14} className="text-[#FF5C00]" />
+            <div className="w-7 h-7 rounded-lg bg-[#FE5000]/10 flex items-center justify-center">
+              <BarChart size={14} className="text-[#FE5000]" />
             </div>
             <span className="text-[11px] uppercase tracking-wider text-[#71717A] font-medium">Cache Hit Rate</span>
           </div>
@@ -772,8 +772,8 @@ export default function PlatformPage() {
 
         <div className="rounded-lg border border-[#27272A] bg-[#18181B] p-4">
           <div className="flex items-center gap-2 mb-2">
-            <div className="w-7 h-7 rounded-lg bg-[#FF5C00]/10 flex items-center justify-center">
-              <AlertCircle size={14} className="text-[#FF5C00]" />
+            <div className="w-7 h-7 rounded-lg bg-[#FE5000]/10 flex items-center justify-center">
+              <AlertCircle size={14} className="text-[#FE5000]" />
             </div>
             <span className="text-[11px] uppercase tracking-wider text-[#71717A] font-medium">Errors (24h)</span>
           </div>
@@ -784,8 +784,8 @@ export default function PlatformPage() {
 
         <div className="rounded-lg border border-[#27272A] bg-[#18181B] p-4">
           <div className="flex items-center gap-2 mb-2">
-            <div className="w-7 h-7 rounded-lg bg-[#FF5C00]/10 flex items-center justify-center">
-              <Puzzle size={14} className="text-[#FF5C00]" />
+            <div className="w-7 h-7 rounded-lg bg-[#FE5000]/10 flex items-center justify-center">
+              <Puzzle size={14} className="text-[#FE5000]" />
             </div>
             <span className="text-[11px] uppercase tracking-wider text-[#71717A] font-medium">Plugins</span>
           </div>
@@ -801,7 +801,7 @@ export default function PlatformPage() {
       {/* Service Grid */}
       <div>
         <h3 className="text-xs font-semibold uppercase tracking-wider text-[#71717A] mb-2 flex items-center gap-2">
-          <Server size={14} className="text-[#FF5C00]" />
+          <Server size={14} className="text-[#FE5000]" />
           Data Services ({connectedCount}/{totalCount} connected)
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -837,7 +837,7 @@ export default function PlatformPage() {
             <Link
               key={link.href}
               href={link.href}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] text-[#A1A1AA] border border-[#27272A] rounded-lg hover:text-[#FF5C00] hover:border-[#FF5C00]/30 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] text-[#A1A1AA] border border-[#27272A] rounded-lg hover:text-[#FE5000] hover:border-[#FE5000]/30 transition-colors"
             >
               {link.label}
               <ArrowRight size={10} />
@@ -861,7 +861,7 @@ export default function PlatformPage() {
                 <Wrapper
                   key={app.name}
                   {...wrapperProps}
-                  className="rounded-lg border border-[#27272A] bg-[#18181B] p-3.5 hover:border-[#FF5C00]/40 transition-all cursor-pointer group"
+                  className="rounded-lg border border-[#27272A] bg-[#18181B] p-3.5 hover:border-[#FE5000]/40 transition-all cursor-pointer group"
                   onClick={
                     !app.external
                       ? () => {
@@ -872,11 +872,11 @@ export default function PlatformPage() {
                 >
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-lg bg-[#FF5C00]/10 flex items-center justify-center">
-                        <app.icon size={16} className="text-[#FF5C00]" />
+                      <div className="w-8 h-8 rounded-lg bg-[#FE5000]/10 flex items-center justify-center">
+                        <app.icon size={16} className="text-[#FE5000]" />
                       </div>
                       <div>
-                        <div className="text-xs font-semibold text-white group-hover:text-[#FF5C00] transition-colors">
+                        <div className="text-xs font-semibold text-white group-hover:text-[#FE5000] transition-colors">
                           {app.name}
                         </div>
                         <div className="text-[11px] text-[#71717A]">{app.description}</div>
@@ -889,9 +889,9 @@ export default function PlatformPage() {
                       <span className="text-[11px] font-mono text-[#A1A1AA]">{app.metric}</span>
                     )}
                     {app.external ? (
-                      <ExternalLink size={12} className="text-[#52525B] group-hover:text-[#FF5C00] transition-colors ml-auto" />
+                      <ExternalLink size={12} className="text-[#52525B] group-hover:text-[#FE5000] transition-colors ml-auto" />
                     ) : (
-                      <ArrowRight size={12} className="text-[#52525B] group-hover:text-[#FF5C00] transition-colors ml-auto" />
+                      <ArrowRight size={12} className="text-[#52525B] group-hover:text-[#FE5000] transition-colors ml-auto" />
                     )}
                   </div>
                 </Wrapper>

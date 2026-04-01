@@ -199,8 +199,8 @@ export default function AssistantPage() {
       <div className="flex flex-col flex-1 min-w-0">
         {/* Header */}
         <div className="flex items-center gap-3 px-6 py-4 border-b border-[#27272A]">
-          <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-[#FF5C00]/10">
-            <Bot size={20} className="text-[#FF5C00]" />
+          <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-[#FE5000]/10">
+            <Bot size={20} className="text-[#FE5000]" />
           </div>
           <div>
             <h2 className="text-white font-semibold text-sm">{assistantName}</h2>
@@ -214,8 +214,8 @@ export default function AssistantPage() {
         <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
           {messages.length === 0 && (
             <div className="flex flex-col items-center justify-center h-full gap-3 text-center">
-              <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-[#FF5C00]/10">
-                <Bot size={32} className="text-[#FF5C00]" />
+              <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-[#FE5000]/10">
+                <Bot size={32} className="text-[#FE5000]" />
               </div>
               <div>
                 <h3 className="text-white font-semibold text-lg mb-1">
@@ -233,7 +233,7 @@ export default function AssistantPage() {
                     onClick={() => applyQuickAction(prompt)}
                     className="flex items-center gap-2 px-3 py-2 rounded-lg border border-[#27272A] bg-[#18181B] hover:bg-[#27272A] text-[#A1A1AA] hover:text-white text-sm transition-colors text-left"
                   >
-                    <Icon size={16} className="text-[#FF5C00] shrink-0" />
+                    <Icon size={16} className="text-[#FE5000] shrink-0" />
                     {label}
                   </button>
                 ))}
@@ -258,7 +258,7 @@ export default function AssistantPage() {
                   {(msg.actions ?? []).map((action, j) => (
                     <div
                       key={j}
-                      className="flex items-center gap-1.5 text-xs text-[#FF5C00]"
+                      className="flex items-center gap-1.5 text-xs text-[#FE5000]"
                     >
                       <ChevronRight size={12} />
                       <span>{action.description}</span>
@@ -271,11 +271,11 @@ export default function AssistantPage() {
 
           {loading && (
             <div className="flex gap-3">
-              <div className="flex items-start justify-center w-7 h-7 rounded-md bg-[#FF5C00]/10 shrink-0 mt-0.5">
-                <Bot size={14} className="text-[#FF5C00] mt-1.5" />
+              <div className="flex items-start justify-center w-7 h-7 rounded-md bg-[#FE5000]/10 shrink-0 mt-0.5">
+                <Bot size={14} className="text-[#FE5000] mt-1.5" />
               </div>
               <div className="bg-[#18181B] border border-[#27272A] rounded-lg px-3 py-2">
-                <Loader2 size={16} className="text-[#FF5C00] animate-spin" />
+                <Loader2 size={16} className="text-[#FE5000] animate-spin" />
               </div>
             </div>
           )}
@@ -293,7 +293,7 @@ export default function AssistantPage() {
               onKeyDown={handleKeyDown}
               placeholder="Ask your assistant anything..."
               rows={1}
-              className="flex-1 bg-[#18181B] border border-[#27272A] rounded-lg px-3 py-2 text-sm text-white placeholder-[#52525B] outline-none resize-none focus:border-[#FF5C00]/50 min-h-[44px] max-h-[120px]"
+              className="flex-1 bg-[#18181B] border border-[#27272A] rounded-lg px-3 py-2 text-sm text-white placeholder-[#52525B] outline-none resize-none focus:border-[#FE5000]/50 min-h-[44px] max-h-[120px]"
               style={{ height: 'auto', minHeight: '44px' }}
               onInput={(e) => {
                 const target = e.target as HTMLTextAreaElement;
@@ -304,7 +304,7 @@ export default function AssistantPage() {
             <button
               onClick={sendMessage}
               disabled={loading || !input.trim()}
-              className="flex items-center justify-center w-10 h-10 rounded-lg bg-[#FF5C00] text-white hover:bg-[#E54800] disabled:opacity-40 disabled:cursor-not-allowed transition-colors shrink-0"
+              className="flex items-center justify-center w-10 h-10 rounded-lg bg-[#FE5000] text-white hover:bg-[#CC4000] disabled:opacity-40 disabled:cursor-not-allowed transition-colors shrink-0"
             >
               <Send size={16} />
             </button>
@@ -320,14 +320,14 @@ export default function AssistantPage() {
             onClick={() => setSidebarTab('reminders')}
             className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-3 text-xs font-medium transition-colors ${
               sidebarTab === 'reminders'
-                ? 'text-[#FF5C00] border-b-2 border-[#FF5C00]'
+                ? 'text-[#FE5000] border-b-2 border-[#FE5000]'
                 : 'text-[#71717A] dark:text-[#A1A1AA] hover:text-white'
             }`}
           >
             <Bell size={14} />
             Reminders
             {reminders.length > 0 && (
-              <span className="ml-1 px-1.5 py-0.5 rounded-full bg-[#FF5C00]/10 text-[#FF5C00] text-[10px] font-semibold">
+              <span className="ml-1 px-1.5 py-0.5 rounded-full bg-[#FE5000]/10 text-[#FE5000] text-[10px] font-semibold">
                 {reminders.length}
               </span>
             )}
@@ -336,7 +336,7 @@ export default function AssistantPage() {
             onClick={() => setSidebarTab('learnings')}
             className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-3 text-xs font-medium transition-colors ${
               sidebarTab === 'learnings'
-                ? 'text-[#FF5C00] border-b-2 border-[#FF5C00]'
+                ? 'text-[#FE5000] border-b-2 border-[#FE5000]'
                 : 'text-[#71717A] dark:text-[#A1A1AA] hover:text-white'
             }`}
           >
@@ -381,7 +381,7 @@ export default function AssistantPage() {
                   <div className="flex gap-1">
                     <button
                       onClick={() => dismissReminder(rem.id)}
-                      className="text-[10px] text-[#71717A] dark:text-[#A1A1AA] hover:text-[#FF5C00] transition-colors"
+                      className="text-[10px] text-[#71717A] dark:text-[#A1A1AA] hover:text-[#FE5000] transition-colors"
                     >
                       Dismiss
                     </button>

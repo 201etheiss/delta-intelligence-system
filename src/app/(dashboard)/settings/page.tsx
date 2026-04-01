@@ -141,7 +141,7 @@ export default function SettingsPage() {
     <div className="h-full overflow-y-auto bg-[#09090B]">
       <div className="max-w-2xl mx-auto px-6 py-8">
         <div className="flex items-center gap-3 mb-8">
-          <Settings size={24} className="text-[#FF5C00]" />
+          <Settings size={24} className="text-[#FE5000]" />
           <h1 className="text-lg font-semibold text-white">Settings</h1>
         </div>
 
@@ -158,7 +158,7 @@ export default function SettingsPage() {
               <select
                 value={prefs.defaultModel}
                 onChange={(e) => updateField('defaultModel', e.target.value as ModelPreference)}
-                className="bg-[#18181B] border border-[#27272A] rounded-md px-3 py-2 text-sm text-white focus:border-[#FF5C00]/50 focus:outline-none w-full"
+                className="bg-[#18181B] border border-[#27272A] rounded-md px-3 py-2 text-sm text-white focus:border-[#FE5000]/50 focus:outline-none w-full"
               >
                 {MODEL_OPTIONS.map((o) => (
                   <option key={o.value} value={o.value}>{o.label}</option>
@@ -171,7 +171,7 @@ export default function SettingsPage() {
               <select
                 value={prefs.timezone}
                 onChange={(e) => updateField('timezone', e.target.value)}
-                className="bg-[#18181B] border border-[#27272A] rounded-md px-3 py-2 text-sm text-white focus:border-[#FF5C00]/50 focus:outline-none w-full"
+                className="bg-[#18181B] border border-[#27272A] rounded-md px-3 py-2 text-sm text-white focus:border-[#FE5000]/50 focus:outline-none w-full"
               >
                 {TIMEZONE_OPTIONS.map((tz) => (
                   <option key={tz} value={tz}>{tz}</option>
@@ -184,7 +184,7 @@ export default function SettingsPage() {
               <select
                 value={prefs.emailDigest}
                 onChange={(e) => updateField('emailDigest', e.target.value as DigestFrequency)}
-                className="bg-[#18181B] border border-[#27272A] rounded-md px-3 py-2 text-sm text-white focus:border-[#FF5C00]/50 focus:outline-none w-full"
+                className="bg-[#18181B] border border-[#27272A] rounded-md px-3 py-2 text-sm text-white focus:border-[#FE5000]/50 focus:outline-none w-full"
               >
                 {DIGEST_OPTIONS.map((o) => (
                   <option key={o.value} value={o.value}>{o.label}</option>
@@ -197,7 +197,7 @@ export default function SettingsPage() {
               <select
                 value={prefs.preferredFormat}
                 onChange={(e) => updateField('preferredFormat', e.target.value as ExportFormat)}
-                className="bg-[#18181B] border border-[#27272A] rounded-md px-3 py-2 text-sm text-white focus:border-[#FF5C00]/50 focus:outline-none w-full"
+                className="bg-[#18181B] border border-[#27272A] rounded-md px-3 py-2 text-sm text-white focus:border-[#FE5000]/50 focus:outline-none w-full"
               >
                 {FORMAT_OPTIONS.map((o) => (
                   <option key={o.value} value={o.value}>{o.label}</option>
@@ -210,7 +210,7 @@ export default function SettingsPage() {
               <select
                 value={prefs.defaultDateRange}
                 onChange={(e) => updateField('defaultDateRange', e.target.value as DateRangeDefault)}
-                className="bg-[#18181B] border border-[#27272A] rounded-md px-3 py-2 text-sm text-white focus:border-[#FF5C00]/50 focus:outline-none w-full"
+                className="bg-[#18181B] border border-[#27272A] rounded-md px-3 py-2 text-sm text-white focus:border-[#FE5000]/50 focus:outline-none w-full"
               >
                 {DATE_RANGE_OPTIONS.map((o) => (
                   <option key={o.value} value={o.value}>{o.label}</option>
@@ -233,7 +233,7 @@ export default function SettingsPage() {
                   localStorage.setItem('di_dark_mode', String(next));
                 }}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  prefs.darkMode ? 'bg-[#FF5C00]' : 'bg-[#27272A]'
+                  prefs.darkMode ? 'bg-[#FE5000]' : 'bg-[#27272A]'
                 }`}
               >
                 <span
@@ -249,7 +249,7 @@ export default function SettingsPage() {
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="flex items-center gap-2 px-6 py-2.5 rounded-md bg-[#FF5C00] text-white font-medium text-sm hover:bg-[#E54800] transition-colors disabled:opacity-50"
+                className="flex items-center gap-2 px-6 py-2.5 rounded-md bg-[#FE5000] text-white font-medium text-sm hover:bg-[#CC4000] transition-colors disabled:opacity-50"
               >
                 {saved ? (
                   <>

@@ -92,7 +92,7 @@ export default function ExportBar({ content, title, onExport, compact = false }:
             key={f.id}
             onClick={() => handleExport(f.id)}
             disabled={!!exporting}
-            className="text-[10px] px-1.5 py-0.5 rounded border border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:border-[#FF5C00]/40 hover:text-[#FF5C00] hover:bg-[#FF5C00]/5 dark:hover:bg-[#FF5C00]/10 transition-colors disabled:opacity-50"
+            className="text-[10px] px-1.5 py-0.5 rounded border border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:border-[#FE5000]/40 hover:text-[#FE5000] hover:bg-[#FE5000]/5 dark:hover:bg-[#FE5000]/10 transition-colors disabled:opacity-50"
           >
             {exporting === f.id ? '...' : f.id === 'copy' ? (copied ? 'Copied' : f.label) : f.label}
           </button>
@@ -112,14 +112,14 @@ export default function ExportBar({ content, title, onExport, compact = false }:
               key={f.id}
               onClick={() => handleExport(f.id)}
               disabled={!!exporting}
-              className="text-[11px] px-3 py-1.5 rounded-md border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 font-medium hover:border-[#FF5C00]/50 hover:text-[#FF5C00] hover:bg-[#FF5C00]/5 dark:hover:bg-[#FF5C00]/10 transition-colors disabled:opacity-50"
+              className="text-[11px] px-3 py-1.5 rounded-md border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 font-medium hover:border-[#FE5000]/50 hover:text-[#FE5000] hover:bg-[#FE5000]/5 dark:hover:bg-[#FE5000]/10 transition-colors disabled:opacity-50"
             >
               {exporting === f.id ? '...' : f.id === 'copy' ? (copied ? 'Copied!' : f.label) : f.label}
             </button>
           ))}
         </div>
         {toast && (
-          <span className="text-[11px] text-[#FF5C00] font-medium ml-2">{toast}</span>
+          <span className="text-[11px] text-[#FE5000] font-medium ml-2">{toast}</span>
         )}
       </div>
     </div>

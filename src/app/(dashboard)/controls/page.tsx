@@ -119,7 +119,7 @@ export default function ControlMetricsDashboard() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <Shield size={24} className="text-[#FF5C00]" />
+          <Shield size={24} className="text-[#FE5000]" />
           <div>
             <h1 className="text-lg font-semibold text-white">Control Metrics Dashboard</h1>
             <p className="text-xs text-zinc-500 mt-0.5">12 controls from the Delta Intelligence action plan</p>
@@ -152,7 +152,7 @@ export default function ControlMetricsDashboard() {
           <button
             onClick={fetchControls}
             disabled={loading}
-            className="flex items-center gap-2 px-3 py-2 text-xs font-medium rounded-lg bg-[#18181B] border border-[#27272A] text-zinc-300 hover:border-[#FF5C00]/50 hover:text-white transition-colors disabled:opacity-50"
+            className="flex items-center gap-2 px-3 py-2 text-xs font-medium rounded-lg bg-[#18181B] border border-[#27272A] text-zinc-300 hover:border-[#FE5000]/50 hover:text-white transition-colors disabled:opacity-50"
           >
             <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
             Refresh

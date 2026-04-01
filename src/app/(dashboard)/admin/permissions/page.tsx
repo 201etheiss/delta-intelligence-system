@@ -315,7 +315,7 @@ export default function AdminPermissionsPage() {
                   <div className="text-[10px] text-[#A1A1AA] mt-0.5">
                     {config.services.length} / {ALL_SERVICES.length} services
                     {config.isCustom && (
-                      <span className="ml-1.5 inline-flex rounded px-1.5 py-0.5 text-[9px] font-medium bg-[#FF5C00]/10 text-[#FF5C00] border border-[#FF5C00]/30">custom</span>
+                      <span className="ml-1.5 inline-flex rounded px-1.5 py-0.5 text-[9px] font-medium bg-[#FE5000]/10 text-[#FE5000] border border-[#FE5000]/30">custom</span>
                     )}
                   </div>
                 </td>
@@ -326,7 +326,7 @@ export default function AdminPermissionsPage() {
                       checked={config.services.includes(svc.id)}
                       onChange={() => toggleService(config.role, svc.id)}
                       disabled={config.role === 'admin'}
-                      className="w-4 h-4 rounded border-[#3F3F46] text-[#FF5C00] focus:ring-[#FF5C00]/30 cursor-pointer accent-[#FF5C00] disabled:opacity-50"
+                      className="w-4 h-4 rounded border-[#3F3F46] text-[#FE5000] focus:ring-[#FE5000]/30 cursor-pointer accent-[#FE5000] disabled:opacity-50"
                     />
                   </td>
                 ))}
@@ -349,7 +349,7 @@ export default function AdminPermissionsPage() {
               onClick={() => toggleServiceExpand(serviceId)}
               className="w-full flex items-center gap-2 px-3 py-2 text-left hover:bg-[#27272A]/50 transition-colors"
             >
-              {expanded ? <ChevronDown size={16} className="text-[#FF5C00]" /> : <ChevronRight size={16} className="text-[#A1A1AA]" />}
+              {expanded ? <ChevronDown size={16} className="text-[#FE5000]" /> : <ChevronRight size={16} className="text-[#A1A1AA]" />}
               <span className="font-medium text-white">{svcLabel}</span>
               <span className="text-xs text-[#A1A1AA]">({(endpoints ?? []).length} endpoints)</span>
             </button>
@@ -371,7 +371,7 @@ export default function AdminPermissionsPage() {
                     {(endpoints ?? []).map((ep) => (
                       <tr key={ep.path} className="border-b border-[#27272A]/50 last:border-0 hover:bg-[#27272A]/30">
                         <td className="px-4 py-2 sticky left-0 bg-[#18181B]">
-                          <code className="text-xs text-[#FF5C00] font-mono">{ep.path}</code>
+                          <code className="text-xs text-[#FE5000] font-mono">{ep.path}</code>
                           <div className="text-[10px] text-[#71717A]">{ep.label}</div>
                         </td>
                         <td className="px-3 py-2">
@@ -388,7 +388,7 @@ export default function AdminPermissionsPage() {
                               checked={isEndpointChecked(r, serviceId, ep.path)}
                               onChange={() => toggleEndpoint(r.role, serviceId, ep.path)}
                               disabled={r.role === 'admin'}
-                              className="w-3.5 h-3.5 rounded border-[#3F3F46] text-[#FF5C00] focus:ring-[#FF5C00]/30 cursor-pointer accent-[#FF5C00] disabled:opacity-50"
+                              className="w-3.5 h-3.5 rounded border-[#3F3F46] text-[#FE5000] focus:ring-[#FE5000]/30 cursor-pointer accent-[#FE5000] disabled:opacity-50"
                             />
                           </td>
                         ))}
@@ -431,7 +431,7 @@ export default function AdminPermissionsPage() {
                     checked={r.capabilities.includes(cap)}
                     onChange={() => toggleCapability(r.role, cap)}
                     disabled={r.role === 'admin'}
-                    className="w-4 h-4 rounded border-[#3F3F46] text-[#FF5C00] focus:ring-[#FF5C00]/30 cursor-pointer accent-[#FF5C00] disabled:opacity-50"
+                    className="w-4 h-4 rounded border-[#3F3F46] text-[#FE5000] focus:ring-[#FE5000]/30 cursor-pointer accent-[#FE5000] disabled:opacity-50"
                   />
                 </td>
               ))}
@@ -447,7 +447,7 @@ export default function AdminPermissionsPage() {
       {(moduleCatalog ?? []).map((group) => (
         <div key={group.category} className="rounded-lg border border-[#27272A] bg-[#18181B] shadow-sm overflow-x-auto">
           <div className="px-4 py-2.5 border-b border-[#27272A] bg-[#09090B]">
-            <h4 className="text-xs font-semibold text-[#FF5C00] uppercase tracking-wider">{group.category}</h4>
+            <h4 className="text-xs font-semibold text-[#FE5000] uppercase tracking-wider">{group.category}</h4>
           </div>
           <table className="w-full text-sm">
             <thead>
@@ -474,7 +474,7 @@ export default function AdminPermissionsPage() {
                         checked={r.modules.includes(page.path)}
                         onChange={() => toggleModule(r.role, page.path)}
                         disabled={r.role === 'admin'}
-                        className="w-3.5 h-3.5 rounded border-[#3F3F46] text-[#FF5C00] focus:ring-[#FF5C00]/30 cursor-pointer accent-[#FF5C00] disabled:opacity-50"
+                        className="w-3.5 h-3.5 rounded border-[#3F3F46] text-[#FE5000] focus:ring-[#FE5000]/30 cursor-pointer accent-[#FE5000] disabled:opacity-50"
                       />
                     </td>
                   ))}
@@ -494,13 +494,13 @@ export default function AdminPermissionsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Settings size={20} className="text-[#FF5C00]" />
+          <Settings size={20} className="text-[#FE5000]" />
           <div>
             <h2 className="text-lg font-bold text-white">Admin Portal</h2>
             <p className="mt-0.5 text-sm text-[#A1A1AA]">Manage users, permissions, usage, and system health</p>
           </div>
         </div>
-        <span className="inline-flex items-center rounded px-2.5 py-1 text-xs font-semibold bg-[#09090B] text-[#FF5C00] border border-[#27272A] uppercase tracking-wide">
+        <span className="inline-flex items-center rounded px-2.5 py-1 text-xs font-semibold bg-[#09090B] text-[#FE5000] border border-[#27272A] uppercase tracking-wide">
           {userRole}
         </span>
       </div>
@@ -516,7 +516,7 @@ export default function AdminPermissionsPage() {
               className={[
                 'flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px',
                 active
-                  ? 'border-[#FF5C00] text-[#FF5C00]'
+                  ? 'border-[#FE5000] text-[#FE5000]'
                   : 'border-transparent text-[#A1A1AA] hover:text-white hover:border-[#3F3F46]',
               ].join(' ')}
             >
@@ -540,7 +540,7 @@ export default function AdminPermissionsPage() {
         <button
           onClick={handleSave}
           disabled={!dirty || saving}
-          className="flex items-center gap-1.5 rounded-md bg-[#FF5C00] px-4 py-2 text-sm font-medium text-white hover:bg-[#E54800] disabled:opacity-50 transition-colors"
+          className="flex items-center gap-1.5 rounded-md bg-[#FE5000] px-4 py-2 text-sm font-medium text-white hover:bg-[#CC4000] disabled:opacity-50 transition-colors"
         >
           <Save size={14} />
           {saving ? 'Saving...' : 'Save Changes'}
@@ -553,7 +553,7 @@ export default function AdminPermissionsPage() {
           Create Custom Role
         </button>
         {dirty && (
-          <span className="text-xs text-[#FF5C00] font-medium">Unsaved changes</span>
+          <span className="text-xs text-[#FE5000] font-medium">Unsaved changes</span>
         )}
       </div>
 
@@ -566,7 +566,7 @@ export default function AdminPermissionsPage() {
             placeholder="Role name (e.g., Dispatch Manager)"
             value={newRoleName}
             onChange={(e) => setNewRoleName(e.target.value)}
-            className="w-full rounded-md border border-[#3F3F46] bg-[#09090B] px-3 py-2 text-sm text-white placeholder:text-[#71717A] focus:outline-none focus:ring-2 focus:ring-[#FF5C00]/30 focus:border-[#FF5C00]"
+            className="w-full rounded-md border border-[#3F3F46] bg-[#09090B] px-3 py-2 text-sm text-white placeholder:text-[#71717A] focus:outline-none focus:ring-2 focus:ring-[#FE5000]/30 focus:border-[#FE5000]"
           />
           <div className="flex flex-wrap gap-2">
             {ALL_SERVICES.map((svc) => {
@@ -578,8 +578,8 @@ export default function AdminPermissionsPage() {
                   className={[
                     'rounded-full px-3 py-1 text-xs font-medium border transition-colors',
                     selected
-                      ? 'bg-[#FF5C00] text-white border-[#FF5C00]'
-                      : 'bg-[#18181B] text-[#A1A1AA] border-[#3F3F46] hover:border-[#FF5C00]',
+                      ? 'bg-[#FE5000] text-white border-[#FE5000]'
+                      : 'bg-[#18181B] text-[#A1A1AA] border-[#3F3F46] hover:border-[#FE5000]',
                   ].join(' ')}
                 >
                   {svc.label}
@@ -591,7 +591,7 @@ export default function AdminPermissionsPage() {
             <button
               onClick={handleCreateRole}
               disabled={!newRoleName.trim()}
-              className="rounded-md bg-[#FF5C00] px-4 py-2 text-sm font-medium text-white hover:bg-[#E54800] disabled:opacity-50 transition-colors"
+              className="rounded-md bg-[#FE5000] px-4 py-2 text-sm font-medium text-white hover:bg-[#CC4000] disabled:opacity-50 transition-colors"
             >
               Create Role
             </button>
@@ -614,7 +614,7 @@ export default function AdminPermissionsPage() {
             className={[
               'px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px',
               activeTab === tab
-                ? 'border-[#FF5C00] text-[#FF5C00]'
+                ? 'border-[#FE5000] text-[#FE5000]'
                 : 'border-transparent text-[#A1A1AA] hover:text-white hover:border-[#3F3F46]',
             ].join(' ')}
           >

@@ -85,7 +85,7 @@ export default function OnboardingPage() {
       <div className="max-w-2xl mx-auto px-6 py-8">
         {/* Header */}
         <div className="flex items-center gap-3 mb-2">
-          <Rocket size={24} className="text-[#FF5C00]" />
+          <Rocket size={24} className="text-[#FE5000]" />
           <h1 className="text-lg font-semibold">{guide.title}</h1>
         </div>
         <p className="text-sm text-[#71717A] dark:text-[#A1A1AA] mb-6">
@@ -96,11 +96,11 @@ export default function OnboardingPage() {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs text-[#71717A] dark:text-[#A1A1AA]">Progress</span>
-            <span className="text-xs text-[#FF5C00] font-medium">{completedCount}/{totalSteps} ({progressPct}%)</span>
+            <span className="text-xs text-[#FE5000] font-medium">{completedCount}/{totalSteps} ({progressPct}%)</span>
           </div>
           <div className="h-2 bg-[#27272A] rounded-full overflow-hidden">
             <div
-              className="h-full bg-[#FF5C00] rounded-full transition-all duration-300"
+              className="h-full bg-[#FE5000] rounded-full transition-all duration-300"
               style={{ width: `${progressPct}%` }}
             />
           </div>
@@ -141,7 +141,7 @@ export default function OnboardingPage() {
 
                 <Link
                   href={step.link}
-                  className="shrink-0 p-1.5 rounded-md text-[#52525B] hover:text-[#FF5C00] hover:bg-[#FF5C00]/10 transition-colors"
+                  className="shrink-0 p-1.5 rounded-md text-[#52525B] hover:text-[#FE5000] hover:bg-[#FE5000]/10 transition-colors"
                   title="Go to this page"
                 >
                   <ArrowRight size={16} />
@@ -155,7 +155,7 @@ export default function OnboardingPage() {
         {completedCount === totalSteps && totalSteps > 0 && (
           <div className="mt-8 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-center">
             <p className="text-xs font-semibold text-emerald-400">All steps complete. You are ready to go.</p>
-            <Link href="/chat" className="inline-flex items-center gap-1.5 mt-2 text-sm text-[#FF5C00] hover:underline">
+            <Link href="/chat" className="inline-flex items-center gap-1.5 mt-2 text-sm text-[#FE5000] hover:underline">
               Start chatting <ArrowRight size={14} />
             </Link>
           </div>

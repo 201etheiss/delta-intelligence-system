@@ -147,13 +147,13 @@ export default function SubNavTabs({ group }: SubNavTabsProps = {}) {
               className={[
                 'relative shrink-0 px-3 py-2 text-xs font-medium transition-colors whitespace-nowrap',
                 active
-                  ? 'text-[#FF5C00]'
+                  ? 'text-[#FE5000]'
                   : 'text-[#71717A] hover:text-[#A1A1AA]',
               ].join(' ')}
             >
               {tab.label}
               {active && (
-                <span className="absolute bottom-0 left-1 right-1 h-[2px] bg-[#FF5C00] rounded-t" />
+                <span className="absolute bottom-0 left-1 right-1 h-[2px] bg-[#FE5000] rounded-t" />
               )}
             </Link>
           );

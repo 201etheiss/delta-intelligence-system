@@ -189,7 +189,7 @@ export default function AdminIntegrationsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full bg-[#09090B]">
-        <Loader2 className="animate-spin text-[#FF5C00]" size={32} />
+        <Loader2 className="animate-spin text-[#FE5000]" size={32} />
       </div>
     );
   }
@@ -207,7 +207,7 @@ export default function AdminIntegrationsPage() {
               className={[
                 'flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors',
                 active
-                  ? 'bg-[#FF5C00]/10 text-[#FF5C00]'
+                  ? 'bg-[#FE5000]/10 text-[#FE5000]'
                   : 'text-[#71717A] dark:text-[#A1A1AA] hover:text-white hover:bg-[#18181B]',
               ].join(' ')}
             >
@@ -247,7 +247,7 @@ export default function AdminIntegrationsPage() {
                   className={[
                     'text-left p-4 rounded-lg border transition-colors',
                     isActive
-                      ? 'border-[#FF5C00]/50 bg-[#FF5C00]/5'
+                      ? 'border-[#FE5000]/50 bg-[#FE5000]/5'
                       : 'border-[#27272A] bg-[#18181B] hover:border-[#3F3F46]',
                   ].join(' ')}
                 >
@@ -293,7 +293,7 @@ export default function AdminIntegrationsPage() {
                   <label className="block text-xs text-[#A1A1AA] mb-1">
                     {field.label}
                     {field.required && (
-                      <span className="text-[#FF5C00] ml-0.5">*</span>
+                      <span className="text-[#FE5000] ml-0.5">*</span>
                     )}
                   </label>
                   <div className="relative">
@@ -314,7 +314,7 @@ export default function AdminIntegrationsPage() {
                             ? 'Enter secret...'
                             : 'Enter value...'
                       }
-                      className="w-full bg-[#18181B] border border-[#27272A] rounded px-3 py-2 text-sm text-white placeholder-[#52525B] focus:border-[#FF5C00]/50 focus:outline-none"
+                      className="w-full bg-[#18181B] border border-[#27272A] rounded px-3 py-2 text-sm text-white placeholder-[#52525B] focus:border-[#FE5000]/50 focus:outline-none"
                     />
                     {field.type === 'secret' && (
                       <button
@@ -343,7 +343,7 @@ export default function AdminIntegrationsPage() {
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded bg-[#FF5C00] text-white text-sm font-medium hover:bg-[#E54800] disabled:opacity-50 transition-colors"
+                className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded bg-[#FE5000] text-white text-sm font-medium hover:bg-[#CC4000] disabled:opacity-50 transition-colors"
               >
                 {saving ? (
                   <Loader2 size={14} className="animate-spin" />

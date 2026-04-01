@@ -205,7 +205,7 @@ function SystemCard({
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-[#27272A] flex items-center justify-center shrink-0">
-            <Icon size={20} className="text-[#FF5C00]" />
+            <Icon size={20} className="text-[#FE5000]" />
           </div>
           <div>
             <div className="text-xs font-semibold text-white">{system.name}</div>
@@ -249,7 +249,7 @@ function SystemCard({
       {/* Data flow indicator */}
       <div className="mt-3 pt-3 border-t border-[#27272A] flex items-center gap-2 text-[10px] text-[#52525B]">
         <span>{system.name}</span>
-        <ArrowRight size={10} className="text-[#FF5C00]" />
+        <ArrowRight size={10} className="text-[#FE5000]" />
         <span className="text-[#A1A1AA]">Delta Intelligence</span>
         <span className="ml-auto text-[#3F3F46]">{system.dataFlowLabel}</span>
       </div>
@@ -331,7 +331,7 @@ export default function IntegrationsPage() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-lg font-bold text-white flex items-center gap-2">
-              <Plug size={22} className="text-[#FF5C00]" />
+              <Plug size={22} className="text-[#FE5000]" />
               Systems Integration Status
             </h1>
             <p className="text-sm text-[#71717A] mt-0.5">
@@ -400,10 +400,10 @@ export default function IntegrationsPage() {
                 </div>
               );
             })}
-            <ArrowRight size={16} className="text-[#FF5C00] mx-3" />
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#FF5C00]/15 border border-[#FF5C00]/30">
-              <Database size={12} className="text-[#FF5C00]" />
-              <span className="text-[11px] text-[#FF5C00] font-semibold">Delta Intelligence</span>
+            <ArrowRight size={16} className="text-[#FE5000] mx-3" />
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#FE5000]/15 border border-[#FE5000]/30">
+              <Database size={12} className="text-[#FE5000]" />
+              <span className="text-[11px] text-[#FE5000] font-semibold">Delta Intelligence</span>
             </div>
           </div>
         </div>

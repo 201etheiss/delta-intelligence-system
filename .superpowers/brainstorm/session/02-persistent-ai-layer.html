@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DI DataOS — Persistent AI & Chat Layer</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0a0a0a; color: #e4e4e7; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 24px; }
+  h1 { color: #FE5000; font-size: 28px; margin-bottom: 8px; font-family: Georgia, serif; }
+  h2 { color: #a1a1aa; font-size: 18px; margin-bottom: 32px; font-weight: 400; }
+  h3 { color: #FE5000; font-size: 16px; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px; }
+  .subtitle { color: #71717a; font-size: 14px; margin-bottom: 24px; }
+  hr { border: none; border-top: 1px solid #27272a; margin: 32px 0; }
+
+  /* Full Shell with Chat Panel */
+  .shell {
+    background: #18181b;
+    border: 1px solid #27272a;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 32px;
+  }
+
+  /* Nova Bar */
+  .nova-bar {
+    background: linear-gradient(90deg, #1a1a2e 0%, #16213e 50%, #1a1a2e 100%);
+    border-bottom: 1px solid #FE5000;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .nova-avatar {
+    width: 30px; height: 30px;
+    background: radial-gradient(circle, #FE5000 0%, #cc4000 100%);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px; color: white;
+    box-shadow: 0 0 12px rgba(254, 80, 0, 0.3);
+    cursor: pointer;
+  }
+  .nova-input {
+    flex: 1;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid #3f3f46;
+    border-radius: 8px;
+    padding: 7px 14px;
+    color: #a1a1aa;
+    font-size: 13px;
+    font-style: italic;
+  }
+  .nova-pills { display: flex; gap: 6px; }
+  .nova-pill {
+    padding: 4px 10px;
+    border-radius: 5px;
+    font-size: 11px;
+    cursor: pointer;
+    border: 1px solid transparent;
+  }
+  .pill-briefing { background: rgba(254, 80, 0, 0.08); border-color: rgba(254, 80, 0, 0.2); color: #FE5000; }
+  .pill-bots { background: rgba(168, 85, 247, 0.08); border-color: rgba(168, 85, 247, 0.2); color: #a855f7; }
+  .pill-automations { background: rgba(34, 197, 94, 0.08); border-color: rgba(34, 197, 94, 0.2); color: #22c55e; }
+  .density-toggle {
+    display: flex; border-radius: 6px; overflow: hidden; border: 1px solid #3f3f46;
+  }
+  .density-btn {
+    padding: 4px 8px; font-size: 10px; cursor: pointer; font-weight: 600;
+  }
+  .density-btn.active { background: rgba(254,80,0,0.15); color: #FE5000; }
+  .density-btn:not(.active) { background: #27272a; color: #71717a; }
+  .icon-btn {
+    width: 30px; height: 30px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    color: #71717a; font-size: 14px; cursor: pointer;
+    position: relative;
+  }
+  .icon-btn .badge {
+    position: absolute; top: -2px; right: -2px;
+    width: 14px; height: 14px; background: #FE5000; border-radius: 50%;
+    font-size: 8px; display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 700;
+  }
+  .user-av {
+    width: 30px; height: 30px; background: #27272a; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; color: #a1a1aa;
+  }
+
+  /* Main body */
+  .main { display: flex; min-height: 520px; }
+
+  /* Rail */
+  .rail {
+    width: 46px; background: #111113; border-right: 1px solid #27272a;
+    display: flex; flex-direction: column; align-items: center; padding: 10px 0; gap: 6px;
+  }
+  .r-icon {
+    width: 34px; height: 34px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; color: #71717a; cursor: pointer;
+  }
+  .r-icon.active { background: rgba(254,80,0,0.12); color: #FE5000; }
+  .r-icon:hover { background: rgba(255,255,255,0.05); }
+  .r-div { width: 20px; height: 1px; background: #27272a; margin: 3px 0; }
+  .r-icon.chat-active { background: rgba(254,80,0,0.2); color: #FE5000; box-shadow: 0 0 8px rgba(254,80,0,0.15); }
+
+  /* Workspace area */
+  .workspace-area { flex: 1; display: flex; flex-direction: column; }
+  .tabs-bar {
+    background: #111113; border-bottom: 1px solid #27272a;
+    display: flex; align-items: center; padding: 0 10px; height: 34px;
+  }
+  .tab {
+    padding: 7px 14px; font-size: 11px; color: #71717a;
+    border-bottom: 2px solid transparent; cursor: pointer;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .tab.active { color: #e4e4e7; border-bottom-color: #FE5000; background: rgba(254,80,0,0.04); }
+  .content { flex: 1; display: flex; }
+
+  /* Module content (dimmed when chat open) */
+  .module-pane {
+    flex: 1; padding: 20px; background: #0f0f11;
+    transition: opacity 0.2s;
+  }
+  .module-pane.dimmed { opacity: 0.4; }
+
+  /* Chat Panel (slide-out) */
+  .chat-panel {
+    width: 380px;
+    background: #111113;
+    border-left: 1px solid #27272a;
+    display: flex;
+    flex-direction: column;
+  }
+  .chat-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid #27272a;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .chat-header-left { display: flex; align-items: center; gap: 10px; }
+  .chat-nova {
+    width: 28px; height: 28px;
+    background: radial-gradient(circle, #FE5000 0%, #cc4000 100%);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; color: white; font-weight: 700;
+  }
+  .chat-title { font-size: 13px; font-weight: 600; }
+  .chat-context { font-size: 11px; color: #71717a; }
+  .chat-mode-pills { display: flex; gap: 4px; }
+  .chat-mode {
+    padding: 3px 8px; border-radius: 4px; font-size: 10px; cursor: pointer;
+    border: 1px solid #3f3f46; color: #71717a;
+  }
+  .chat-mode.active { border-color: rgba(254,80,0,0.3); color: #FE5000; background: rgba(254,80,0,0.08); }
+
+  .chat-messages {
+    flex: 1; padding: 16px; overflow-y: auto;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .msg {
+    max-width: 85%; padding: 10px 14px; border-radius: 10px; font-size: 13px; line-height: 1.5;
+  }
+  .msg-user { background: #27272a; align-self: flex-end; color: #e4e4e7; }
+  .msg-nova { background: rgba(254,80,0,0.08); border: 1px solid rgba(254,80,0,0.15); align-self: flex-start; color: #d4d4d8; }
+  .msg-nova .nova-tag { font-size: 10px; color: #FE5000; font-weight: 600; margin-bottom: 4px; }
+  .msg-action {
+    background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.15);
+    align-self: flex-start; max-width: 90%;
+  }
+  .msg-action .action-tag { font-size: 10px; color: #22c55e; font-weight: 600; margin-bottom: 4px; }
+  .msg-action .action-btn {
+    margin-top: 8px; padding: 4px 12px; border-radius: 4px;
+    background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.3);
+    color: #22c55e; font-size: 11px; cursor: pointer; display: inline-block;
+  }
+
+  .chat-input-area {
+    padding: 12px 16px; border-top: 1px solid #27272a;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .chat-context-bar {
+    display: flex; align-items: center; gap: 6px; font-size: 11px; color: #71717a;
+  }
+  .ctx-chip {
+    padding: 2px 8px; border-radius: 4px; background: rgba(168,85,247,0.1);
+    border: 1px solid rgba(168,85,247,0.2); color: #a855f7; font-size: 10px;
+  }
+  .chat-input-row { display: flex; gap: 8px; }
+  .chat-input {
+    flex: 1; background: rgba(255,255,255,0.05); border: 1px solid #3f3f46;
+    border-radius: 8px; padding: 8px 12px; color: #e4e4e7; font-size: 13px;
+  }
+  .chat-send {
+    width: 36px; height: 36px; background: #FE5000; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 16px; cursor: pointer;
+  }
+
+  /* Annotations */
+  .annotations { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px; }
+  .anno {
+    background: #18181b; border: 1px solid #27272a; border-radius: 8px; padding: 16px;
+  }
+  .anno h4 { font-size: 13px; color: #FE5000; margin-bottom: 8px; }
+  .anno p { font-size: 13px; color: #a1a1aa; line-height: 1.5; }
+  .tag { font-size: 10px; padding: 2px 6px; border-radius: 3px; background: rgba(254,80,0,0.1); color: #FE5000; }
+
+  /* Comparison section */
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px; }
+  .compare-box {
+    background: #18181b; border: 1px solid #27272a; border-radius: 12px;
+    overflow: hidden;
+  }
+  .compare-header {
+    padding: 12px 16px; font-size: 14px; font-weight: 600;
+    border-bottom: 1px solid #27272a;
+  }
+  .compare-body { padding: 16px; }
+  .compare-item { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 10px; font-size: 13px; color: #a1a1aa; }
+  .compare-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+  .compare-body ul { list-style: none; padding: 0; }
+  .compare-body li { font-size: 13px; color: #a1a1aa; padding: 4px 0; padding-left: 20px; position: relative; }
+  .compare-body li::before { content: ''; position: absolute; left: 4px; top: 11px; width: 6px; height: 6px; border-radius: 50%; }
+  .list-orange li::before { background: #FE5000; }
+  .list-purple li::before { background: #a855f7; }
+  .list-green li::before { background: #22c55e; }
+  .list-blue li::before { background: #3b82f6; }
+</style>
+</head>
+<body>
+
+<h1>Persistent AI & Chat Layer</h1>
+<h2>Nova, Chat, Assistants, and Automations as OS-level features — not pages</h2>
+
+<p class="subtitle">Chat slides out as a panel over any module. Nova is contextually aware of what module you're in. Assistants and automations are accessible from the Nova Bar pills. Everything persists across navigation.</p>
+
+<!-- Shell with Chat Open -->
+<div class="shell">
+  <div class="nova-bar">
+    <div class="nova-avatar">N</div>
+    <div class="nova-input">Ask Nova... currently viewing Financial Statements</div>
+    <div class="nova-pills">
+      <div class="nova-pill pill-briefing">&#128161; 3 Alerts</div>
+      <div class="nova-pill pill-bots">&#129302; 4 Bots Active</div>
+      <div class="nova-pill pill-automations">&#9889; 8 Automations</div>
+    </div>
+    <div class="density-toggle">
+      <div class="density-btn">EX</div>
+      <div class="density-btn active">OP</div>
+    </div>
+    <div class="icon-btn">&#128276;<div class="badge">7</div></div>
+    <div class="user-av">ET</div>
+  </div>
+
+  <div class="main">
+    <div class="rail">
+      <div class="r-icon">&#127968;</div>
+      <div class="r-icon active">&#128176;</div>
+      <div class="r-icon">&#128666;</div>
+      <div class="r-icon">&#128200;</div>
+      <div class="r-icon">&#128737;</div>
+      <div class="r-icon">&#9881;</div>
+      <div class="r-div"></div>
+      <div class="r-icon chat-active" title="Chat panel toggle">&#128172;</div>
+      <div class="r-icon">&#128269;</div>
+    </div>
+
+    <div class="workspace-area">
+      <div class="tabs-bar">
+        <div class="tab">&#127968; Home</div>
+        <div class="tab active">&#128176; Financial Statements</div>
+        <div class="tab">&#128666; Fleet Map</div>
+      </div>
+      <div class="content">
+        <!-- Module content (dimmed because chat is open) -->
+        <div class="module-pane dimmed">
+          <div style="font-size:18px;font-weight:600;margin-bottom:16px;">Financial Statements</div>
+          <div style="display:flex;gap:8px;margin-bottom:16px;">
+            <div style="padding:6px 14px;border-radius:6px;font-size:12px;background:rgba(254,80,0,0.1);border:1px solid rgba(254,80,0,0.2);color:#FE5000;">Balance Sheet</div>
+            <div style="padding:6px 14px;border-radius:6px;font-size:12px;background:#27272a;color:#a1a1aa;">Income Statement</div>
+            <div style="padding:6px 14px;border-radius:6px;font-size:12px;background:#27272a;color:#a1a1aa;">Trial Balance</div>
+            <div style="padding:6px 14px;border-radius:6px;font-size:12px;background:#27272a;color:#a1a1aa;">Cash Flow</div>
+            <div style="padding:6px 14px;border-radius:6px;font-size:12px;background:#27272a;color:#a1a1aa;">Flash Report</div>
+            <div style="padding:6px 14px;border-radius:6px;font-size:12px;background:#27272a;color:#a1a1aa;">Variance</div>
+          </div>
+          <div style="background:#1a1a1d;border:1px solid #27272a;border-radius:8px;padding:16px;height:300px;display:flex;align-items:center;justify-content:center;color:#52525b;">
+            [ Financial Statements module content — existing page renders here ]
+          </div>
+        </div>
+
+        <!-- Chat Panel -->
+        <div class="chat-panel">
+          <div class="chat-header">
+            <div class="chat-header-left">
+              <div class="chat-nova">N</div>
+              <div>
+                <div class="chat-title">Nova</div>
+                <div class="chat-context">Context: Financial Statements</div>
+              </div>
+            </div>
+            <div class="chat-mode-pills">
+              <div class="chat-mode active">Chat</div>
+              <div class="chat-mode">Bots</div>
+              <div class="chat-mode">History</div>
+            </div>
+          </div>
+
+          <div class="chat-messages">
+            <div class="msg msg-nova">
+              <div class="nova-tag">NOVA</div>
+              Good morning. You're viewing the Balance Sheet. I notice Total Liabilities increased 12% vs last month — primarily driven by a $340K AP aging spike in the 61-90 day bucket.
+            </div>
+            <div class="msg msg-user">
+              Which vendors are driving that aging spike?
+            </div>
+            <div class="msg msg-nova">
+              <div class="nova-tag">NOVA</div>
+              Top 3 contributors to the 61-90 day AP aging increase:<br><br>
+              1. <strong>Magellan Midstream</strong> — $142K (was $31K)<br>
+              2. <strong>Plains All American</strong> — $118K (was $67K)<br>
+              3. <strong>Delek Logistics</strong> — $80K (was $22K)<br><br>
+              Magellan has 4 invoices past the Net-30 term. Want me to check if any have disputes logged?
+            </div>
+            <div class="msg msg-action">
+              <div class="action-tag">&#9889; SUGGESTED ACTION</div>
+              Nova can run the AP Aging Audit bot to flag all overdue invoices and draft notification emails to the vendors.
+              <div class="action-btn">&#9654; Run AP Aging Audit</div>
+            </div>
+            <div class="msg msg-user">
+              Yes, run it and send me the summary
+            </div>
+            <div class="msg msg-nova">
+              <div class="nova-tag">NOVA &middot; executing</div>
+              Running AP Aging Audit bot...<br>
+              <span style="color:#22c55e;">&#10003;</span> Scanning 237 open invoices<br>
+              <span style="color:#22c55e;">&#10003;</span> Found 18 past-term invoices ($412K total)<br>
+              <span style="color:#eab308;">&#9679;</span> Drafting vendor notification emails...<br>
+              <span style="color:#71717a;">&#9675;</span> Generating summary report
+            </div>
+          </div>
+
+          <div class="chat-input-area">
+            <div class="chat-context-bar">
+              &#128205; Context:
+              <span class="ctx-chip">Financial Statements</span>
+              <span class="ctx-chip">Balance Sheet</span>
+              <span style="margin-left:auto;cursor:pointer;color:#52525b;">&#128279; Attach</span>
+            </div>
+            <div class="chat-input-row">
+              <div class="chat-input" style="display:flex;align-items:center;color:#71717a;">Ask Nova about this module...</div>
+              <div class="chat-send">&#10148;</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<h3>How the Persistent AI Layer Works</h3>
+
+<div class="compare">
+  <div class="compare-box">
+    <div class="compare-header" style="color:#FE5000;">&#9650; Nova Bar (Top Strip)</div>
+    <div class="compare-body">
+      <ul class="list-orange">
+        <li>Always visible, never navigated away from</li>
+        <li>Quick-invoke input — type to Nova from anywhere</li>
+        <li><strong>Alert pills</strong> — click to see briefings, active bots, running automations</li>
+        <li>Density toggle (Executive/Operator) affects all module content</li>
+        <li>Notification bell with inbox dropdown</li>
+        <li>Nova avatar click → full Nova command palette</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="compare-box">
+    <div class="compare-header" style="color:#a855f7;">&#9664; Chat Panel (Slide-Out)</div>
+    <div class="compare-body">
+      <ul class="list-purple">
+        <li>Toggle from Rail chat icon — slides over workspace</li>
+        <li><strong>Context-aware:</strong> knows which module/page you're viewing</li>
+        <li>Module context chips show what data Nova can access</li>
+        <li>Three modes: Chat, Bots (saved automations), History</li>
+        <li>Suggested actions with one-click bot execution</li>
+        <li>Conversation persists across module switches</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="compare-box">
+    <div class="compare-header" style="color:#22c55e;">&#9889; Automations & Bots (OS-Level)</div>
+    <div class="compare-body">
+      <ul class="list-green">
+        <li>"Bots Active" pill on Nova Bar — always visible count</li>
+        <li>Bots tab in chat panel — manage from anywhere</li>
+        <li>Bot execution happens in background, results in chat</li>
+        <li>Scheduled automations run via cron — existing engine</li>
+        <li>Automations page still exists as a full module for config</li>
+        <li>Quick actions: "Run AP Aging Audit" inline in chat</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="compare-box">
+    <div class="compare-header" style="color:#3b82f6;">&#127968; Module Awareness</div>
+    <div class="compare-body">
+      <ul class="list-blue">
+        <li>Nova Bar input updates: "currently viewing [module]"</li>
+        <li>Chat panel header shows active module context</li>
+        <li>Context chips auto-populate from current page</li>
+        <li>Nova's system prompt includes module schema + vocabulary</li>
+        <li>Switching modules updates context — conversation continues</li>
+        <li>Existing /chat page becomes the "full-screen chat" option</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<h3>What Changes vs. Current DI</h3>
+
+<div class="annotations">
+  <div class="anno">
+    <h4>Current: Chat is a Page</h4>
+    <p>Right now /chat is a full page you navigate to. You leave your current view. The assistant and automations are separate pages too (/assistant, /automations). Context is lost when you switch.</p>
+  </div>
+  <div class="anno">
+    <h4>DataOS: Chat is an OS Layer</h4>
+    <p>Chat becomes a slide-out panel accessible from anywhere via the Rail. Nova knows what you're looking at. The /chat page still exists for dedicated deep conversations, but the panel is the primary interaction. Bots and automations surface through the Nova Bar pills and the chat panel's Bots tab.</p>
+  </div>
+</div>
+
+</body>
+</html>

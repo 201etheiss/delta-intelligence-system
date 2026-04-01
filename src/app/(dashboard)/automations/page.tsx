@@ -152,8 +152,8 @@ export default function AutomationsPage() {
       <div className="bg-white dark:bg-[#18181B] border-b border-zinc-200 px-6 py-5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-[#FF5C00]/10">
-              <Zap size={18} className="text-[#FF5C00]" />
+            <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-[#FE5000]/10">
+              <Zap size={18} className="text-[#FE5000]" />
             </div>
             <div>
               <h1 className="text-lg font-semibold text-zinc-900 dark:text-white">
@@ -169,7 +169,7 @@ export default function AutomationsPage() {
               setEditTarget(null);
               setShowForm(true);
             }}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#FF5C00] rounded-md hover:bg-[#E54800] transition-colors"
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#FE5000] rounded-md hover:bg-[#CC4000] transition-colors"
           >
             <Plus size={16} />
             Create Automation

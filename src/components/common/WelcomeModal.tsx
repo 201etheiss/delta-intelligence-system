@@ -68,8 +68,8 @@ export default function WelcomeModal() {
             </button>
 
             {/* Delta mark */}
-            <div className="mx-auto w-14 h-14 rounded-2xl bg-[#FF5C00]/10 border border-[#FF5C00]/20 flex items-center justify-center mb-4">
-              <svg className="w-7 h-7 text-[#FF5C00]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <div className="mx-auto w-14 h-14 rounded-2xl bg-[#FE5000]/10 border border-[#FE5000]/20 flex items-center justify-center mb-4">
+              <svg className="w-7 h-7 text-[#FE5000]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
               </svg>
             </div>
@@ -86,10 +86,10 @@ export default function WelcomeModal() {
           <div className="px-6 pb-2 space-y-2">
             <button
               onClick={() => handleAction('/chat')}
-              className="w-full flex items-center gap-4 rounded-xl border border-[#27272A] bg-[#09090B] hover:border-[#FF5C00]/40 hover:bg-[#FF5C00]/5 px-4 py-3.5 transition-colors text-left group"
+              className="w-full flex items-center gap-4 rounded-xl border border-[#27272A] bg-[#09090B] hover:border-[#FE5000]/40 hover:bg-[#FE5000]/5 px-4 py-3.5 transition-colors text-left group"
             >
-              <div className="w-10 h-10 rounded-lg bg-[#FF5C00]/10 flex items-center justify-center shrink-0 group-hover:bg-[#FF5C00]/20 transition-colors">
-                <svg className="w-5 h-5 text-[#FF5C00]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <div className="w-10 h-10 rounded-lg bg-[#FE5000]/10 flex items-center justify-center shrink-0 group-hover:bg-[#FE5000]/20 transition-colors">
+                <svg className="w-5 h-5 text-[#FE5000]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                 </svg>
               </div>
@@ -101,7 +101,7 @@ export default function WelcomeModal() {
 
             <button
               onClick={() => handleAction('/digest')}
-              className="w-full flex items-center gap-4 rounded-xl border border-[#27272A] bg-[#09090B] hover:border-[#FF5C00]/40 hover:bg-[#FF5C00]/5 px-4 py-3.5 transition-colors text-left group"
+              className="w-full flex items-center gap-4 rounded-xl border border-[#27272A] bg-[#09090B] hover:border-[#FE5000]/40 hover:bg-[#FE5000]/5 px-4 py-3.5 transition-colors text-left group"
             >
               <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center shrink-0 group-hover:bg-blue-500/20 transition-colors">
                 <svg className="w-5 h-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -116,7 +116,7 @@ export default function WelcomeModal() {
 
             <button
               onClick={() => handleAction('/workspaces')}
-              className="w-full flex items-center gap-4 rounded-xl border border-[#27272A] bg-[#09090B] hover:border-[#FF5C00]/40 hover:bg-[#FF5C00]/5 px-4 py-3.5 transition-colors text-left group"
+              className="w-full flex items-center gap-4 rounded-xl border border-[#27272A] bg-[#09090B] hover:border-[#FE5000]/40 hover:bg-[#FE5000]/5 px-4 py-3.5 transition-colors text-left group"
             >
               <div className="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center shrink-0 group-hover:bg-green-500/20 transition-colors">
                 <svg className="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -137,7 +137,7 @@ export default function WelcomeModal() {
                 type="checkbox"
                 checked={dontShow}
                 onChange={(e) => setDontShow(e.target.checked)}
-                className="w-3.5 h-3.5 rounded border-[#3F3F46] bg-[#27272A] text-[#FF5C00] focus:ring-[#FF5C00] focus:ring-offset-0"
+                className="w-3.5 h-3.5 rounded border-[#3F3F46] bg-[#27272A] text-[#FE5000] focus:ring-[#FE5000] focus:ring-offset-0"
               />
               <span className="text-xs text-[#71717A]">Don&apos;t show again</span>
             </label>

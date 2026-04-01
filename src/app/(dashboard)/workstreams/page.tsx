@@ -94,7 +94,7 @@ function ModuleRow({ module }: { module: WorkstreamModule }) {
       {module.route && (
         <a
           href={module.route}
-          className="text-[10px] text-[#FF5C00] hover:text-[#FF5C00]/80 flex items-center gap-0.5"
+          className="text-[10px] text-[#FE5000] hover:text-[#FE5000]/80 flex items-center gap-0.5"
         >
           <ExternalLink size={9} />
           Open
@@ -234,7 +234,7 @@ export default function WorkstreamsPage() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-lg font-bold text-white flex items-center gap-2">
-              <Layers size={22} className="text-[#FF5C00]" />
+              <Layers size={22} className="text-[#FE5000]" />
               Workstream Tracker
             </h1>
             <p className="text-sm text-[#71717A] mt-0.5">
@@ -295,7 +295,7 @@ export default function WorkstreamsPage() {
             onClick={() => setFilterHealth('All')}
             className={`px-3 py-1.5 rounded text-xs font-medium transition-colors ${
               filterHealth === 'All'
-                ? 'bg-[#FF5C00]/15 text-[#FF5C00] border border-[#FF5C00]/30'
+                ? 'bg-[#FE5000]/15 text-[#FE5000] border border-[#FE5000]/30'
                 : 'bg-[#18181B] text-[#A1A1AA] border border-[#27272A] hover:text-white'
             }`}
           >
@@ -309,7 +309,7 @@ export default function WorkstreamsPage() {
                 onClick={() => setFilterHealth(h)}
                 className={`px-3 py-1.5 rounded text-xs font-medium transition-colors ${
                   filterHealth === h
-                    ? 'bg-[#FF5C00]/15 text-[#FF5C00] border border-[#FF5C00]/30'
+                    ? 'bg-[#FE5000]/15 text-[#FE5000] border border-[#FE5000]/30'
                     : 'bg-[#18181B] text-[#A1A1AA] border border-[#27272A] hover:text-white'
                 }`}
               >

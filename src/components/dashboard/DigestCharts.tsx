@@ -35,7 +35,7 @@ interface DigestChartsData {
 // ── Color palette ──────────────────────────────────────────────
 
 const COLORS = [
-  '#FF5C00', '#3B82F6', '#10B981', '#F59E0B', '#8B5CF6',
+  '#FE5000', '#3B82F6', '#10B981', '#F59E0B', '#8B5CF6',
   '#EC4899', '#14B8A6', '#F97316',
 ];
 
@@ -100,7 +100,7 @@ function MiniGauge({ value, label }: { value: number; label: string }) {
       <svg width="88" height="60" viewBox="0 0 88 60">
         <path d={trackPath} fill="none" stroke="#27272A" strokeWidth="6" strokeLinecap="round" />
         {fillPath && (
-          <path d={fillPath} fill="none" stroke="#FF5C00" strokeWidth="6" strokeLinecap="round" />
+          <path d={fillPath} fill="none" stroke="#FE5000" strokeWidth="6" strokeLinecap="round" />
         )}
         <text x={cx} y={cy + 6} textAnchor="middle" fontSize="14" fontWeight="700" fill="#FFFFFF" fontFamily="monospace">
           {typeof clampedValue === 'number' ? `${clampedValue.toFixed(0)}%` : '--'}
@@ -197,7 +197,7 @@ export default function DigestCharts() {
         {/* Revenue Sparkline */}
         <div className="rounded-lg border border-[#27272A] bg-[#18181B] p-3">
           <div className="flex items-center gap-1.5 mb-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#FF5C00]" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#FE5000]" />
             <span className="text-[10px] font-semibold text-white uppercase tracking-wide">Revenue (Recent)</span>
           </div>
           {data.revenueSparkline.length > 0 ? (
@@ -205,11 +205,11 @@ export default function DigestCharts() {
               <AreaChart data={data.revenueSparkline} margin={{ top: 2, right: 2, left: 2, bottom: 2 }}>
                 <defs>
                   <linearGradient id="digestAreaGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#FF5C00" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#FF5C00" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#FE5000" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#FE5000" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <Area type="monotone" dataKey="value" stroke="#FF5C00" strokeWidth={1.5} fill="url(#digestAreaGrad)" />
+                <Area type="monotone" dataKey="value" stroke="#FE5000" strokeWidth={1.5} fill="url(#digestAreaGrad)" />
                 <Tooltip contentStyle={tooltipStyle} formatter={(v: unknown) => [typeof v === 'number' ? formatCurrency(v) : '--', '']} />
               </AreaChart>
             </ResponsiveContainer>

@@ -25,7 +25,7 @@ export interface WhiteLabelConfig {
 const DEFAULT_CONFIG: WhiteLabelConfig = {
   companyName: 'Delta360',
   platformName: 'Delta Intelligence',
-  primaryColor: '#FF5C00',
+  primaryColor: '#FE5000',
   logoUrl: '/brand/@2x/delta-dark-360@2x.png',
   logoMarkUrl: '/brand/delta logo mark.png',
   domain: 'intelligence.delta360.energy',

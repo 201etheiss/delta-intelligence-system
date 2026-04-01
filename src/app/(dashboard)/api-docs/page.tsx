@@ -81,7 +81,7 @@ const ENDPOINTS: EndpointDoc[] = [
     path: '/api/config',
     description: 'Get the white-label platform configuration.',
     category: 'Config',
-    responseExample: JSON.stringify({ success: true, config: { companyName: 'Delta360', platformName: 'Delta Intelligence', primaryColor: '#FF5C00' } }, null, 2),
+    responseExample: JSON.stringify({ success: true, config: { companyName: 'Delta360', platformName: 'Delta Intelligence', primaryColor: '#FE5000' } }, null, 2),
   },
   {
     method: 'PATCH',
@@ -248,7 +248,7 @@ function EndpointCard({ endpoint }: { endpoint: EndpointDoc }) {
               <div className="space-y-1">
                 {endpoint.params.map((p) => (
                   <div key={p.name} className="flex items-baseline gap-2 text-xs">
-                    <code className="text-[#FF5C00] font-mono">{p.name}</code>
+                    <code className="text-[#FE5000] font-mono">{p.name}</code>
                     <span className="text-[#52525B]">{p.type}</span>
                     {p.required && (
                       <span className="text-red-400 text-[10px]">required</span>
@@ -289,7 +289,7 @@ function EndpointCard({ endpoint }: { endpoint: EndpointDoc }) {
             <button
               onClick={tryIt}
               disabled={loading}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-medium text-white bg-[#FF5C00] hover:bg-[#E54800] transition-colors disabled:opacity-50"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-medium text-white bg-[#FE5000] hover:bg-[#CC4000] transition-colors disabled:opacity-50"
             >
               <Play size={12} />
               {loading ? 'Running...' : 'Try it'}
@@ -331,8 +331,8 @@ export default function ApiDocsPage() {
       <div className="max-w-4xl mx-auto px-6 py-8">
         {/* Header */}
         <div className="flex items-center gap-3 mb-6">
-          <div className="p-2 rounded-lg bg-[#FF5C00]/10">
-            <Code size={20} className="text-[#FF5C00]" />
+          <div className="p-2 rounded-lg bg-[#FE5000]/10">
+            <Code size={20} className="text-[#FE5000]" />
           </div>
           <div>
             <h1 className="text-lg font-bold text-white">API Documentation</h1>
@@ -347,7 +347,7 @@ export default function ApiDocsPage() {
           <div className="text-[10px] font-semibold text-[#52525B] uppercase tracking-wide mb-1">
             Base URL
           </div>
-          <code className="text-sm text-[#FF5C00] font-mono">
+          <code className="text-sm text-[#FE5000] font-mono">
             {typeof window !== 'undefined' ? window.location.origin : 'https://intelligence.delta360.energy'}
           </code>
         </div>

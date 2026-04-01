@@ -38,7 +38,7 @@ export default function DocumentsPage() {
                   { ext: 'ZIP', desc: 'Archive contents listing' },
                 ].map((f) => (
                   <div key={f.ext} className="flex items-center justify-between py-1">
-                    <span className="text-xs font-mono text-[#FF5C00]">{f.ext}</span>
+                    <span className="text-xs font-mono text-[#FE5000]">{f.ext}</span>
                     <span className="text-xs text-[#71717A]">{f.desc}</span>
                   </div>
                 ))}

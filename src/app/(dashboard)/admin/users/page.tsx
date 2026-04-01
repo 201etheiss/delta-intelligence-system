@@ -45,7 +45,7 @@ type SortKey = 'name' | 'department' | 'role';
 const ROLE_OPTIONS: UserRole[] = ['admin', 'accounting', 'sales', 'operations', 'hr', 'readonly'];
 
 const ROLE_COLORS: Record<UserRole, string> = {
-  admin: '#FF5C00',
+  admin: '#FE5000',
   accounting: '#3B82F6',
   sales: '#22C55E',
   operations: '#EAB308',
@@ -54,7 +54,7 @@ const ROLE_COLORS: Record<UserRole, string> = {
 };
 
 const DEPT_COLORS: Record<string, string> = {
-  'Executive': '#FF5C00',
+  'Executive': '#FE5000',
   'Accounting': '#3B82F6',
   'Sales': '#22C55E',
   'Operations': '#EAB308',
@@ -180,7 +180,7 @@ function UserCard({
     <div
       className={[
         'rounded-lg border bg-[#18181B] p-4 transition-all hover:border-[#3F3F46]',
-        selected ? 'border-[#FF5C00] ring-1 ring-[#FF5C00]/30' : 'border-[#27272A]',
+        selected ? 'border-[#FE5000] ring-1 ring-[#FE5000]/30' : 'border-[#27272A]',
       ].join(' ')}
     >
       <div className="flex items-start gap-3">
@@ -189,7 +189,7 @@ function UserCard({
           onClick={() => onSelect(user.email)}
           className="mt-0.5 text-[#A1A1AA] hover:text-white transition-colors"
         >
-          {selected ? <CheckSquare size={16} className="text-[#FF5C00]" /> : <Square size={16} />}
+          {selected ? <CheckSquare size={16} className="text-[#FE5000]" /> : <Square size={16} />}
         </button>
 
         {/* Avatar */}
@@ -235,7 +235,7 @@ function UserCard({
         <select
           value={user.role}
           onChange={(e) => onRoleChange(user.email, e.target.value as UserRole)}
-          className="rounded border border-[#3F3F46] bg-[#27272A] px-2 py-1 text-xs text-white focus:outline-none focus:ring-1 focus:ring-[#FF5C00]/30"
+          className="rounded border border-[#3F3F46] bg-[#27272A] px-2 py-1 text-xs text-white focus:outline-none focus:ring-1 focus:ring-[#FE5000]/30"
           style={{ color: roleColor }}
         >
           {ROLE_OPTIONS.map((r) => (
@@ -365,7 +365,7 @@ function OrgChartView({ users }: { users: OrgDirectoryUser[] }) {
   return (
     <div className="rounded-lg border border-[#27272A] bg-[#18181B] overflow-hidden">
       <div className="px-3 py-2 border-b border-[#27272A] flex items-center gap-2">
-        <GitBranch size={14} className="text-[#FF5C00]" />
+        <GitBranch size={14} className="text-[#FE5000]" />
         <h3 className="text-xs font-semibold text-white">Organization Hierarchy</h3>
       </div>
       <div className="p-2 max-h-[600px] overflow-y-auto">
@@ -715,13 +715,13 @@ export default function AdminUsersPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Settings size={20} className="text-[#FF5C00]" />
+          <Settings size={20} className="text-[#FE5000]" />
           <div>
             <h2 className="text-lg font-bold text-white">Admin Portal</h2>
             <p className="mt-0.5 text-sm text-[#A1A1AA]">Manage users, permissions, usage, and system health</p>
           </div>
         </div>
-        <span className="inline-flex items-center rounded px-2.5 py-1 text-xs font-semibold bg-[#09090B] text-[#FF5C00] border border-[#27272A] uppercase tracking-wide">
+        <span className="inline-flex items-center rounded px-2.5 py-1 text-xs font-semibold bg-[#09090B] text-[#FE5000] border border-[#27272A] uppercase tracking-wide">
           {userRole}
         </span>
       </div>
@@ -737,7 +737,7 @@ export default function AdminUsersPage() {
               className={[
                 'flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px',
                 active
-                  ? 'border-[#FF5C00] text-[#FF5C00]'
+                  ? 'border-[#FE5000] text-[#FE5000]'
                   : 'border-transparent text-[#71717A] hover:text-white hover:border-[#3F3F46]',
               ].join(' ')}
             >
@@ -773,7 +773,7 @@ export default function AdminUsersPage() {
             placeholder="Search by name, email, or title..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-md border border-[#27272A] bg-[#18181B] pl-9 pr-3 py-2 text-sm text-white placeholder:text-[#71717A] focus:outline-none focus:ring-1 focus:ring-[#FF5C00]/30 focus:border-[#FF5C00]"
+            className="w-full rounded-md border border-[#27272A] bg-[#18181B] pl-9 pr-3 py-2 text-sm text-white placeholder:text-[#71717A] focus:outline-none focus:ring-1 focus:ring-[#FE5000]/30 focus:border-[#FE5000]"
           />
         </div>
 
@@ -784,7 +784,7 @@ export default function AdminUsersPage() {
             <select
               value={filterRole}
               onChange={(e) => setFilterRole(e.target.value as UserRole | 'all')}
-              className="rounded border border-[#27272A] bg-[#18181B] px-2 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-[#FF5C00]/30"
+              className="rounded border border-[#27272A] bg-[#18181B] px-2 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-[#FE5000]/30"
             >
               <option value="all">All Roles</option>
               {ROLE_OPTIONS.map((r) => (
@@ -796,7 +796,7 @@ export default function AdminUsersPage() {
           <select
             value={filterDepartment}
             onChange={(e) => setFilterDepartment(e.target.value)}
-            className="rounded border border-[#27272A] bg-[#18181B] px-2 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-[#FF5C00]/30"
+            className="rounded border border-[#27272A] bg-[#18181B] px-2 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-[#FE5000]/30"
           >
             <option value="all">All Depts</option>
             {departments.map((d) => (
@@ -807,7 +807,7 @@ export default function AdminUsersPage() {
           <select
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value as 'all' | 'active' | 'inactive')}
-            className="rounded border border-[#27272A] bg-[#18181B] px-2 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-[#FF5C00]/30"
+            className="rounded border border-[#27272A] bg-[#18181B] px-2 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-[#FE5000]/30"
           >
             <option value="all">All Status</option>
             <option value="active">Active</option>
@@ -817,7 +817,7 @@ export default function AdminUsersPage() {
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as SortKey)}
-            className="rounded border border-[#27272A] bg-[#18181B] px-2 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-[#FF5C00]/30"
+            className="rounded border border-[#27272A] bg-[#18181B] px-2 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-[#FE5000]/30"
           >
             <option value="name">Sort: Name</option>
             <option value="department">Sort: Dept</option>
@@ -836,7 +836,7 @@ export default function AdminUsersPage() {
                 onClick={() => setViewMode(mode)}
                 className={[
                   'p-1.5 transition-colors',
-                  viewMode === mode ? 'bg-[#FF5C00] text-white' : 'bg-[#18181B] text-[#71717A] hover:text-white',
+                  viewMode === mode ? 'bg-[#FE5000] text-white' : 'bg-[#18181B] text-[#71717A] hover:text-white',
                 ].join(' ')}
               >
                 <Icon size={14} />
@@ -850,7 +850,7 @@ export default function AdminUsersPage() {
       <div className="flex items-center gap-3">
         <button
           onClick={() => setShowAddForm(!showAddForm)}
-          className="flex items-center gap-1.5 rounded-md bg-[#FF5C00] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#E54800] transition-colors"
+          className="flex items-center gap-1.5 rounded-md bg-[#FE5000] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#CC4000] transition-colors"
         >
           <UserPlus size={12} />
           Add User
@@ -899,7 +899,7 @@ export default function AdminUsersPage() {
       {showAddForm && (
         <div className="rounded-lg border border-[#27272A] bg-[#18181B] p-4">
           <h3 className="text-xs font-semibold text-white mb-2 flex items-center gap-2">
-            <UserPlus size={14} className="text-[#FF5C00]" />
+            <UserPlus size={14} className="text-[#FE5000]" />
             Add New User
           </h3>
           <form onSubmit={handleAddUser} className="flex flex-col sm:flex-row gap-3">
@@ -908,13 +908,13 @@ export default function AdminUsersPage() {
               placeholder="user@delta360.energy"
               value={newEmail}
               onChange={(e) => setNewEmail(e.target.value)}
-              className="flex-1 rounded-md border border-[#27272A] bg-[#27272A] px-3 py-2 text-sm text-white placeholder:text-[#71717A] focus:outline-none focus:ring-1 focus:ring-[#FF5C00]/30 focus:border-[#FF5C00]"
+              className="flex-1 rounded-md border border-[#27272A] bg-[#27272A] px-3 py-2 text-sm text-white placeholder:text-[#71717A] focus:outline-none focus:ring-1 focus:ring-[#FE5000]/30 focus:border-[#FE5000]"
               required
             />
             <select
               value={newRole}
               onChange={(e) => setNewRole(e.target.value as UserRole)}
-              className="rounded-md border border-[#27272A] bg-[#27272A] px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-[#FF5C00]/30"
+              className="rounded-md border border-[#27272A] bg-[#27272A] px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-[#FE5000]/30"
             >
               {ROLE_OPTIONS.map((r) => (
                 <option key={r} value={r}>{r}</option>
@@ -923,7 +923,7 @@ export default function AdminUsersPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="rounded-md bg-[#FF5C00] px-4 py-2 text-sm font-medium text-white hover:bg-[#E54800] disabled:opacity-50 transition-colors"
+              className="rounded-md bg-[#FE5000] px-4 py-2 text-sm font-medium text-white hover:bg-[#CC4000] disabled:opacity-50 transition-colors"
             >
               {submitting ? 'Adding...' : 'Add User'}
             </button>
@@ -968,7 +968,7 @@ export default function AdminUsersPage() {
                 <th className="text-left px-3 py-2 w-8">
                   <button onClick={selectAll} className="text-[#A1A1AA] hover:text-white">
                     {selectedUsers.size === filteredUsers.length && filteredUsers.length > 0 ? (
-                      <CheckSquare size={14} className="text-[#FF5C00]" />
+                      <CheckSquare size={14} className="text-[#FE5000]" />
                     ) : (
                       <Square size={14} />
                     )}
@@ -1001,7 +1001,7 @@ export default function AdminUsersPage() {
                       <td className="px-3 py-2">
                         <button onClick={() => toggleSelect(user.email)} className="text-[#A1A1AA] hover:text-white">
                           {selectedUsers.has(user.email) ? (
-                            <CheckSquare size={14} className="text-[#FF5C00]" />
+                            <CheckSquare size={14} className="text-[#FE5000]" />
                           ) : (
                             <Square size={14} />
                           )}
@@ -1033,7 +1033,7 @@ export default function AdminUsersPage() {
                         <select
                           value={user.role}
                           onChange={(e) => handleChangeRole(user.email, e.target.value as UserRole)}
-                          className="rounded border border-[#3F3F46] bg-[#27272A] px-2 py-1 text-xs text-white focus:outline-none focus:ring-1 focus:ring-[#FF5C00]/30"
+                          className="rounded border border-[#3F3F46] bg-[#27272A] px-2 py-1 text-xs text-white focus:outline-none focus:ring-1 focus:ring-[#FE5000]/30"
                           style={{ color: roleColor }}
                         >
                           {ROLE_OPTIONS.map((r) => (

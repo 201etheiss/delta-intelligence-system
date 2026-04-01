@@ -173,7 +173,7 @@ export default function ExpensesPage() {
           </button>
           <button
             onClick={() => setShowCreate(true)}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#FF5C00] text-white text-sm font-medium hover:bg-[#E54800] transition-colors"
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#FE5000] text-white text-sm font-medium hover:bg-[#CC4000] transition-colors"
           >
             <Plus size={16} /> New Report
           </button>
@@ -217,7 +217,7 @@ export default function ExpensesPage() {
             key={t}
             onClick={() => setTab(t)}
             className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
-              tab === t ? 'bg-[#FF5C00] text-white' : 'text-zinc-400 hover:text-white'
+              tab === t ? 'bg-[#FE5000] text-white' : 'text-zinc-400 hover:text-white'
             }`}
           >
             {t === 'my' ? 'My Reports' : 'All Reports'}
@@ -236,7 +236,7 @@ export default function ExpensesPage() {
               <button onClick={() => setShowCreate(false)} className="px-3 py-1.5 text-sm text-zinc-400 hover:text-white">
                 Cancel
               </button>
-              <button onClick={handleCreate} className="px-4 py-1.5 text-sm bg-[#FF5C00] text-white rounded-lg hover:bg-[#E54800]">
+              <button onClick={handleCreate} className="px-4 py-1.5 text-sm bg-[#FE5000] text-white rounded-lg hover:bg-[#CC4000]">
                 Create
               </button>
             </div>
@@ -305,7 +305,7 @@ export default function ExpensesPage() {
                           {report.status === 'draft' && (
                             <button
                               onClick={() => handleAction(report.id, 'submit')}
-                              className="flex items-center gap-1 px-2 py-1 text-xs text-[#FF5C00] hover:bg-[#FF5C00]/10 rounded transition-colors"
+                              className="flex items-center gap-1 px-2 py-1 text-xs text-[#FE5000] hover:bg-[#FE5000]/10 rounded transition-colors"
                             >
                               <Send size={12} /> Submit
                             </button>

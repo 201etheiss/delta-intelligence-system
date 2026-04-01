@@ -182,8 +182,8 @@ export default function UploadZone() {
         className={[
           'relative flex flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed px-8 py-12 cursor-pointer transition-colors',
           isDragging
-            ? 'border-[#FF5C00] bg-[#FF5C00]/5'
-            : 'border-zinc-700 bg-zinc-900 hover:border-[#FF5C00]/60 hover:bg-zinc-800',
+            ? 'border-[#FE5000] bg-[#FE5000]/5'
+            : 'border-zinc-700 bg-zinc-900 hover:border-[#FE5000]/60 hover:bg-zinc-800',
         ].join(' ')}
       >
         <input
@@ -203,7 +203,7 @@ export default function UploadZone() {
             height="24"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="#FF5C00"
+            stroke="#FE5000"
             strokeWidth="1.75"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -218,7 +218,7 @@ export default function UploadZone() {
         <div className="text-center">
           <p className="text-sm font-medium text-zinc-200">
             Drag files here, or{' '}
-            <span className="text-[#FF5C00]">click to browse</span>
+            <span className="text-[#FE5000]">click to browse</span>
           </p>
           <p className="mt-1 text-xs text-zinc-500">
             PDF, DOCX, XLSX, CSV, TXT, PNG, JPG — max 10 MB each
@@ -286,7 +286,7 @@ export default function UploadZone() {
           </div>
           <div className="h-1.5 w-full overflow-hidden rounded-full bg-zinc-800">
             <div
-              className="h-full rounded-full bg-[#FF5C00] transition-all duration-300"
+              className="h-full rounded-full bg-[#FE5000] transition-all duration-300"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -301,7 +301,7 @@ export default function UploadZone() {
               type="button"
               disabled={isUploading}
               onClick={handleUpload}
-              className="flex-1 rounded-md bg-[#FF5C00] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#e04500] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 rounded-md bg-[#FE5000] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#e04500] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isUploading ? 'Processing…' : `Upload ${files.length} file${files.length !== 1 ? 's' : ''}`}
             </button>
@@ -309,7 +309,7 @@ export default function UploadZone() {
             <button
               type="button"
               onClick={handleAskAboutFiles}
-              className="flex-1 rounded-md bg-[#FF5C00] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#e04500]"
+              className="flex-1 rounded-md bg-[#FE5000] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#e04500]"
             >
               Ask about {uploadedFiles.length} file{uploadedFiles.length !== 1 ? 's' : ''}
             </button>

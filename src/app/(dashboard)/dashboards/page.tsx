@@ -66,16 +66,16 @@ function DashboardCard({ dashboard, onOpen, onDelete }: DashboardCardProps) {
   });
 
   return (
-    <div className="group rounded-lg border border-[#27272A] bg-[#18181B] p-3.5 hover:border-[#FF5C00]/40 hover:shadow-sm transition-all">
+    <div className="group rounded-lg border border-[#27272A] bg-[#18181B] p-3.5 hover:border-[#FE5000]/40 hover:shadow-sm transition-all">
       <div className="flex items-start justify-between mb-2">
         <button
           onClick={() => onOpen(dashboard)}
           className="flex items-center gap-2 min-w-0 flex-1"
         >
-          <div className="flex items-center justify-center w-8 h-8 rounded-md bg-[#27272A] group-hover:bg-[#FF5C00]/10 transition-colors shrink-0">
-            <PanelLeft size={16} className="text-[#A1A1AA] group-hover:text-[#FF5C00] transition-colors" />
+          <div className="flex items-center justify-center w-8 h-8 rounded-md bg-[#27272A] group-hover:bg-[#FE5000]/10 transition-colors shrink-0">
+            <PanelLeft size={16} className="text-[#A1A1AA] group-hover:text-[#FE5000] transition-colors" />
           </div>
-          <h3 className="text-xs font-semibold text-white group-hover:text-[#FF5C00] transition-colors text-left truncate">
+          <h3 className="text-xs font-semibold text-white group-hover:text-[#FE5000] transition-colors text-left truncate">
             {dashboard.name}
           </h3>
         </button>
@@ -147,7 +147,7 @@ function ActiveDashboardView({
           </div>
           <button
             onClick={onEdit}
-            className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium border border-[#27272A] text-[#A1A1AA] hover:border-[#FF5C00] hover:text-[#FF5C00] transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium border border-[#27272A] text-[#A1A1AA] hover:border-[#FE5000] hover:text-[#FE5000] transition-colors"
           >
             <Pencil size={13} />
             Edit
@@ -160,7 +160,7 @@ function ActiveDashboardView({
             <p className="text-sm text-[#52525B] mb-2">No widgets on this dashboard.</p>
             <button
               onClick={onEdit}
-              className="text-xs text-[#FF5C00] hover:underline"
+              className="text-xs text-[#FE5000] hover:underline"
             >
               Add widgets
             </button>
@@ -238,7 +238,7 @@ function EditDashboardView({ dashboard, roleServices, onSave, onCancel }: EditDa
           <div className="flex items-center gap-2">
             <button
               onClick={() => setPickerOpen(true)}
-              className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold bg-[#FF5C00] text-white hover:bg-[#E54800] transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold bg-[#FE5000] text-white hover:bg-[#CC4000] transition-colors"
             >
               <Plus size={14} />
               Add Widgets
@@ -246,7 +246,7 @@ function EditDashboardView({ dashboard, roleServices, onSave, onCancel }: EditDa
             <button
               onClick={handleSave}
               disabled={saving}
-              className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold border border-[#FF5C00] text-[#FF5C00] hover:bg-[#FF5C00]/10 disabled:opacity-40 transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold border border-[#FE5000] text-[#FE5000] hover:bg-[#FE5000]/10 disabled:opacity-40 transition-colors"
             >
               {saving ? <RefreshCw size={13} className="animate-spin" /> : null}
               {saving ? 'Saving...' : 'Save'}
@@ -267,7 +267,7 @@ function EditDashboardView({ dashboard, roleServices, onSave, onCancel }: EditDa
             <p className="text-sm text-[#52525B] mb-2">No widgets yet.</p>
             <button
               onClick={() => setPickerOpen(true)}
-              className="inline-flex items-center gap-1.5 rounded-md px-4 py-2 text-xs font-semibold bg-[#FF5C00] text-white hover:bg-[#E54800] transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-md px-4 py-2 text-xs font-semibold bg-[#FE5000] text-white hover:bg-[#CC4000] transition-colors"
             >
               <Plus size={14} />
               Add Widgets
@@ -300,7 +300,7 @@ function EditDashboardView({ dashboard, roleServices, onSave, onCancel }: EditDa
                   className={`${SIZE_COLS[w.size] ?? SIZE_COLS.md} group relative`}
                 >
                   {/* Edit overlay */}
-                  <div className="absolute inset-0 z-10 rounded-lg border-2 border-transparent group-hover:border-[#FF5C00]/40 pointer-events-none transition-colors" />
+                  <div className="absolute inset-0 z-10 rounded-lg border-2 border-transparent group-hover:border-[#FE5000]/40 pointer-events-none transition-colors" />
                   <div className="absolute top-2 right-2 z-20 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button
                       onClick={cycleSize}
@@ -320,7 +320,7 @@ function EditDashboardView({ dashboard, roleServices, onSave, onCancel }: EditDa
                   <div className="opacity-60 pointer-events-none select-none">
                     <div className="rounded-lg border border-[#27272A] bg-[#18181B] p-3">
                       <div className="flex items-center gap-2 mb-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#FF5C00]" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#FE5000]" />
                         <span className="text-xs font-semibold text-white uppercase tracking-wide truncate">
                           {item.name}
                         </span>
@@ -373,7 +373,7 @@ function CreateModal({
           onKeyDown={(e) => e.key === 'Enter' && submit()}
           placeholder="Dashboard name..."
           autoFocus
-          className="w-full rounded-md border border-[#27272A] bg-[#18181B] px-3 py-2 text-sm text-white placeholder-[#52525B] outline-none focus:border-[#FF5C00] transition-colors mb-2.5"
+          className="w-full rounded-md border border-[#27272A] bg-[#18181B] px-3 py-2 text-sm text-white placeholder-[#52525B] outline-none focus:border-[#FE5000] transition-colors mb-2.5"
         />
         <div className="flex items-center gap-2 justify-end">
           <button
@@ -385,7 +385,7 @@ function CreateModal({
           <button
             onClick={submit}
             disabled={!name.trim()}
-            className="rounded-md px-4 py-1.5 text-xs font-semibold bg-[#FF5C00] text-white hover:bg-[#E54800] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="rounded-md px-4 py-1.5 text-xs font-semibold bg-[#FE5000] text-white hover:bg-[#CC4000] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           >
             Create
           </button>
@@ -532,7 +532,7 @@ export default function DashboardsPage() {
           </div>
           <button
             onClick={() => setCreating(true)}
-            className="inline-flex items-center gap-2 rounded-md px-4 py-2 text-xs font-semibold bg-[#FF5C00] text-white hover:bg-[#E54800] transition-colors"
+            className="inline-flex items-center gap-2 rounded-md px-4 py-2 text-xs font-semibold bg-[#FE5000] text-white hover:bg-[#CC4000] transition-colors"
           >
             <Plus size={16} />
             New Dashboard
@@ -575,7 +575,7 @@ export default function DashboardsPage() {
             </p>
             <button
               onClick={() => setCreating(true)}
-              className="inline-flex items-center gap-2 rounded-md px-4 py-2 text-xs font-semibold bg-[#FF5C00] text-white hover:bg-[#E54800] transition-colors"
+              className="inline-flex items-center gap-2 rounded-md px-4 py-2 text-xs font-semibold bg-[#FE5000] text-white hover:bg-[#CC4000] transition-colors"
             >
               <Plus size={16} />
               Create your first dashboard

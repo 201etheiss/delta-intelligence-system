@@ -122,7 +122,7 @@ export async function POST(request: NextRequest) {
     name: body.name,
     description: body.description,
     longDescription: body.longDescription,
-    color: body.color ?? '#FF5C00',
+    color: body.color ?? '#FE5000',
     icon: body.icon ?? 'briefcase',
     dataSources: body.dataSources ?? [],
     enabledEndpoints: body.enabledEndpoints,

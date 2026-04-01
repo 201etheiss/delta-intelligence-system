@@ -601,7 +601,7 @@ export function generatePDFHtml(markdown: string, title: string): string {
 </style>
 </head>
 <body>
-<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid #FF5C00">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid #FE5000">
   <div>
     <div style="font-size:10px;color:#71717a;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Delta Intelligence Report</div>
     <h1 style="font-size:20px;font-weight:700;margin:0">${stripMarkdown(title)}</h1>

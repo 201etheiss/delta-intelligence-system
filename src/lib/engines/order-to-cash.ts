@@ -172,15 +172,23 @@ const MONTH_NAMES = [
 ];
 
 // ── Core Data Pull Functions ────────────────────────────────
+// Ascend schema:
+//   OrderHdr: SysTrxNo, OrderDtTm, Status (O=Open, C=Closed, A=Cancelled, Q=Quote),
+//             OrderType (S=Sales, I=Internal), InternalTransferOrder (Y/N),
+//             PONo, DispatchedDate, DDOrder (Y/N = contractor/digital dispatch)
+//   vBOLHdrInfo: VSysTrxNo, StatusDescr (Open/Resolved/Posted/etc), CarrierCode, PeriodCode
+//   BOLHdr: SysTrxNo, Status (O=Open, R=Resolved, P=Posted, BR=Never Resolved, PP=Partially Posted)
+//   OrderStatusID maps to DF_OrderStatusProcessFlow for dispatch/billing stages
 
 async function getOrderCounts(year: number): Promise<{ january: number; february: number; march: number }> {
-  // Pull order counts from SalesOrder by month
+  // Sales orders only (OrderType='S'), excluding cancelled and quotes
   const rows = await querySQL(
-    `SELECT MONTH(OrderDate) AS Mo, COUNT(*) AS Cnt
-     FROM SalesOrder
-     WHERE YEAR(OrderDate) = ${year} AND MONTH(OrderDate) IN (1,2,3)
-       AND OrderStatus NOT IN ('Cancelled','Quote')
-     GROUP BY MONTH(OrderDate)
+    `SELECT MONTH(OrderDtTm) AS Mo, COUNT(*) AS Cnt
+     FROM OrderHdr
+     WHERE YEAR(OrderDtTm) = ${year} AND MONTH(OrderDtTm) IN (1,2,3)
+       AND OrderType = 'S'
+       AND Status NOT IN ('A','Q')
+     GROUP BY MONTH(OrderDtTm)
      ORDER BY Mo`
   );
 
@@ -199,69 +207,58 @@ async function getUnbilledOrders(year: number, month: number): Promise<MonthUnbi
   const { start, end } = getMonthRange(year, month);
   const monthName = MONTH_NAMES[month] ?? `Month ${month}`;
 
-  // Orders in dispatch (not yet at billing stage)
-  const dispatchRows = await querySQL(
+  // Open sales orders (Status='O') — these are unbilled
+  // DDOrder = 'Y' indicates contractor/digital dispatch orders
+  // Split by whether DispatchedDate is set (dispatch vs billing stage)
+  const unbilledRows = await querySQL(
     `SELECT
-       CASE WHEN IsContractor = 1 THEN 'contractor' ELSE 'direct' END AS Type,
-       CASE WHEN CustomerType LIKE '%Oil%Gas%' THEN 'oilgas' ELSE 'comind' END AS Segment,
+       CASE WHEN DDOrder = 'Y' THEN 'contractor' ELSE 'direct' END AS Type,
+       CASE WHEN DispatchedDate IS NULL THEN 'dispatch' ELSE 'billing' END AS Stage,
        COUNT(*) AS Cnt
-     FROM SalesOrder
-     WHERE OrderDate BETWEEN '${start}' AND '${end}'
-       AND OrderStatus = 'Dispatch'
-       AND InvoiceNo IS NULL
+     FROM OrderHdr
+     WHERE OrderDtTm BETWEEN '${start}' AND '${end}'
+       AND OrderType = 'S'
+       AND Status = 'O'
      GROUP BY
-       CASE WHEN IsContractor = 1 THEN 'contractor' ELSE 'direct' END,
-       CASE WHEN CustomerType LIKE '%Oil%Gas%' THEN 'oilgas' ELSE 'comind' END`
+       CASE WHEN DDOrder = 'Y' THEN 'contractor' ELSE 'direct' END,
+       CASE WHEN DispatchedDate IS NULL THEN 'dispatch' ELSE 'billing' END`
   );
 
-  // Orders in billing (dispatched but not invoiced)
-  const billingRows = await querySQL(
-    `SELECT
-       CASE WHEN IsContractor = 1 THEN 'contractor' ELSE 'direct' END AS Type,
-       CASE WHEN CustomerType LIKE '%Oil%Gas%' THEN 'oilgas' ELSE 'comind' END AS Segment,
-       COUNT(*) AS Cnt
-     FROM SalesOrder
-     WHERE OrderDate BETWEEN '${start}' AND '${end}'
-       AND OrderStatus = 'Billing'
-       AND InvoiceNo IS NULL
-     GROUP BY
-       CASE WHEN IsContractor = 1 THEN 'contractor' ELSE 'direct' END,
-       CASE WHEN CustomerType LIKE '%Oil%Gas%' THEN 'oilgas' ELSE 'comind' END`
-  );
-
-  // Pending PO/Stamp/Pricing
+  // Pending PO — orders missing PO number
   const pendingRows = await querySQL(
     `SELECT COUNT(*) AS Cnt
-     FROM SalesOrder
-     WHERE OrderDate BETWEEN '${start}' AND '${end}'
-       AND (PONumber IS NULL OR StampApproved = 0 OR UnitPrice = 0)
-       AND OrderStatus NOT IN ('Cancelled','Invoiced','Delivered')`
+     FROM OrderHdr
+     WHERE OrderDtTm BETWEEN '${start}' AND '${end}'
+       AND OrderType = 'S'
+       AND Status = 'O'
+       AND (PONo IS NULL OR PONo = '')`
   );
 
-  // BOL Unresolved
+  // BOL Unresolved — BOLs with Open status for this period
   const bolRows = await querySQL(
     `SELECT
-       CASE WHEN b.IsContractor = 1 THEN 'contractor' ELSE 'noncontractor' END AS Type,
+       CASE WHEN h.CarrierCode IS NOT NULL AND h.CarrierCode != '' THEN 'contractor' ELSE 'noncontractor' END AS Type,
        COUNT(*) AS Cnt
-     FROM vBOLHdrInfo b
-     WHERE b.BOLDate BETWEEN '${start}' AND '${end}'
-       AND b.BOLStatus = 'Unresolved'
-     GROUP BY CASE WHEN b.IsContractor = 1 THEN 'contractor' ELSE 'noncontractor' END`
+     FROM vBOLHdrInfo h
+     WHERE h.PeriodCode LIKE '${year}-${String(month).padStart(2, '0')}%'
+       AND h.StatusDescr = 'Open'
+     GROUP BY CASE WHEN h.CarrierCode IS NOT NULL AND h.CarrierCode != '' THEN 'contractor' ELSE 'noncontractor' END`
   );
 
   // Total order count for percentage calc
   const totalRows = await querySQL(
-    `SELECT COUNT(*) AS Cnt FROM SalesOrder
-     WHERE OrderDate BETWEEN '${start}' AND '${end}'
-       AND OrderStatus NOT IN ('Cancelled','Quote')`
+    `SELECT COUNT(*) AS Cnt FROM OrderHdr
+     WHERE OrderDtTm BETWEEN '${start}' AND '${end}'
+       AND OrderType = 'S'
+       AND Status NOT IN ('A','Q')`
   );
   const totalOrders = safeNumber((totalRows[0] ?? {}).Cnt) || 1;
 
-  // Aggregate dispatch
-  const dispatch = aggregateBreakdown(dispatchRows, 'direct');
-  const dispatchContractors = aggregateBreakdown(dispatchRows, 'contractor');
-  const billing = aggregateBreakdown(billingRows, 'direct');
-  const billingContractors = aggregateBreakdown(billingRows, 'contractor');
+  // Aggregate by stage
+  const dispatch = aggregateByStage(unbilledRows, 'direct', 'dispatch');
+  const dispatchContractors = aggregateByStage(unbilledRows, 'contractor', 'dispatch');
+  const billing = aggregateByStage(unbilledRows, 'direct', 'billing');
+  const billingContractors = aggregateByStage(unbilledRows, 'contractor', 'billing');
 
   const pendingInvoice = dispatch.total + dispatchContractors.total + billing.total + billingContractors.total;
   const pendingPO = safeNumber((pendingRows[0] ?? {}).Cnt);
@@ -287,23 +284,28 @@ async function getUnbilledOrders(year: number, month: number): Promise<MonthUnbi
   };
 }
 
-function aggregateBreakdown(
+function aggregateByStage(
   rows: Record<string, unknown>[],
-  type: string
+  type: string,
+  stage: string
 ): DepartmentBreakdown {
-  const filtered = rows.filter(r => String(r.Type ?? '') === type);
-  const comind = safeNumber(filtered.find(r => String(r.Segment ?? '') === 'comind')?.Cnt ?? 0);
-  const oilgas = safeNumber(filtered.find(r => String(r.Segment ?? '') === 'oilgas')?.Cnt ?? 0);
-  return { total: comind + oilgas, commercialIndustrial: comind, oilAndGas: oilgas };
+  const cnt = safeNumber(
+    rows.find(r => String(r.Type ?? '') === type && String(r.Stage ?? '') === stage)?.Cnt ?? 0
+  );
+  // Note: Commercial/Industrial vs Oil & Gas split requires CustType join which varies by Ascend config.
+  // For now, total is returned. Segment breakdown can be refined once CustType mapping is confirmed.
+  return { total: cnt, commercialIndustrial: cnt, oilAndGas: 0 };
 }
 
 async function getOpenInternalOrders(year: number): Promise<readonly OpenInternalOrders[]> {
+  // Internal transfer orders (InternalTransferOrder='Y') that are still open
   const rows = await querySQL(
-    `SELECT MONTH(OrderDate) AS Mo, COUNT(*) AS Cnt
-     FROM InternalOrder
-     WHERE YEAR(OrderDate) = ${year}
-       AND OrderStatus NOT IN ('Delivered','Cancelled','Quote')
-     GROUP BY MONTH(OrderDate)
+    `SELECT MONTH(OrderDtTm) AS Mo, COUNT(*) AS Cnt
+     FROM OrderHdr
+     WHERE YEAR(OrderDtTm) = ${year}
+       AND InternalTransferOrder = 'Y'
+       AND Status = 'O'
+     GROUP BY MONTH(OrderDtTm)
      ORDER BY Mo`
   );
   return rows.map(r => ({
@@ -313,13 +315,15 @@ async function getOpenInternalOrders(year: number): Promise<readonly OpenInterna
 }
 
 async function getPendingRigStamps(year: number): Promise<readonly PendingRigStamp[]> {
+  // Orders missing PO number that are still open — proxy for pending rig stamps/POs
   const rows = await querySQL(
-    `SELECT MONTH(OrderDate) AS Mo, COUNT(*) AS Cnt
-     FROM SalesOrder
-     WHERE YEAR(OrderDate) = ${year}
-       AND StampApproved = 0
-       AND OrderStatus NOT IN ('Cancelled','Invoiced','Delivered')
-     GROUP BY MONTH(OrderDate)
+    `SELECT MONTH(OrderDtTm) AS Mo, COUNT(*) AS Cnt
+     FROM OrderHdr
+     WHERE YEAR(OrderDtTm) = ${year}
+       AND OrderType = 'S'
+       AND Status = 'O'
+       AND (PONo IS NULL OR PONo = '')
+     GROUP BY MONTH(OrderDtTm)
      ORDER BY Mo`
   );
   return rows.map(r => ({
@@ -329,13 +333,17 @@ async function getPendingRigStamps(year: number): Promise<readonly PendingRigSta
 }
 
 async function getMissingLoads(year: number): Promise<readonly MissingLoad[]> {
+  // Open orders that were dispatched but have no corresponding BOL yet
+  // DispatchedDate is set but no LoadNo assigned
   const rows = await querySQL(
-    `SELECT MONTH(DispatchDate) AS Mo, COUNT(*) AS Cnt
-     FROM SalesOrder
-     WHERE YEAR(DispatchDate) = ${year}
-       AND OrderStatus = 'Dispatch'
-       AND LoadConfirmed = 0
-     GROUP BY MONTH(DispatchDate)
+    `SELECT MONTH(DispatchedDate) AS Mo, COUNT(*) AS Cnt
+     FROM OrderHdr
+     WHERE YEAR(DispatchedDate) = ${year}
+       AND OrderType = 'S'
+       AND Status = 'O'
+       AND DispatchedDate IS NOT NULL
+       AND (LoadNo IS NULL OR LoadNo = 0)
+     GROUP BY MONTH(DispatchedDate)
      ORDER BY Mo`
   );
   return rows.map(r => ({

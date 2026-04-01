@@ -111,7 +111,7 @@ export default function ChartWidget({ title, endpoint, xKey, yKey, type }: Chart
                   }}
                   cursor={{ fill: '#F4F4F5' }}
                 />
-                <Bar dataKey={yKey} fill="#FF5C00" radius={[3, 3, 0, 0]} maxBarSize={48} />
+                <Bar dataKey={yKey} fill="#FE5000" radius={[3, 3, 0, 0]} maxBarSize={48} />
               </BarChart>
             ) : (
               <LineChart data={data} margin={{ top: 4, right: 8, left: 0, bottom: 4 }}>
@@ -140,9 +140,9 @@ export default function ChartWidget({ title, endpoint, xKey, yKey, type }: Chart
                 <Line
                   type="monotone"
                   dataKey={yKey}
-                  stroke="#FF5C00"
+                  stroke="#FE5000"
                   strokeWidth={2}
-                  dot={{ r: 3, fill: '#FF5C00', strokeWidth: 0 }}
+                  dot={{ r: 3, fill: '#FE5000', strokeWidth: 0 }}
                   activeDot={{ r: 5 }}
                 />
               </LineChart>

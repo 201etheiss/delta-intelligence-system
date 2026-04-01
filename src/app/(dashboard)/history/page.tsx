@@ -144,7 +144,7 @@ export default function HistoryPage() {
             placeholder="Search conversations..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="px-3 py-1.5 rounded-lg border border-[#E4E4E7] dark:border-[#27272A] bg-white dark:bg-[#18181B] text-sm text-[#09090B] dark:text-white placeholder-[#A1A1AA] focus:outline-none focus:border-[#FF5C00]/50 w-48"
+            className="px-3 py-1.5 rounded-lg border border-[#E4E4E7] dark:border-[#27272A] bg-white dark:bg-[#18181B] text-sm text-[#09090B] dark:text-white placeholder-[#A1A1AA] focus:outline-none focus:border-[#FE5000]/50 w-48"
           />
           {(conversations.length + serverConversations.length) > 0 && (
             <span className="text-xs text-[#A1A1AA] tabular-nums">
@@ -179,7 +179,7 @@ export default function HistoryPage() {
               .map((convo) => (
               <div
                 key={convo.id}
-                className="group flex items-center justify-between border border-[#E4E4E7] dark:border-[#27272A] rounded-lg px-3 py-2 bg-white dark:bg-[#18181B] hover:border-[#FF5C00]/30 hover:bg-[#FAFAFA] dark:hover:bg-[#27272A] hover:shadow-md transition-all cursor-pointer"
+                className="group flex items-center justify-between border border-[#E4E4E7] dark:border-[#27272A] rounded-lg px-3 py-2 bg-white dark:bg-[#18181B] hover:border-[#FE5000]/30 hover:bg-[#FAFAFA] dark:hover:bg-[#27272A] hover:shadow-md transition-all cursor-pointer"
                 onClick={() => openConversation(convo.id)}
                 role="button"
                 tabIndex={0}
@@ -242,7 +242,7 @@ export default function HistoryPage() {
             return (
               <div
                 key={convo.id}
-                className="group flex items-center justify-between border border-[#E4E4E7] dark:border-[#27272A] rounded-lg px-3 py-2 bg-white dark:bg-[#18181B] hover:border-[#FF5C00]/30 hover:bg-[#FAFAFA] dark:hover:bg-[#27272A] hover:shadow-md transition-all cursor-pointer"
+                className="group flex items-center justify-between border border-[#E4E4E7] dark:border-[#27272A] rounded-lg px-3 py-2 bg-white dark:bg-[#18181B] hover:border-[#FE5000]/30 hover:bg-[#FAFAFA] dark:hover:bg-[#27272A] hover:shadow-md transition-all cursor-pointer"
                 onClick={() => openConversation(convo.id)}
                 role="button"
                 tabIndex={0}

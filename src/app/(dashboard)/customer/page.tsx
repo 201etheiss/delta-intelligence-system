@@ -173,7 +173,7 @@ function SectionCard({
   return (
     <div className={`bg-[#18181B] border border-[#27272A] rounded-lg overflow-hidden ${className}`}>
       <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-[#27272A]">
-        <Icon size={15} className="text-[#FF5C00] shrink-0" />
+        <Icon size={15} className="text-[#FE5000] shrink-0" />
         <span className="text-xs font-semibold text-[#A1A1AA] uppercase tracking-widest">{title}</span>
       </div>
       <div className="p-5">{children}</div>
@@ -195,7 +195,7 @@ function StatTile({
   return (
     <div className="flex flex-col gap-0.5">
       <span className="text-[10px] text-[#71717A] uppercase tracking-widest">{label}</span>
-      <span className={`text-lg font-bold tabular-nums ${accent ? 'text-[#FF5C00]' : 'text-white'}`}>
+      <span className={`text-lg font-bold tabular-nums ${accent ? 'text-[#FE5000]' : 'text-white'}`}>
         {value}
       </span>
       {sub && <span className="text-[11px] text-[#52525B]">{sub}</span>}
@@ -554,12 +554,12 @@ function Customer360Inner() {
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               placeholder="Enter customer name..."
-              className="w-full pl-9 pr-4 py-2.5 bg-[#18181B] border border-[#27272A] rounded-lg text-sm text-white placeholder-[#52525B] focus:outline-none focus:border-[#FF5C00]/50 transition-colors"
+              className="w-full pl-9 pr-4 py-2.5 bg-[#18181B] border border-[#27272A] rounded-lg text-sm text-white placeholder-[#52525B] focus:outline-none focus:border-[#FE5000]/50 transition-colors"
             />
           </div>
           <button
             type="submit"
-            className="flex items-center gap-2 px-4 py-2.5 bg-[#FF5C00] hover:bg-[#E54800] rounded-lg text-xs font-semibold text-white transition-colors"
+            className="flex items-center gap-2 px-4 py-2.5 bg-[#FE5000] hover:bg-[#CC4000] rounded-lg text-xs font-semibold text-white transition-colors"
           >
             <ArrowUpRight size={14} />
             Look Up
@@ -603,8 +603,8 @@ function Customer360Inner() {
             {/* ── Section 1: Header ─────────────────────────────── */}
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 bg-[#18181B] border border-[#27272A] rounded-lg p-3.5">
               <div className="flex items-start gap-3">
-                <div className="w-12 h-12 rounded-lg bg-[#FF5C00]/10 border border-[#FF5C00]/20 flex items-center justify-center shrink-0">
-                  <Building2 size={22} className="text-[#FF5C00]" />
+                <div className="w-12 h-12 rounded-lg bg-[#FE5000]/10 border border-[#FE5000]/20 flex items-center justify-center shrink-0">
+                  <Building2 size={22} className="text-[#FE5000]" />
                 </div>
                 <div>
                   {loading && !financial ? (
@@ -820,7 +820,7 @@ function Customer360Inner() {
                                 {c.phone && (
                                   <a
                                     href={`tel:${c.phone}`}
-                                    className="flex items-center gap-1.5 text-[11px] text-[#A1A1AA] hover:text-[#FF5C00] transition-colors"
+                                    className="flex items-center gap-1.5 text-[11px] text-[#A1A1AA] hover:text-[#FE5000] transition-colors"
                                   >
                                     <Phone size={10} />
                                     {c.phone}
@@ -829,7 +829,7 @@ function Customer360Inner() {
                                 {c.email && (
                                   <a
                                     href={`mailto:${c.email}`}
-                                    className="flex items-center gap-1.5 text-[11px] text-[#A1A1AA] hover:text-[#FF5C00] transition-colors"
+                                    className="flex items-center gap-1.5 text-[11px] text-[#A1A1AA] hover:text-[#FE5000] transition-colors"
                                   >
                                     <Mail size={10} />
                                     {c.email}
@@ -864,7 +864,7 @@ function Customer360Inner() {
                                   {opp.name}
                                 </div>
                                 {opp.amount != null && (
-                                  <span className="text-xs font-semibold text-[#FF5C00] tabular-nums shrink-0">
+                                  <span className="text-xs font-semibold text-[#FE5000] tabular-nums shrink-0">
                                     {fmt(opp.amount)}
                                   </span>
                                 )}
@@ -956,7 +956,7 @@ function Customer360Inner() {
                           </div>
                           <ChevronRight
                             size={12}
-                            className="text-[#3F3F46] group-hover:text-[#FF5C00] shrink-0 mt-0.5 transition-colors"
+                            className="text-[#3F3F46] group-hover:text-[#FE5000] shrink-0 mt-0.5 transition-colors"
                           />
                         </div>
                       </div>
@@ -984,7 +984,7 @@ function Customer360Inner() {
                           </div>
                           <div className="h-1.5 bg-[#27272A] rounded-full overflow-hidden">
                             <div
-                              className="h-full rounded-full bg-[#FF5C00] transition-all"
+                              className="h-full rounded-full bg-[#FE5000] transition-all"
                               style={{ width: `${Math.min(factor.score, 100)}%` }}
                             />
                           </div>

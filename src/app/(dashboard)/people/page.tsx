@@ -134,7 +134,7 @@ function OrgNode({ person, people, depth = 0 }: { person: PersonRecord; people: 
           <span className="text-sm text-white font-medium truncate">{person.displayName}</span>
           <span className="text-xs text-[#52525B] truncate hidden sm:inline">{person.jobTitle ?? ''}</span>
           {person.department && (
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#FF5C00]/10 text-[#FF5C00] border border-[#FF5C00]/20">
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#FE5000]/10 text-[#FE5000] border border-[#FE5000]/20">
               {person.department}
             </span>
           )}
@@ -250,7 +250,7 @@ export default function PeoplePage() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-lg font-bold text-white flex items-center gap-2">
-              <Users size={22} className="text-[#FF5C00]" />
+              <Users size={22} className="text-[#FE5000]" />
               People Directory
             </h1>
             <p className="text-sm text-[#71717A] mt-0.5">
@@ -274,7 +274,7 @@ export default function PeoplePage() {
               onClick={() => setView('org')}
               className={`px-3 py-1.5 rounded text-xs font-medium transition-colors ${
                 view === 'org'
-                  ? 'bg-[#FF5C00]/15 text-[#FF5C00] border border-[#FF5C00]/30'
+                  ? 'bg-[#FE5000]/15 text-[#FE5000] border border-[#FE5000]/30'
                   : 'bg-[#18181B] text-[#A1A1AA] border border-[#27272A] hover:text-white'
               }`}
             >
@@ -284,7 +284,7 @@ export default function PeoplePage() {
               onClick={() => setView('directory')}
               className={`px-3 py-1.5 rounded text-xs font-medium transition-colors ${
                 view === 'directory'
-                  ? 'bg-[#FF5C00]/15 text-[#FF5C00] border border-[#FF5C00]/30'
+                  ? 'bg-[#FE5000]/15 text-[#FE5000] border border-[#FE5000]/30'
                   : 'bg-[#18181B] text-[#A1A1AA] border border-[#27272A] hover:text-white'
               }`}
             >
@@ -314,7 +314,7 @@ export default function PeoplePage() {
               }}
               className={`rounded-lg border p-3 text-left transition-colors ${
                 filterDept === dept
-                  ? 'bg-[#FF5C00]/10 border-[#FF5C00]/30'
+                  ? 'bg-[#FE5000]/10 border-[#FE5000]/30'
                   : 'bg-[#18181B] border-[#27272A] hover:border-[#3F3F46]'
               }`}
             >
@@ -336,7 +336,7 @@ export default function PeoplePage() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search name, dept, title, email..."
-                className="w-full pl-9 pr-3 py-2 text-xs bg-[#18181B] border border-[#27272A] rounded-md text-zinc-300 placeholder:text-zinc-600 focus:outline-none focus:border-[#FF5C00]/50"
+                className="w-full pl-9 pr-3 py-2 text-xs bg-[#18181B] border border-[#27272A] rounded-md text-zinc-300 placeholder:text-zinc-600 focus:outline-none focus:border-[#FE5000]/50"
               />
             </div>
             <div className="flex gap-2 flex-wrap">
@@ -344,7 +344,7 @@ export default function PeoplePage() {
                 onClick={() => setFilterDept('All')}
                 className={`px-3 py-1.5 rounded text-xs font-medium transition-colors ${
                   filterDept === 'All'
-                    ? 'bg-[#FF5C00]/15 text-[#FF5C00] border border-[#FF5C00]/30'
+                    ? 'bg-[#FE5000]/15 text-[#FE5000] border border-[#FE5000]/30'
                     : 'bg-[#18181B] text-[#A1A1AA] border border-[#27272A] hover:text-white'
                 }`}
               >
@@ -356,7 +356,7 @@ export default function PeoplePage() {
                   onClick={() => setFilterDept(dept)}
                   className={`px-3 py-1.5 rounded text-xs font-medium transition-colors ${
                     filterDept === dept
-                      ? 'bg-[#FF5C00]/15 text-[#FF5C00] border border-[#FF5C00]/30'
+                      ? 'bg-[#FE5000]/15 text-[#FE5000] border border-[#FE5000]/30'
                       : 'bg-[#18181B] text-[#A1A1AA] border border-[#27272A] hover:text-white'
                   }`}
                 >

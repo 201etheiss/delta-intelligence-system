@@ -190,7 +190,7 @@ export default function ContractsPage() {
           </button>
           <button
             onClick={() => setShowCreate(true)}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#FF5C00] text-white text-sm font-medium hover:bg-[#E54800] transition-colors"
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#FE5000] text-white text-sm font-medium hover:bg-[#CC4000] transition-colors"
           >
             <Plus size={16} /> New Contract
           </button>
@@ -223,7 +223,7 @@ export default function ContractsPage() {
           <div className="flex items-center gap-2 text-zinc-500 text-xs mb-1">
             <Clock size={14} /> Renewals Due
           </div>
-          <div className="text-lg font-bold text-[#FF5C00]">{summary?.renewalsDue ?? 0}</div>
+          <div className="text-lg font-bold text-[#FE5000]">{summary?.renewalsDue ?? 0}</div>
         </div>
       </div>
 
@@ -322,7 +322,7 @@ export default function ContractsPage() {
               <button onClick={() => setShowCreate(false)} className="px-3 py-1.5 text-sm text-zinc-400 hover:text-white">
                 Cancel
               </button>
-              <button onClick={handleCreate} className="px-4 py-1.5 text-sm bg-[#FF5C00] text-white rounded-lg hover:bg-[#E54800]">
+              <button onClick={handleCreate} className="px-4 py-1.5 text-sm bg-[#FE5000] text-white rounded-lg hover:bg-[#CC4000]">
                 Create
               </button>
             </div>
@@ -335,13 +335,13 @@ export default function ContractsPage() {
         <div className="mb-6">
           <button
             onClick={() => setShowRenewals(!showRenewals)}
-            className="flex items-center gap-2 text-sm font-medium text-[#FF5C00] mb-2"
+            className="flex items-center gap-2 text-sm font-medium text-[#FE5000] mb-2"
           >
             {showRenewals ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
             Renewal Queue ({(renewalQueue ?? []).length})
           </button>
           {showRenewals && (
-            <div className="bg-[#18181B] border border-[#FF5C00]/20 rounded-lg p-4 space-y-2">
+            <div className="bg-[#18181B] border border-[#FE5000]/20 rounded-lg p-4 space-y-2">
               {(renewalQueue ?? []).map((c) => {
                 const days = daysUntil(c.endDate);
                 return (

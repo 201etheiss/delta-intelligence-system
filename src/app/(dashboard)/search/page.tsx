@@ -100,7 +100,7 @@ function HighlightedText({ text, query }: { text: string; query: string }) {
     <span>
       {parts.map((part, i) =>
         part.highlighted ? (
-          <mark key={i} className="bg-[#FF5C00]/20 text-[#FF5C00] rounded px-0.5">{part.text}</mark>
+          <mark key={i} className="bg-[#FE5000]/20 text-[#FE5000] rounded px-0.5">{part.text}</mark>
         ) : (
           <span key={i}>{part.text}</span>
         )
@@ -217,7 +217,7 @@ function SearchPageContent() {
 
       {/* Search Input */}
       <div className="max-w-3xl space-y-3 mb-6">
-        <div className="flex items-center gap-2 bg-white dark:bg-[#18181B] border border-[#D4D4D8] dark:border-[#3F3F46] rounded-lg px-4 py-2.5 focus-within:border-[#FF5C00] focus-within:ring-1 focus-within:ring-[#FF5C00]/20 shadow-sm">
+        <div className="flex items-center gap-2 bg-white dark:bg-[#18181B] border border-[#D4D4D8] dark:border-[#3F3F46] rounded-lg px-4 py-2.5 focus-within:border-[#FE5000] focus-within:ring-1 focus-within:ring-[#FE5000]/20 shadow-sm">
           <SearchIcon size={18} className="text-[#A1A1AA] shrink-0" />
           <input
             value={query}
@@ -242,14 +242,14 @@ function SearchPageContent() {
               type="date"
               value={dateFrom}
               onChange={(e) => setDateFrom(e.target.value)}
-              className="text-xs border border-[#E4E4E7] dark:border-[#27272A] rounded-lg px-2 py-1.5 focus:outline-none focus:border-[#FF5C00]"
+              className="text-xs border border-[#E4E4E7] dark:border-[#27272A] rounded-lg px-2 py-1.5 focus:outline-none focus:border-[#FE5000]"
             />
             <span className="text-xs text-[#A1A1AA]">to</span>
             <input
               type="date"
               value={dateTo}
               onChange={(e) => setDateTo(e.target.value)}
-              className="text-xs border border-[#E4E4E7] dark:border-[#27272A] rounded-lg px-2 py-1.5 focus:outline-none focus:border-[#FF5C00]"
+              className="text-xs border border-[#E4E4E7] dark:border-[#27272A] rounded-lg px-2 py-1.5 focus:outline-none focus:border-[#FE5000]"
             />
           </div>
           {availableModels.length > 0 && (
@@ -258,7 +258,7 @@ function SearchPageContent() {
               <select
                 value={modelFilter}
                 onChange={(e) => setModelFilter(e.target.value)}
-                className="text-xs border border-[#E4E4E7] dark:border-[#27272A] rounded-lg px-2 py-1.5 focus:outline-none focus:border-[#FF5C00] bg-white dark:bg-[#18181B]"
+                className="text-xs border border-[#E4E4E7] dark:border-[#27272A] rounded-lg px-2 py-1.5 focus:outline-none focus:border-[#FE5000] bg-white dark:bg-[#18181B]"
               >
                 <option value="">All models</option>
                 {availableModels.map((m) => (
@@ -285,7 +285,7 @@ function SearchPageContent() {
             {results.map((r, i) => (
               <div
                 key={`${r.conversationId}-${i}`}
-                className="group rounded-lg border border-[#E4E4E7] dark:border-[#27272A] px-3 py-2 bg-white dark:bg-[#18181B] hover:border-[#FF5C00]/30 hover:bg-[#FAFAFA] dark:hover:bg-[#27272A] transition-colors cursor-pointer"
+                className="group rounded-lg border border-[#E4E4E7] dark:border-[#27272A] px-3 py-2 bg-white dark:bg-[#18181B] hover:border-[#FE5000]/30 hover:bg-[#FAFAFA] dark:hover:bg-[#27272A] transition-colors cursor-pointer"
                 onClick={() => router.push(`/chat?id=${r.conversationId}`)}
                 role="button"
                 tabIndex={0}
@@ -336,7 +336,7 @@ function SearchPageContent() {
                     setQuery(suggestion);
                     router.replace(`/search?q=${encodeURIComponent(suggestion)}`);
                   }}
-                  className="text-left px-3 py-2.5 rounded-lg border border-[#E4E4E7] dark:border-[#27272A] bg-white dark:bg-[#18181B] text-sm text-[#52525B] dark:text-[#A1A1AA] hover:border-[#FF5C00]/40 hover:text-[#09090B] dark:hover:text-white hover:bg-[#FAFAFA] dark:hover:bg-[#27272A] transition-colors"
+                  className="text-left px-3 py-2.5 rounded-lg border border-[#E4E4E7] dark:border-[#27272A] bg-white dark:bg-[#18181B] text-sm text-[#52525B] dark:text-[#A1A1AA] hover:border-[#FE5000]/40 hover:text-[#09090B] dark:hover:text-white hover:bg-[#FAFAFA] dark:hover:bg-[#27272A] transition-colors"
                 >
                   {suggestion}
                 </button>
@@ -355,7 +355,7 @@ function SearchPageContent() {
                     <button
                       key={convo.id}
                       onClick={() => router.push(`/chat?id=${convo.id}`)}
-                      className="w-full text-left px-3 py-2 rounded-lg border border-[#E4E4E7] dark:border-[#27272A] bg-white dark:bg-[#18181B] hover:border-[#FF5C00]/30 hover:bg-[#FAFAFA] dark:hover:bg-[#27272A] transition-colors"
+                      className="w-full text-left px-3 py-2 rounded-lg border border-[#E4E4E7] dark:border-[#27272A] bg-white dark:bg-[#18181B] hover:border-[#FE5000]/30 hover:bg-[#FAFAFA] dark:hover:bg-[#27272A] transition-colors"
                     >
                       <p className="text-sm text-[#09090B] dark:text-white truncate">{title}</p>
                       <p className="text-[10px] text-[#A1A1AA] mt-0.5">{formatDate(convo.updatedAt)}</p>

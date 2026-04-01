@@ -91,7 +91,7 @@ export default function AutomationCard({
           <button
             onClick={() => onToggle(automation.id, !automation.enabled)}
             className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-              automation.enabled ? 'bg-[#FF5C00]' : 'bg-zinc-300'
+              automation.enabled ? 'bg-[#FE5000]' : 'bg-zinc-300'
             }`}
             title={automation.enabled ? 'Disable' : 'Enable'}
           >
@@ -105,11 +105,11 @@ export default function AutomationCard({
           <button
             onClick={() => onRunNow(automation.id)}
             disabled={running}
-            className="p-1.5 text-zinc-400 hover:text-[#FF5C00] hover:bg-zinc-50 dark:hover:bg-zinc-800 rounded transition-colors disabled:opacity-50"
+            className="p-1.5 text-zinc-400 hover:text-[#FE5000] hover:bg-zinc-50 dark:hover:bg-zinc-800 rounded transition-colors disabled:opacity-50"
             title="Run Now"
           >
             {running ? (
-              <Zap size={14} className="animate-pulse text-[#FF5C00]" />
+              <Zap size={14} className="animate-pulse text-[#FE5000]" />
             ) : (
               <Play size={14} />
             )}

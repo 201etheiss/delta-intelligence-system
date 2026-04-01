@@ -31,7 +31,7 @@ function EmbedChatContent() {
   const borderColor = isDark ? '#27272A' : '#E4E4E7';
   const inputBg = isDark ? '#18181B' : '#F4F4F5';
   const mutedText = isDark ? '#71717A' : '#A1A1AA';
-  const accentColor = '#FF5C00';
+  const accentColor = '#FE5000';
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');

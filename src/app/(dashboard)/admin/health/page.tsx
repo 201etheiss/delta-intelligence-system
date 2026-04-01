@@ -134,13 +134,13 @@ export default function AdminHealthPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Settings size={20} className="text-[#FF5C00]" />
+          <Settings size={20} className="text-[#FE5000]" />
           <div>
             <h2 className="text-lg font-bold text-[#09090B] dark:text-white">Admin Portal</h2>
             <p className="mt-0.5 text-sm text-[#71717A] dark:text-[#A1A1AA]">Manage users, permissions, usage, and system health</p>
           </div>
         </div>
-        <span className="inline-flex items-center rounded px-2.5 py-1 text-xs font-semibold bg-[#09090B] text-[#FF5C00] border border-[#27272A] uppercase tracking-wide">
+        <span className="inline-flex items-center rounded px-2.5 py-1 text-xs font-semibold bg-[#09090B] text-[#FE5000] border border-[#27272A] uppercase tracking-wide">
           {userRole}
         </span>
       </div>
@@ -156,7 +156,7 @@ export default function AdminHealthPage() {
               className={[
                 'flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px',
                 active
-                  ? 'border-[#FF5C00] text-[#FF5C00]'
+                  ? 'border-[#FE5000] text-[#FE5000]'
                   : 'border-transparent text-[#71717A] dark:text-[#A1A1AA] hover:text-[#09090B] dark:text-white hover:border-[#D4D4D8] dark:border-[#3F3F46]',
               ].join(' ')}
             >

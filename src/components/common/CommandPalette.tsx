@@ -369,7 +369,7 @@ export default function CommandPalette({ open, onClose }: CommandPaletteProps) {
             {loadingData && flatItems.length <= ALL_PAGES.length + ACTIONS.length + recentItems.length ? (
               <div className="px-4 py-6 text-center">
                 <div className="inline-flex items-center gap-2 text-xs text-[#52525B]">
-                  <svg className="animate-spin h-3.5 w-3.5 text-[#FF5C00]" viewBox="0 0 24 24" fill="none">
+                  <svg className="animate-spin h-3.5 w-3.5 text-[#FE5000]" viewBox="0 0 24 24" fill="none">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                   </svg>
@@ -397,7 +397,7 @@ export default function CommandPalette({ open, onClose }: CommandPaletteProps) {
                         onClick={() => handleSelect(item)}
                         onMouseEnter={() => setSelectedIndex(idx)}
                         className={`w-full flex items-center gap-3 px-4 py-2 text-left transition-colors ${
-                          isSelected ? 'bg-[#FF5C00]/10 text-white' : 'text-[#A1A1AA] hover:bg-[#27272A]'
+                          isSelected ? 'bg-[#FE5000]/10 text-white' : 'text-[#A1A1AA] hover:bg-[#27272A]'
                         }`}
                       >
                         <span className="text-sm flex-1 truncate">{item.label}</span>

@@ -38,7 +38,7 @@ export default function ArtifactPanel({ artifact, onClose, onMaximize }: Artifac
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-200 dark:border-zinc-700 bg-zinc-50/80 dark:bg-zinc-800/80 shrink-0">
         <div className="flex items-center gap-2 min-w-0">
-          <span className="text-[10px] font-medium px-1.5 py-0.5 rounded border border-[#FF5C00]/30 bg-[#FF5C00]/10 text-[#FF5C00] uppercase tracking-wide shrink-0">
+          <span className="text-[10px] font-medium px-1.5 py-0.5 rounded border border-[#FE5000]/30 bg-[#FE5000]/10 text-[#FE5000] uppercase tracking-wide shrink-0">
             {typeLabel}
           </span>
           <h3 className="text-sm font-semibold text-zinc-900 dark:text-white truncate">

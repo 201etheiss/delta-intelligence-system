@@ -53,7 +53,7 @@ export const CATEGORY_COLORS: Record<string, string> = {
   custom: '#71717A',
 };
 
-export const BRAND_COLORS = ['#FF5C00', '#EF4444', '#3B82F6', '#22C55E', '#8B5CF6', '#F59E0B'];
+export const BRAND_COLORS = ['#FE5000', '#EF4444', '#3B82F6', '#22C55E', '#8B5CF6', '#F59E0B'];
 
 export const DATA_SOURCES = [
   'ascend', 'salesforce', 'samsara', 'powerbi', 'microsoft', 'vroozi', 'fleetpanda',

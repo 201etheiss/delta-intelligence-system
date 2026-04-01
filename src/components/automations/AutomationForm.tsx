@@ -159,7 +159,7 @@ export default function AutomationForm({
   }
 
   const inputClass =
-    'w-full rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-[#18181B] px-3 py-1.5 text-sm text-zinc-900 dark:text-white placeholder-zinc-400 focus:border-[#FF5C00] focus:ring-1 focus:ring-[#FF5C00]/30 outline-none';
+    'w-full rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-[#18181B] px-3 py-1.5 text-sm text-zinc-900 dark:text-white placeholder-zinc-400 focus:border-[#FE5000] focus:ring-1 focus:ring-[#FE5000]/30 outline-none';
   const labelClass = 'block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1';
 
   return (
@@ -220,7 +220,7 @@ export default function AutomationForm({
                   onClick={() => setTriggerType(t.value)}
                   className={`px-3 py-1.5 text-xs rounded-md border transition-colors ${
                     triggerType === t.value
-                      ? 'bg-[#FF5C00] text-white border-[#FF5C00]'
+                      ? 'bg-[#FE5000] text-white border-[#FE5000]'
                       : 'bg-white dark:bg-[#18181B] text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700 hover:border-zinc-300 dark:hover:border-zinc-600'
                   }`}
                 >
@@ -323,7 +323,7 @@ export default function AutomationForm({
               <button
                 type="button"
                 onClick={addCondition}
-                className="flex items-center gap-1 text-xs text-[#FF5C00] hover:text-[#E54800]"
+                className="flex items-center gap-1 text-xs text-[#FE5000] hover:text-[#CC4000]"
               >
                 <Plus size={12} /> Add
               </button>
@@ -395,7 +395,7 @@ export default function AutomationForm({
                     key={at.value}
                     type="button"
                     onClick={() => addAction(at.value)}
-                    className="flex items-center gap-1 px-2 py-1 text-[10px] rounded border border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:border-[#FF5C00] hover:text-[#FF5C00] transition-colors"
+                    className="flex items-center gap-1 px-2 py-1 text-[10px] rounded border border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:border-[#FE5000] hover:text-[#FE5000] transition-colors"
                   >
                     <Plus size={10} /> {at.label}
                   </button>
@@ -597,7 +597,7 @@ export default function AutomationForm({
             <button
               type="submit"
               disabled={!name || actions.length === 0}
-              className="px-4 py-2 text-sm font-medium text-white bg-[#FF5C00] rounded-md hover:bg-[#E54800] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 text-sm font-medium text-white bg-[#FE5000] rounded-md hover:bg-[#CC4000] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {initial ? 'Save Changes' : 'Create Automation'}
             </button>

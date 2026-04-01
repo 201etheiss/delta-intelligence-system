@@ -26,7 +26,7 @@ export default function LoginPage() {
         <div className="w-full rounded-lg border border-[#27272A] bg-[#18181B] p-6">
           <button
             onClick={() => signIn('azure-ad', { callbackUrl: '/' })}
-            className="flex items-center justify-center gap-3 w-full rounded-md bg-[#FF5C00] px-4 py-3 text-sm font-semibold text-white hover:bg-[#E54800] transition-colors"
+            className="flex items-center justify-center gap-3 w-full rounded-md bg-[#FE5000] px-4 py-3 text-sm font-semibold text-white hover:bg-[#CC4000] transition-colors"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

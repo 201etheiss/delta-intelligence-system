@@ -86,7 +86,7 @@ export function DetailPanel({
         <div className="flex items-center gap-3 p-5 border-t border-zinc-200 dark:border-zinc-700">
           <button
             onClick={onOpen}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium bg-[#FF5C00] text-white rounded-lg hover:bg-[#E54800] transition-colors"
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium bg-[#FE5000] text-white rounded-lg hover:bg-[#CC4000] transition-colors"
           >
             Open Chat <ChevronRight size={16} />
           </button>

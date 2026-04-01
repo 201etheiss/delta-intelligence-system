@@ -8,7 +8,7 @@ interface KpiCardProps {
 }
 
 export default function KpiCard({ title, value, subtitle, trend }: KpiCardProps) {
-  const trendColor = trend === 'up' ? 'text-[#FF5C00]' : trend === 'down' ? 'text-red-500' : '';
+  const trendColor = trend === 'up' ? 'text-[#FE5000]' : trend === 'down' ? 'text-red-500' : '';
 
   return (
     <div className="rounded-lg border border-[#E4E4E7] dark:border-[#27272A] bg-white dark:bg-[#18181B] p-5 shadow-sm">

@@ -61,7 +61,7 @@ function EmbedKpiContent() {
   const textColor = isDark ? '#FAFAFA' : '#09090B';
   const borderColor = isDark ? '#27272A' : '#E4E4E7';
   const mutedText = isDark ? '#71717A' : '#A1A1AA';
-  const accentColor = '#FF5C00';
+  const accentColor = '#FE5000';
 
   const requestedMetrics = metricsParam
     ? metricsParam.split(',').filter((m) => m in METRIC_DEFS)

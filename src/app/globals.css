@@ -15,8 +15,8 @@
   --text-muted: #A1A1AA;
   --border: #E4E4E7;
   --border-hover: #D4D4D8;
-  --accent: #FF5C00;
-  --accent-hover: #E54800;
+  --accent: #FE5000;
+  --accent-hover: #CC4000;
   --accent-bg: rgba(255, 92, 0, 0.05);
   --accent-border: rgba(255, 92, 0, 0.2);
 }
@@ -34,7 +34,7 @@
   --text-muted: #71717A;
   --border: #27272A;
   --border-hover: #3F3F46;
-  --accent: #FF5C00;
+  --accent: #FE5000;
   --accent-hover: #FF7A33;
   --accent-bg: rgba(255, 92, 0, 0.1);
   --accent-border: rgba(255, 92, 0, 0.3);

@@ -299,7 +299,7 @@ export default function CockpitPage() {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-lg font-bold text-[#09090B] dark:text-white flex items-center gap-2">
-              <Gauge size={20} className="text-[#FF5C00]" />
+              <Gauge size={20} className="text-[#FE5000]" />
               Controller Cockpit
             </h2>
             <p className="mt-0.5 text-sm text-[#71717A]">
@@ -309,7 +309,7 @@ export default function CockpitPage() {
           </div>
           <button
             onClick={loadAll}
-            className="flex items-center gap-1.5 text-xs text-[#A1A1AA] hover:text-[#FF5C00] border border-[#27272A] rounded-lg px-3 py-1.5 transition-colors"
+            className="flex items-center gap-1.5 text-xs text-[#A1A1AA] hover:text-[#FE5000] border border-[#27272A] rounded-lg px-3 py-1.5 transition-colors"
           >
             <RefreshCw size={14} />
             Refresh
@@ -407,7 +407,7 @@ export default function CockpitPage() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-bold text-[#09090B] dark:text-white flex items-center gap-2">
-            <Gauge size={20} className="text-[#FF5C00]" />
+            <Gauge size={20} className="text-[#FE5000]" />
             Controller Cockpit
           </h2>
           <p className="mt-0.5 text-sm text-[#71717A]">
@@ -417,7 +417,7 @@ export default function CockpitPage() {
         </div>
         <button
           onClick={loadAll}
-          className="flex items-center gap-1.5 text-xs text-[#A1A1AA] hover:text-[#FF5C00] border border-[#27272A] rounded-lg px-3 py-1.5 transition-colors"
+          className="flex items-center gap-1.5 text-xs text-[#A1A1AA] hover:text-[#FE5000] border border-[#27272A] rounded-lg px-3 py-1.5 transition-colors"
         >
           <RefreshCw size={14} />
           Refresh
@@ -440,7 +440,7 @@ export default function CockpitPage() {
       {/* Rack Price Banner */}
       {rackPrice && rackPrice.price > 0 && (
         <div className="flex items-center gap-2 rounded-lg border border-[#27272A] bg-[#18181B] px-4 py-2">
-          <DollarSign size={14} className="text-[#FF5C00]" />
+          <DollarSign size={14} className="text-[#FE5000]" />
           <span className="text-xs text-[#A1A1AA]">
             {rackPrice.product}: <span className="font-mono font-bold text-white">${typeof rackPrice.price === 'number' ? rackPrice.price.toFixed(4) : '0.0000'}/gal</span>
           </span>
@@ -449,14 +449,14 @@ export default function CockpitPage() {
 
       {/* ─── 1. Close Progress ─────────────────────────────────── */}
       <Link href="/close-tracker" className="block group">
-        <div className="rounded-lg border border-[#27272A] bg-white dark:bg-[#18181B] p-3.5 hover:border-[#FF5C00]/40 transition-colors">
+        <div className="rounded-lg border border-[#27272A] bg-white dark:bg-[#18181B] p-3.5 hover:border-[#FE5000]/40 transition-colors">
           <div className="flex items-center justify-between mb-2.5">
             <div className="flex items-center gap-2">
-              <CalendarCheck size={16} className="text-[#FF5C00]" />
+              <CalendarCheck size={16} className="text-[#FE5000]" />
               <span className="text-xs font-semibold text-[#09090B] dark:text-white">Close Progress</span>
               <span className="text-xs text-[#71717A] font-mono">{overallClose}%</span>
             </div>
-            <ArrowRight size={14} className="text-[#52525B] group-hover:text-[#FF5C00] transition-colors" />
+            <ArrowRight size={14} className="text-[#52525B] group-hover:text-[#FE5000] transition-colors" />
           </div>
           {closeDays.length > 0 ? (
             <div className="grid grid-cols-5 gap-3">
@@ -484,13 +484,13 @@ export default function CockpitPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         {/* JE Pipeline */}
         <Link href="/journal-entries" className="block group">
-          <div className="rounded-lg border border-[#27272A] bg-white dark:bg-[#18181B] p-3.5 hover:border-[#FF5C00]/40 transition-colors h-full">
+          <div className="rounded-lg border border-[#27272A] bg-white dark:bg-[#18181B] p-3.5 hover:border-[#FE5000]/40 transition-colors h-full">
             <div className="flex items-center justify-between mb-2.5">
               <div className="flex items-center gap-2">
-                <FileSpreadsheet size={16} className="text-[#FF5C00]" />
+                <FileSpreadsheet size={16} className="text-[#FE5000]" />
                 <span className="text-xs font-semibold text-[#09090B] dark:text-white">JE Pipeline</span>
               </div>
-              <ArrowRight size={14} className="text-[#52525B] group-hover:text-[#FF5C00] transition-colors" />
+              <ArrowRight size={14} className="text-[#52525B] group-hover:text-[#FE5000] transition-colors" />
             </div>
             {jePipeline && (
               <div className="grid grid-cols-5 gap-2">
@@ -514,13 +514,13 @@ export default function CockpitPage() {
 
         {/* Reconciliation Status */}
         <Link href="/reconciliations" className="block group">
-          <div className="rounded-lg border border-[#27272A] bg-white dark:bg-[#18181B] p-3.5 hover:border-[#FF5C00]/40 transition-colors h-full">
+          <div className="rounded-lg border border-[#27272A] bg-white dark:bg-[#18181B] p-3.5 hover:border-[#FE5000]/40 transition-colors h-full">
             <div className="flex items-center justify-between mb-2.5">
               <div className="flex items-center gap-2">
-                <GitCompare size={16} className="text-[#FF5C00]" />
+                <GitCompare size={16} className="text-[#FE5000]" />
                 <span className="text-xs font-semibold text-[#09090B] dark:text-white">Reconciliation Status</span>
               </div>
-              <ArrowRight size={14} className="text-[#52525B] group-hover:text-[#FF5C00] transition-colors" />
+              <ArrowRight size={14} className="text-[#52525B] group-hover:text-[#FE5000] transition-colors" />
             </div>
             {recon && (
               <div className="grid grid-cols-3 gap-3">
@@ -549,13 +549,13 @@ export default function CockpitPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         {/* Financial KPIs */}
         <Link href="/reports" className="block group">
-          <div className="rounded-lg border border-[#27272A] bg-white dark:bg-[#18181B] p-3.5 hover:border-[#FF5C00]/40 transition-colors h-full">
+          <div className="rounded-lg border border-[#27272A] bg-white dark:bg-[#18181B] p-3.5 hover:border-[#FE5000]/40 transition-colors h-full">
             <div className="flex items-center justify-between mb-2.5">
               <div className="flex items-center gap-2">
-                <DollarSign size={16} className="text-[#FF5C00]" />
+                <DollarSign size={16} className="text-[#FE5000]" />
                 <span className="text-xs font-semibold text-[#09090B] dark:text-white">Financial KPIs</span>
               </div>
-              <ArrowRight size={14} className="text-[#52525B] group-hover:text-[#FF5C00] transition-colors" />
+              <ArrowRight size={14} className="text-[#52525B] group-hover:text-[#FE5000] transition-colors" />
             </div>
             {kpis && (
               <div className="grid grid-cols-2 gap-3">
@@ -582,13 +582,13 @@ export default function CockpitPage() {
 
         {/* Cash Position */}
         <Link href="/cash-flow" className="block group">
-          <div className="rounded-lg border border-[#27272A] bg-white dark:bg-[#18181B] p-3.5 hover:border-[#FF5C00]/40 transition-colors h-full">
+          <div className="rounded-lg border border-[#27272A] bg-white dark:bg-[#18181B] p-3.5 hover:border-[#FE5000]/40 transition-colors h-full">
             <div className="flex items-center justify-between mb-2.5">
               <div className="flex items-center gap-2">
-                <Wallet size={16} className="text-[#FF5C00]" />
+                <Wallet size={16} className="text-[#FE5000]" />
                 <span className="text-xs font-semibold text-[#09090B] dark:text-white">Cash Position</span>
               </div>
-              <ArrowRight size={14} className="text-[#52525B] group-hover:text-[#FF5C00] transition-colors" />
+              <ArrowRight size={14} className="text-[#52525B] group-hover:text-[#FE5000] transition-colors" />
             </div>
             {cash && (
               <div className="space-y-3">
@@ -603,12 +603,12 @@ export default function CockpitPage() {
                 <div>
                   <div className="flex justify-between items-center mb-1">
                     <span className="text-xs text-[#71717A]">Borrowing Base Util.</span>
-                    <span className={`text-sm font-mono font-bold ${cash.borrowingBaseUtil > 100 ? 'text-red-500' : 'text-[#FF5C00]'}`}>{cash.borrowingBaseUtil}%</span>
+                    <span className={`text-sm font-mono font-bold ${cash.borrowingBaseUtil > 100 ? 'text-red-500' : 'text-[#FE5000]'}`}>{cash.borrowingBaseUtil}%</span>
                   </div>
                   <div className="h-2 w-full rounded-full bg-[#27272A]">
                     <div
                       className={`h-2 rounded-full transition-all ${
-                        cash.borrowingBaseUtil > 80 ? 'bg-red-500' : cash.borrowingBaseUtil > 60 ? 'bg-[#FF5C00]' : 'bg-green-500'
+                        cash.borrowingBaseUtil > 80 ? 'bg-red-500' : cash.borrowingBaseUtil > 60 ? 'bg-[#FE5000]' : 'bg-green-500'
                       }`}
                       style={{ width: `${Math.min(cash.borrowingBaseUtil, 100)}%` }}
                     />
@@ -624,13 +624,13 @@ export default function CockpitPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         {/* Exception Aging */}
         <Link href="/reconciliations" className="block group">
-          <div className="rounded-lg border border-[#27272A] bg-white dark:bg-[#18181B] p-3.5 hover:border-[#FF5C00]/40 transition-colors h-full">
+          <div className="rounded-lg border border-[#27272A] bg-white dark:bg-[#18181B] p-3.5 hover:border-[#FE5000]/40 transition-colors h-full">
             <div className="flex items-center justify-between mb-2.5">
               <div className="flex items-center gap-2">
-                <Timer size={16} className="text-[#FF5C00]" />
+                <Timer size={16} className="text-[#FE5000]" />
                 <span className="text-xs font-semibold text-[#09090B] dark:text-white">Exception Aging</span>
               </div>
-              <ArrowRight size={14} className="text-[#52525B] group-hover:text-[#FF5C00] transition-colors" />
+              <ArrowRight size={14} className="text-[#52525B] group-hover:text-[#FE5000] transition-colors" />
             </div>
             <div className="grid grid-cols-4 gap-3">
               {exceptions.map((bucket) => (
@@ -656,36 +656,36 @@ export default function CockpitPage() {
         {/* Quick Actions */}
         <div className="rounded-lg border border-[#27272A] bg-white dark:bg-[#18181B] p-3.5">
           <div className="flex items-center gap-2 mb-2.5">
-            <BarChart3 size={16} className="text-[#FF5C00]" />
+            <BarChart3 size={16} className="text-[#FE5000]" />
             <span className="text-xs font-semibold text-[#09090B] dark:text-white">Quick Actions</span>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <Link
               href="/journal-entries?action=new"
-              className="flex items-center gap-2 rounded-lg border border-[#27272A] bg-[#09090B] p-3 hover:border-[#FF5C00]/50 transition-colors"
+              className="flex items-center gap-2 rounded-lg border border-[#27272A] bg-[#09090B] p-3 hover:border-[#FE5000]/50 transition-colors"
             >
-              <Plus size={14} className="text-[#FF5C00]" />
+              <Plus size={14} className="text-[#FE5000]" />
               <span className="text-xs text-white">New Journal Entry</span>
             </Link>
             <Link
               href="/close-tracker?action=start"
-              className="flex items-center gap-2 rounded-lg border border-[#27272A] bg-[#09090B] p-3 hover:border-[#FF5C00]/50 transition-colors"
+              className="flex items-center gap-2 rounded-lg border border-[#27272A] bg-[#09090B] p-3 hover:border-[#FE5000]/50 transition-colors"
             >
-              <CalendarCheck size={14} className="text-[#FF5C00]" />
+              <CalendarCheck size={14} className="text-[#FE5000]" />
               <span className="text-xs text-white">Start Month-End Close</span>
             </Link>
             <Link
               href="/cash-flow?action=borrowing-base"
-              className="flex items-center gap-2 rounded-lg border border-[#27272A] bg-[#09090B] p-3 hover:border-[#FF5C00]/50 transition-colors"
+              className="flex items-center gap-2 rounded-lg border border-[#27272A] bg-[#09090B] p-3 hover:border-[#FE5000]/50 transition-colors"
             >
-              <Wallet size={14} className="text-[#FF5C00]" />
+              <Wallet size={14} className="text-[#FE5000]" />
               <span className="text-xs text-white">Run Borrowing Base</span>
             </Link>
             <Link
               href="/digest"
-              className="flex items-center gap-2 rounded-lg border border-[#27272A] bg-[#09090B] p-3 hover:border-[#FF5C00]/50 transition-colors"
+              className="flex items-center gap-2 rounded-lg border border-[#27272A] bg-[#09090B] p-3 hover:border-[#FE5000]/50 transition-colors"
             >
-              <Sunrise size={14} className="text-[#FF5C00]" />
+              <Sunrise size={14} className="text-[#FE5000]" />
               <span className="text-xs text-white">View Daily Brief</span>
             </Link>
           </div>

@@ -22,7 +22,7 @@ interface ArtifactViewerProps {
 }
 
 // ── Color constants ───────────────────────────────────────────
-const COLORS = ['#FF5C00', '#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899'];
+const COLORS = ['#FE5000', '#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899'];
 
 // ── Chart View ────────────────────────────────────────────────
 function ChartView({ table }: { table: ParsedTable }) {
@@ -120,7 +120,7 @@ function TableView({ table }: { table: ParsedTable }) {
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
           placeholder="Filter rows..."
-          className="text-xs px-2 py-1.5 border border-zinc-200 dark:border-zinc-600 rounded w-full bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 placeholder-zinc-400 focus:outline-none focus:border-[#FF5C00]/40"
+          className="text-xs px-2 py-1.5 border border-zinc-200 dark:border-zinc-600 rounded w-full bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 placeholder-zinc-400 focus:outline-none focus:border-[#FE5000]/40"
         />
         <span className="text-[10px] text-zinc-400 mt-1 block">
           {sorted.length} of {table.rows.length} rows
@@ -148,7 +148,7 @@ function TableView({ table }: { table: ParsedTable }) {
             {sorted.map((row, ri) => (
               <tr
                 key={ri}
-                className={`${ri % 2 === 1 ? 'bg-zinc-50 dark:bg-zinc-800/30' : 'dark:bg-[#09090B]'} hover:bg-orange-50/30 dark:hover:bg-[#FF5C00]/5 transition-colors`}
+                className={`${ri % 2 === 1 ? 'bg-zinc-50 dark:bg-zinc-800/30' : 'dark:bg-[#09090B]'} hover:bg-orange-50/30 dark:hover:bg-[#FE5000]/5 transition-colors`}
               >
                 {row.map((cell, ci) => (
                   <td

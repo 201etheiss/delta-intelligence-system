@@ -6,7 +6,7 @@ import { parseNumericValue, isSummaryRow } from '@/lib/chart-detector';
 
 // ── Color palette ─────────────────────────────────────────────
 const COLORS = [
-  '#FF5C00', '#3B82F6', '#10B981', '#F59E0B', '#8B5CF6',
+  '#FE5000', '#3B82F6', '#10B981', '#F59E0B', '#8B5CF6',
   '#EC4899', '#14B8A6', '#F97316',
 ];
 
@@ -166,20 +166,20 @@ function Sparkline({ table, labelCol, valueCols }: {
       <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-20">
         <defs>
           <linearGradient id="sparkGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#FF5C00" stopOpacity="0.3" />
-            <stop offset="100%" stopColor="#FF5C00" stopOpacity="0" />
+            <stop offset="0%" stopColor="#FE5000" stopOpacity="0.3" />
+            <stop offset="100%" stopColor="#FE5000" stopOpacity="0" />
           </linearGradient>
         </defs>
         <path d={areaD} fill="url(#sparkGrad)" />
-        <path d={pathD} fill="none" stroke="#FF5C00" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <path d={pathD} fill="none" stroke="#FE5000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         {points.map((p, i) => (
           <circle
             key={i}
             cx={p.x}
             cy={p.y}
             r={hoveredPoint === i ? 4 : 2}
-            fill={hoveredPoint === i ? '#FF5C00' : 'white'}
-            stroke="#FF5C00"
+            fill={hoveredPoint === i ? '#FE5000' : 'white'}
+            stroke="#FE5000"
             strokeWidth="1.5"
             className="cursor-pointer transition-all"
             onMouseEnter={() => setHoveredPoint(i)}
@@ -451,7 +451,7 @@ export default function InlineChart({ suggestion, table, bare = false }: InlineC
     return (
       <button
         onClick={() => setShowChart(true)}
-        className="mt-1 mb-2 inline-flex items-center gap-1.5 text-[10px] text-zinc-500 dark:text-zinc-400 hover:text-[#FF5C00] transition-colors px-2 py-1 rounded hover:bg-[#FF5C00]/5 dark:hover:bg-[#FF5C00]/10"
+        className="mt-1 mb-2 inline-flex items-center gap-1.5 text-[10px] text-zinc-500 dark:text-zinc-400 hover:text-[#FE5000] transition-colors px-2 py-1 rounded hover:bg-[#FE5000]/5 dark:hover:bg-[#FE5000]/10"
       >
         <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />

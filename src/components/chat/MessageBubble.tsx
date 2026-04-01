@@ -202,7 +202,7 @@ function renderContent(raw: string): string {
   // Links [text](url) — only allow http/https URLs
   html = html.replace(
     /\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g,
-    '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-[#FF5C00] hover:underline">$1</a>'
+    '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-[#FE5000] hover:underline">$1</a>'
   );
 
   // Unordered list items (supports -, *, and •)
@@ -455,7 +455,7 @@ export default function MessageBubble({
           <div className="flex items-end justify-end gap-2 mb-1">
             <span className="text-xs text-zinc-500">{formatTime(message.timestamp)}</span>
           </div>
-          <div className="bg-[#FF5C00] text-white rounded-2xl rounded-tr-sm px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap break-words">
+          <div className="bg-[#FE5000] text-white rounded-2xl rounded-tr-sm px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap break-words">
             {message.content}
           </div>
         </div>
@@ -504,7 +504,7 @@ export default function MessageBubble({
         <div className="flex items-center gap-2 mb-1">
           <div className="w-6 h-6 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center flex-shrink-0">
             <svg
-              className="w-3.5 h-3.5 text-[#FF5C00]"
+              className="w-3.5 h-3.5 text-[#FE5000]"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -534,7 +534,7 @@ export default function MessageBubble({
               {onOpenArtifact && message.content.length > 100 && (
                 <button
                   onClick={handleOpenReport}
-                  className="text-[10px] text-zinc-400 hover:text-[#FF5C00] transition-colors"
+                  className="text-[10px] text-zinc-400 hover:text-[#FE5000] transition-colors"
                   title="Open in panel"
                 >
                   Open in panel
@@ -545,7 +545,7 @@ export default function MessageBubble({
         </div>
         <div
           ref={contentRef}
-          className={`relative bg-white dark:bg-[#18181B] border rounded-2xl rounded-tl-sm px-4 py-3 text-sm leading-relaxed text-zinc-800 dark:text-zinc-200 ${isStreaming ? 'border-[#FF5C00]/30' : 'border-zinc-200 dark:border-[#27272A]'}`}
+          className={`relative bg-white dark:bg-[#18181B] border rounded-2xl rounded-tl-sm px-4 py-3 text-sm leading-relaxed text-zinc-800 dark:text-zinc-200 ${isStreaming ? 'border-[#FE5000]/30' : 'border-zinc-200 dark:border-[#27272A]'}`}
         >
           {message.content ? (
             <>
@@ -555,7 +555,7 @@ export default function MessageBubble({
                 dangerouslySetInnerHTML={{ __html: renderedHtml }}
               />
               {isStreaming && (
-                <span className="inline-block w-0.5 h-4 bg-[#FF5C00] animate-blink ml-0.5 align-text-bottom" />
+                <span className="inline-block w-0.5 h-4 bg-[#FE5000] animate-blink ml-0.5 align-text-bottom" />
               )}
             </>
           ) : isStreaming ? (
@@ -612,9 +612,9 @@ export default function MessageBubble({
                 <button
                   key={i}
                   onClick={() => onFollowUp(clean)}
-                  className="text-left flex items-start gap-2.5 px-3.5 py-2.5 rounded-xl border border-[#FF5C00]/20 bg-[#FF5C00]/5 text-sm font-medium text-[#09090B] dark:text-white hover:border-[#FF5C00]/50 hover:bg-[#FF5C00]/10 hover:shadow-sm transition-all"
+                  className="text-left flex items-start gap-2.5 px-3.5 py-2.5 rounded-xl border border-[#FE5000]/20 bg-[#FE5000]/5 text-sm font-medium text-[#09090B] dark:text-white hover:border-[#FE5000]/50 hover:bg-[#FE5000]/10 hover:shadow-sm transition-all"
                 >
-                  <span className="shrink-0 w-6 h-6 rounded-full bg-[#FF5C00] text-white flex items-center justify-center text-xs font-bold mt-0.5">
+                  <span className="shrink-0 w-6 h-6 rounded-full bg-[#FE5000] text-white flex items-center justify-center text-xs font-bold mt-0.5">
                     {i + 1}
                   </span>
                   <span className="leading-relaxed font-semibold">{clean}</span>

@@ -87,7 +87,7 @@ function loadConversations(): StoredConversation[] {
 }
 
 const TOOLS = [
-  { name: 'Sales Scorecard', url: 'http://localhost:3005', description: 'Salesforce pipeline, visit tracking, rep performance', status: 'running', color: '#FF5C00' },
+  { name: 'Sales Scorecard', url: 'http://localhost:3005', description: 'Salesforce pipeline, visit tracking, rep performance', status: 'running', color: '#FE5000' },
   { name: 'Equipment Tracker', url: 'https://equipment-tracker-tau.vercel.app', description: 'Tank assignments, equipment lifecycle, field service', status: 'deployed', color: '#22C55E' },
   { name: 'Signal Map (OTED)', url: 'https://oted-system.vercel.app/admin', description: 'Assessment platform, scoring rubrics, signal analysis', status: 'deployed', color: '#22C55E' },
 ];
@@ -207,11 +207,11 @@ function ExecutiveView({
       {!onboardingDone && (
         <Link
           href="/onboarding"
-          className="flex items-center justify-between rounded-lg border border-[#FF5C00]/30 bg-[#FF5C00]/5 px-5 py-4 hover:bg-[#FF5C00]/10 transition-colors"
+          className="flex items-center justify-between rounded-lg border border-[#FE5000]/30 bg-[#FE5000]/5 px-5 py-4 hover:bg-[#FE5000]/10 transition-colors"
         >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-[#FF5C00]/10 flex items-center justify-center shrink-0">
-              <svg className="w-5 h-5 text-[#FF5C00]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <div className="w-10 h-10 rounded-full bg-[#FE5000]/10 flex items-center justify-center shrink-0">
+              <svg className="w-5 h-5 text-[#FE5000]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
             </div>
@@ -222,9 +222,9 @@ function ExecutiveView({
           </div>
           <div className="flex items-center gap-3">
             <div className="w-24 h-2 rounded-full bg-[#E4E4E7] dark:bg-[#27272A] overflow-hidden">
-              <div className="h-full rounded-full bg-[#FF5C00] transition-all" style={{ width: `${onboardingProgress}%` }} />
+              <div className="h-full rounded-full bg-[#FE5000] transition-all" style={{ width: `${onboardingProgress}%` }} />
             </div>
-            <span className="text-xs font-mono text-[#FF5C00]">{onboardingProgress}%</span>
+            <span className="text-xs font-mono text-[#FE5000]">{onboardingProgress}%</span>
           </div>
         </Link>
       )}
@@ -252,7 +252,7 @@ function ExecutiveView({
           <HelpTooltip text="Live data from the gateway — each widget refreshes independently" position="right" />
           <Link
             href="/dashboards"
-            className="inline-flex items-center gap-1 rounded border border-[#3F3F46] px-2.5 py-1 text-[11px] font-medium text-[#A1A1AA] hover:border-[#FF5C00]/60 hover:text-[#FF5C00] transition-colors"
+            className="inline-flex items-center gap-1 rounded border border-[#3F3F46] px-2.5 py-1 text-[11px] font-medium text-[#A1A1AA] hover:border-[#FE5000]/60 hover:text-[#FE5000] transition-colors"
           >
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             Customize
@@ -328,10 +328,10 @@ function ExecutiveView({
         </div>
         <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-2">
           {['Top 5 customers by gross profit', 'Price dyed diesel to Plaquemine, LA', 'Show AR aging over 90 days', 'Revenue by month for 2025'].map((q) => (
-            <Link key={q} href="/chat" className="text-left px-3 py-2.5 rounded-lg border border-[#27272A] text-xs text-[#A1A1AA] hover:border-[#FF5C00]/40 hover:text-white hover:bg-[#27272A]/50 transition-colors">{q}</Link>
+            <Link key={q} href="/chat" className="text-left px-3 py-2.5 rounded-lg border border-[#27272A] text-xs text-[#A1A1AA] hover:border-[#FE5000]/40 hover:text-white hover:bg-[#27272A]/50 transition-colors">{q}</Link>
           ))}
         </div>
-        <Link href="/chat" className="mt-4 inline-flex items-center gap-2 rounded-lg bg-[#FF5C00] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#E54800] transition-colors">
+        <Link href="/chat" className="mt-4 inline-flex items-center gap-2 rounded-lg bg-[#FE5000] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#CC4000] transition-colors">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           Open Chat
         </Link>
@@ -345,9 +345,9 @@ function ExecutiveView({
               <Link
                 key={chat.id}
                 href={`/chat?id=${chat.id}`}
-                className="group flex items-start gap-3 rounded-lg border border-[#27272A] bg-[#18181B] p-4 shadow-sm hover:border-[#FF5C00]/30 hover:bg-[#27272A] hover:shadow-md transition-all"
+                className="group flex items-start gap-3 rounded-lg border border-[#27272A] bg-[#18181B] p-4 shadow-sm hover:border-[#FE5000]/30 hover:bg-[#27272A] hover:shadow-md transition-all"
               >
-                <div className="w-1 h-12 rounded-full bg-[#FF5C00]/30 group-hover:bg-[#FF5C00] transition-colors shrink-0 mt-0.5" />
+                <div className="w-1 h-12 rounded-full bg-[#FE5000]/30 group-hover:bg-[#FE5000] transition-colors shrink-0 mt-0.5" />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-white truncate">{chat.question}</p>
                   <p className="text-xs text-[#A1A1AA] mt-0.5 line-clamp-1">{chat.finding}</p>
@@ -367,7 +367,7 @@ function ExecutiveView({
       <DensitySection title="Connected Tools">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {TOOLS.map((tool) => (
-            <a key={tool.name} href={tool.url} target="_blank" rel="noopener noreferrer" className="group rounded-lg border border-[#27272A] bg-[#18181B] p-4 shadow-sm hover:border-[#FF5C00]/40 hover:shadow-md transition-all">
+            <a key={tool.name} href={tool.url} target="_blank" rel="noopener noreferrer" className="group rounded-lg border border-[#27272A] bg-[#18181B] p-4 shadow-sm hover:border-[#FE5000]/40 hover:shadow-md transition-all">
               <div className="flex items-center justify-between mb-2">
                 <h4 className="text-xs font-semibold text-white">{tool.name}</h4>
                 <div className="flex items-center gap-1.5">
@@ -376,7 +376,7 @@ function ExecutiveView({
                 </div>
               </div>
               <p className="text-xs text-[#71717A]">{tool.description}</p>
-              <span className="mt-2 inline-block text-[10px] text-[#A1A1AA] group-hover:text-[#FF5C00] transition-colors font-mono">{tool.url.replace('http://', '').replace('https://', '')}</span>
+              <span className="mt-2 inline-block text-[10px] text-[#A1A1AA] group-hover:text-[#FE5000] transition-colors font-mono">{tool.url.replace('http://', '').replace('https://', '')}</span>
             </a>
           ))}
         </div>
@@ -638,7 +638,7 @@ export default function FinancePage() {
           <h2 className="text-lg font-bold text-[#09090B] dark:text-white">Command Center</h2>
           <p className="mt-0.5 text-sm text-[#71717A] dark:text-[#A1A1AA]">Live data across 8 connected sources</p>
         </div>
-        <span className="inline-flex items-center rounded px-2.5 py-1 text-xs font-semibold bg-[#09090B] text-[#FF5C00] border border-[#27272A] uppercase tracking-wide">{userRole}</span>
+        <span className="inline-flex items-center rounded px-2.5 py-1 text-xs font-semibold bg-[#09090B] text-[#FE5000] border border-[#27272A] uppercase tracking-wide">{userRole}</span>
       </div>
 
       <AIInsightsBanner module="dashboard" compact />
@@ -670,7 +670,7 @@ export default function FinancePage() {
 
 function QA({ href, label, sub }: { href: string; label: string; sub: string }) {
   return (
-    <Link href={href} className="group rounded-lg border border-[#E4E4E7] dark:border-[#27272A] bg-white dark:bg-[#18181B] p-4 shadow-sm hover:border-[#FF5C00]/30 dark:hover:border-[#FF5C00]/30 hover:shadow-md transition-all">
+    <Link href={href} className="group rounded-lg border border-[#E4E4E7] dark:border-[#27272A] bg-white dark:bg-[#18181B] p-4 shadow-sm hover:border-[#FE5000]/30 dark:hover:border-[#FE5000]/30 hover:shadow-md transition-all">
       <p className="text-sm font-medium text-[#09090B] dark:text-white">{label}</p>
       <p className="text-[10px] text-[#A1A1AA]">{sub}</p>
     </Link>

@@ -154,7 +154,7 @@ export default function SalesCommandConsolePage() {
       value: formatCurrency(pipeline.total),
       subtext: `${typeof revPct === 'number' ? revPct.toFixed(0) : '0'}% of ${formatCurrency(revenueTarget)} target`,
       icon: DollarSign,
-      color: 'text-[#FF5C00]',
+      color: 'text-[#FE5000]',
     },
     {
       label: 'Open Opportunities',
@@ -216,7 +216,7 @@ export default function SalesCommandConsolePage() {
           <div className="flex items-center flex-wrap gap-3">
             <Link
               href="/customer"
-              className="flex items-center gap-2 px-3 py-2 text-xs text-zinc-400 border border-[#27272A] rounded-lg hover:text-[#FF5C00] hover:border-[#FF5C00]/30 transition-colors"
+              className="flex items-center gap-2 px-3 py-2 text-xs text-zinc-400 border border-[#27272A] rounded-lg hover:text-[#FE5000] hover:border-[#FE5000]/30 transition-colors"
             >
               <Search size={14} />
               Customer Lookup
@@ -226,7 +226,7 @@ export default function SalesCommandConsolePage() {
               href="https://delta360energy.lightning.force.com/lightning/o/Opportunity/new"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-3 py-2 text-xs text-zinc-400 border border-[#27272A] rounded-lg hover:text-[#FF5C00] hover:border-[#FF5C00]/30 transition-colors"
+              className="flex items-center gap-2 px-3 py-2 text-xs text-zinc-400 border border-[#27272A] rounded-lg hover:text-[#FE5000] hover:border-[#FE5000]/30 transition-colors"
             >
               <PlusCircle size={14} />
               New Opportunity
@@ -236,7 +236,7 @@ export default function SalesCommandConsolePage() {
               href="https://delta360energy.lightning.force.com/lightning/o/Opportunity/list"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-3 py-2 text-xs text-zinc-400 border border-[#27272A] rounded-lg hover:text-[#FF5C00] hover:border-[#FF5C00]/30 transition-colors"
+              className="flex items-center gap-2 px-3 py-2 text-xs text-zinc-400 border border-[#27272A] rounded-lg hover:text-[#FE5000] hover:border-[#FE5000]/30 transition-colors"
             >
               <BarChart3 size={14} />
               View Pipeline
@@ -246,7 +246,7 @@ export default function SalesCommandConsolePage() {
               href="https://delta360energy.lightning.force.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-3 py-2 text-xs text-zinc-400 border border-[#27272A] rounded-lg hover:text-[#FF5C00] hover:border-[#FF5C00]/30 transition-colors"
+              className="flex items-center gap-2 px-3 py-2 text-xs text-zinc-400 border border-[#27272A] rounded-lg hover:text-[#FE5000] hover:border-[#FE5000]/30 transition-colors"
             >
               <ExternalLink size={14} />
               Open Salesforce
@@ -296,7 +296,7 @@ export default function SalesCommandConsolePage() {
             </div>
             <div className="w-full h-3 bg-[#27272A] rounded-full overflow-hidden">
               <div
-                className="h-full rounded-full transition-all bg-[#FF5C00]"
+                className="h-full rounded-full transition-all bg-[#FE5000]"
                 style={{ width: `${revPct}%` }}
               />
             </div>
@@ -359,7 +359,7 @@ export default function SalesCommandConsolePage() {
                       </div>
                       <div className="h-2 rounded-full bg-[#27272A] overflow-hidden">
                         <div
-                          className="h-full rounded-full bg-[#FF5C00]"
+                          className="h-full rounded-full bg-[#FE5000]"
                           style={{ width: `${pct}%` }}
                         />
                       </div>
@@ -396,7 +396,7 @@ export default function SalesCommandConsolePage() {
             {/* Customer Health Scores */}
             <div className="rounded-lg border border-[#27272A] bg-[#18181B] p-3.5">
               <h2 className="text-xs font-semibold text-white mb-2.5 flex items-center gap-2">
-                <Heart size={14} className="text-[#FF5C00]" />
+                <Heart size={14} className="text-[#FE5000]" />
                 Customer Health
               </h2>
               {healthLoading ? (

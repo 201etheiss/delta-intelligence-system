@@ -144,13 +144,13 @@ export function AIInsightsBanner({ module, compact = false }: AIInsightsBannerPr
       <div
         className={`flex items-center gap-2 rounded-md border-l-2 ${styles.border} ${styles.bg} px-3 py-2 min-h-[36px] max-h-[40px]`}
       >
-        <Zap size={12} className="text-[#FF5C00] shrink-0" />
+        <Zap size={12} className="text-[#FE5000] shrink-0" />
         <InsightIcon insight={primary} size={14} />
         <span className="text-xs text-zinc-300 truncate flex-1">{primary.title}</span>
         {primary.action && primary.actionUrl && (
           <a
             href={primary.actionUrl}
-            className="text-xs text-[#FF5C00] hover:underline shrink-0"
+            className="text-xs text-[#FE5000] hover:underline shrink-0"
           >
             {primary.action}
           </a>
@@ -181,7 +181,7 @@ export function AIInsightsBanner({ module, compact = false }: AIInsightsBannerPr
     <div className="rounded-md border border-zinc-800 bg-zinc-900/50 overflow-hidden">
       <div className="flex items-center justify-between px-3 py-1.5 border-b border-zinc-800">
         <div className="flex items-center gap-1.5">
-          <Zap size={12} className="text-[#FF5C00]" />
+          <Zap size={12} className="text-[#FE5000]" />
           <span className="text-xs font-medium text-zinc-400">AI Insights</span>
           <span className="text-[10px] text-zinc-600">({visible.length})</span>
         </div>
@@ -212,7 +212,7 @@ export function AIInsightsBanner({ module, compact = false }: AIInsightsBannerPr
               {insight.action && insight.actionUrl && (
                 <a
                   href={insight.actionUrl}
-                  className="text-xs text-[#FF5C00] hover:underline shrink-0 mt-0.5"
+                  className="text-xs text-[#FE5000] hover:underline shrink-0 mt-0.5"
                 >
                   {insight.action}
                 </a>

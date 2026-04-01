@@ -116,7 +116,7 @@ export default function DataTable({ title, endpoint, columns }: DataTableProps) 
               href={`/api/gateway/${endpoint}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#FF5C00] hover:underline font-medium"
+              className="text-[#FE5000] hover:underline font-medium"
             >
               View all
             </a>

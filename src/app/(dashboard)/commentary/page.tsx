@@ -167,7 +167,7 @@ export default function CommentaryPage() {
           <button
             onClick={handleGenerateAll}
             disabled={generating}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#FF5C00] text-white text-sm font-medium hover:bg-[#E54800] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#FE5000] text-white text-sm font-medium hover:bg-[#CC4000] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {generating ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}
             Generate All Drafts
@@ -195,7 +195,7 @@ export default function CommentaryPage() {
         </div>
         <div className="bg-[#18181B] border border-zinc-800 rounded-lg p-4">
           <div className="text-zinc-500 text-xs mb-1">Remaining</div>
-          <div className="text-lg font-bold text-[#FF5C00]">{summary?.remaining ?? 0}</div>
+          <div className="text-lg font-bold text-[#FE5000]">{summary?.remaining ?? 0}</div>
         </div>
       </div>
 
@@ -225,7 +225,7 @@ export default function CommentaryPage() {
             </thead>
             <tbody>
               {(items ?? []).map((item) => (
-                <tr key={item.id} className={`border-b border-zinc-800/50 hover:bg-zinc-800/30 transition-colors ${Math.abs(item.varianceAmount) >= 5000 ? 'border-l-2 border-l-[#FF5C00]' : ''}`}>
+                <tr key={item.id} className={`border-b border-zinc-800/50 hover:bg-zinc-800/30 transition-colors ${Math.abs(item.varianceAmount) >= 5000 ? 'border-l-2 border-l-[#FE5000]' : ''}`}>
                   <td className="px-3 py-2">
                     <div className="font-mono text-xs text-zinc-500">{item.accountNumber}</div>
                     <div className="text-sm">{item.accountName}</div>
@@ -255,7 +255,7 @@ export default function CommentaryPage() {
                         <div className="flex gap-2">
                           <button
                             onClick={() => handleAction(item.id, 'update', editText)}
-                            className="px-2 py-1 text-xs bg-[#FF5C00] text-white rounded hover:bg-[#E54800]"
+                            className="px-2 py-1 text-xs bg-[#FE5000] text-white rounded hover:bg-[#CC4000]"
                           >
                             Save
                           </button>

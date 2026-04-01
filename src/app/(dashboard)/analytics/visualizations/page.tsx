@@ -264,7 +264,7 @@ const GALLERY_ITEMS: GalleryItem[] = [
 ];
 
 const DOMAIN_COLORS: Record<string, string> = {
-  financial: '#FF5C00',
+  financial: '#FE5000',
   operations: '#3B82F6',
   sales: '#10B981',
   hr: '#8B5CF6',
@@ -298,7 +298,7 @@ function ChartBuilder() {
     <div className="rounded-lg border border-[#27272A] bg-[#18181B] overflow-hidden">
       <div className="px-5 py-4 border-b border-[#27272A]">
         <h3 className="text-sm font-bold text-white flex items-center gap-2">
-          <Settings2 size={14} className="text-[#FF5C00]" />
+          <Settings2 size={14} className="text-[#FE5000]" />
           Chart Builder
         </h3>
         <p className="text-[11px] text-[#71717A] mt-0.5">Build custom visualizations from SQL queries</p>
@@ -320,7 +320,7 @@ function ChartBuilder() {
                   className={[
                     'flex flex-col items-center gap-1 rounded-md px-2 py-2 text-[10px] font-medium transition-colors border',
                     isActive
-                      ? 'border-[#FF5C00] bg-[#FF5C00]/10 text-[#FF5C00]'
+                      ? 'border-[#FE5000] bg-[#FE5000]/10 text-[#FE5000]'
                       : 'border-[#27272A] text-[#71717A] hover:border-[#52525B] hover:text-[#A1A1AA]',
                   ].join(' ')}
                 >
@@ -338,7 +338,7 @@ function ChartBuilder() {
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full px-3 py-2 rounded-md border border-[#27272A] bg-[#09090B] text-sm text-white placeholder-[#52525B] outline-none focus:border-[#FF5C00] transition-colors"
+            className="w-full px-3 py-2 rounded-md border border-[#27272A] bg-[#09090B] text-sm text-white placeholder-[#52525B] outline-none focus:border-[#FE5000] transition-colors"
             placeholder="Chart title"
           />
         </div>
@@ -350,7 +350,7 @@ function ChartBuilder() {
             value={sqlQuery}
             onChange={(e) => setSqlQuery(e.target.value)}
             rows={4}
-            className="w-full px-3 py-2 rounded-md border border-[#27272A] bg-[#09090B] text-sm text-white placeholder-[#52525B] outline-none focus:border-[#FF5C00] transition-colors font-mono resize-none"
+            className="w-full px-3 py-2 rounded-md border border-[#27272A] bg-[#09090B] text-sm text-white placeholder-[#52525B] outline-none focus:border-[#FE5000] transition-colors font-mono resize-none"
             placeholder="SELECT Period AS label, SUM(Amount) AS value FROM ... GROUP BY ..."
           />
         </div>
@@ -362,7 +362,7 @@ function ChartBuilder() {
             <input
               value={labelKey}
               onChange={(e) => setLabelKey(e.target.value)}
-              className="w-full px-3 py-2 rounded-md border border-[#27272A] bg-[#09090B] text-sm text-white placeholder-[#52525B] outline-none focus:border-[#FF5C00] transition-colors font-mono"
+              className="w-full px-3 py-2 rounded-md border border-[#27272A] bg-[#09090B] text-sm text-white placeholder-[#52525B] outline-none focus:border-[#FE5000] transition-colors font-mono"
               placeholder="label"
             />
           </div>
@@ -371,7 +371,7 @@ function ChartBuilder() {
             <input
               value={valueKey}
               onChange={(e) => setValueKey(e.target.value)}
-              className="w-full px-3 py-2 rounded-md border border-[#27272A] bg-[#09090B] text-sm text-white placeholder-[#52525B] outline-none focus:border-[#FF5C00] transition-colors font-mono"
+              className="w-full px-3 py-2 rounded-md border border-[#27272A] bg-[#09090B] text-sm text-white placeholder-[#52525B] outline-none focus:border-[#FE5000] transition-colors font-mono"
               placeholder="value"
             />
           </div>
@@ -381,7 +381,7 @@ function ChartBuilder() {
         <button
           onClick={handlePreview}
           disabled={!sqlQuery.trim()}
-          className="inline-flex items-center gap-2 rounded-md px-4 py-2 text-xs font-semibold bg-[#FF5C00] text-white hover:bg-[#E54800] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className="inline-flex items-center gap-2 rounded-md px-4 py-2 text-xs font-semibold bg-[#FE5000] text-white hover:bg-[#CC4000] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         >
           <Play size={14} />
           Generate Preview
@@ -473,7 +473,7 @@ export default function VisualizationsPage() {
       {/* Header */}
       <div>
         <h2 className="text-lg font-bold text-white flex items-center gap-2">
-          <BarChart3 size={20} className="text-[#FF5C00]" />
+          <BarChart3 size={20} className="text-[#FE5000]" />
           Visualization Portal
         </h2>
         <p className="mt-0.5 text-sm text-[#71717A]">
@@ -490,7 +490,7 @@ export default function VisualizationsPage() {
             className={[
               'px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-[1px]',
               activeTab === tab
-                ? 'border-[#FF5C00] text-[#FF5C00]'
+                ? 'border-[#FE5000] text-[#FE5000]'
                 : 'border-transparent text-[#71717A] hover:text-[#A1A1AA]',
             ].join(' ')}
           >
@@ -506,7 +506,7 @@ export default function VisualizationsPage() {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search visualizations..."
-          className="w-full pl-9 pr-3 py-2 rounded-md border border-[#27272A] bg-[#18181B] text-sm text-white placeholder-[#52525B] outline-none focus:border-[#FF5C00] transition-colors"
+          className="w-full pl-9 pr-3 py-2 rounded-md border border-[#27272A] bg-[#18181B] text-sm text-white placeholder-[#52525B] outline-none focus:border-[#FE5000] transition-colors"
         />
       </div>
 
@@ -522,7 +522,7 @@ export default function VisualizationsPage() {
                 className={[
                   'rounded-full px-3 py-1 text-xs font-medium border transition-colors whitespace-nowrap',
                   activeDomain === d
-                    ? 'border-[#FF5C00] bg-[#FF5C00]/10 text-[#FF5C00]'
+                    ? 'border-[#FE5000] bg-[#FE5000]/10 text-[#FE5000]'
                     : 'border-[#27272A] text-[#71717A] hover:border-[#52525B] hover:text-[#A1A1AA]',
                 ].join(' ')}
               >
@@ -589,7 +589,7 @@ export default function VisualizationsPage() {
                 className={[
                   'rounded-full px-3 py-1 text-xs font-medium border transition-colors whitespace-nowrap',
                   activeCategory === c
-                    ? 'border-[#FF5C00] bg-[#FF5C00]/10 text-[#FF5C00]'
+                    ? 'border-[#FE5000] bg-[#FE5000]/10 text-[#FE5000]'
                     : 'border-[#27272A] text-[#71717A] hover:border-[#52525B] hover:text-[#A1A1AA]',
                 ].join(' ')}
               >

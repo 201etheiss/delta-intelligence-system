@@ -97,7 +97,7 @@ function HistoryItem({
       className="w-full text-left rounded-md border border-[#27272A] bg-[#18181B] hover:bg-[#27272A]/60 transition-colors px-3 py-2"
     >
       <div className="flex items-center justify-between mb-1">
-        <span className="text-[10px] font-semibold text-[#FF5C00] uppercase tracking-wide">
+        <span className="text-[10px] font-semibold text-[#FE5000] uppercase tracking-wide">
           {entry.type}
         </span>
         <span className="text-[10px] text-zinc-600">
@@ -204,7 +204,7 @@ export default function BriefPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-6">
         <div className="flex items-center gap-3">
-          <FileText size={20} className="text-[#FF5C00]" />
+          <FileText size={20} className="text-[#FE5000]" />
           <h1 className="text-lg font-semibold text-white">
             Delta Intelligence Brief
           </h1>
@@ -219,7 +219,7 @@ export default function BriefPage() {
                 onClick={() => setBriefType(t)}
                 className={`px-3 py-1.5 text-xs font-medium transition-colors ${
                   briefType === t
-                    ? 'bg-[#FF5C00] text-white'
+                    ? 'bg-[#FE5000] text-white'
                     : 'bg-[#18181B] text-zinc-400 hover:text-white'
                 }`}
               >
@@ -232,7 +232,7 @@ export default function BriefPage() {
           <button
             onClick={() => generate(briefType)}
             disabled={loading}
-            className="flex items-center gap-2 px-4 py-1.5 rounded-lg bg-[#FF5C00] text-white text-xs font-semibold hover:bg-[#E54800] disabled:opacity-50 transition-colors"
+            className="flex items-center gap-2 px-4 py-1.5 rounded-lg bg-[#FE5000] text-white text-xs font-semibold hover:bg-[#CC4000] disabled:opacity-50 transition-colors"
           >
             <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
             {loading ? 'Generating...' : 'Generate'}
@@ -286,7 +286,7 @@ export default function BriefPage() {
           </p>
           <button
             onClick={() => generate(briefType)}
-            className="px-4 py-2 rounded-lg bg-[#FF5C00] text-white text-xs font-semibold hover:bg-[#E54800] transition-colors"
+            className="px-4 py-2 rounded-lg bg-[#FE5000] text-white text-xs font-semibold hover:bg-[#CC4000] transition-colors"
           >
             Generate {briefType.charAt(0).toUpperCase() + briefType.slice(1)}{' '}
             Brief

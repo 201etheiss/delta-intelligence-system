@@ -190,7 +190,7 @@ export default function WorkspacesPage() {
         </div>
         <button
           onClick={() => { setEditingWorkspace(undefined); setShowModal(true); }}
-          className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-[#FF5C00] text-white rounded-lg hover:bg-[#E54800] transition-colors"
+          className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-[#FE5000] text-white rounded-lg hover:bg-[#CC4000] transition-colors"
         >
           <Plus size={16} />
           New Workspace
@@ -205,7 +205,7 @@ export default function WorkspacesPage() {
             onClick={() => setActiveTab(tab.key)}
             className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
               activeTab === tab.key
-                ? 'border-[#FF5C00] text-[#FF5C00]'
+                ? 'border-[#FE5000] text-[#FE5000]'
                 : 'border-transparent text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300'
             }`}
           >
@@ -222,13 +222,13 @@ export default function WorkspacesPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search workspaces..."
-            className="w-full pl-9 pr-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg text-sm bg-white dark:bg-[#18181B] text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-[#FF5C00] focus:ring-1 focus:ring-[#FF5C00]/20"
+            className="w-full pl-9 pr-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg text-sm bg-white dark:bg-[#18181B] text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-[#FE5000] focus:ring-1 focus:ring-[#FE5000]/20"
           />
         </div>
         <select
           value={categoryFilter}
           onChange={(e) => setCategoryFilter(e.target.value as CategoryFilter)}
-          className="border border-zinc-300 dark:border-zinc-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-[#18181B] text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-[#FF5C00]"
+          className="border border-zinc-300 dark:border-zinc-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-[#18181B] text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-[#FE5000]"
         >
           {CATEGORIES.map((c) => (
             <option key={c.value} value={c.value}>{c.label}</option>
@@ -364,7 +364,7 @@ function WorkspaceCard({
       <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
         <button
           onClick={(e) => { e.stopPropagation(); onUse(); }}
-          className="px-2 py-1 rounded text-[10px] font-medium bg-[#FF5C00] text-white hover:bg-[#E54800] transition-colors"
+          className="px-2 py-1 rounded text-[10px] font-medium bg-[#FE5000] text-white hover:bg-[#CC4000] transition-colors"
         >
           Use
         </button>

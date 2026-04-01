@@ -174,7 +174,7 @@ export default function TemplatesPage() {
         {/* Header */}
         <div className="mb-6">
           <div className="flex items-center gap-2 mb-1">
-            <FileBarChart size={18} className="text-[#FF5C00]" />
+            <FileBarChart size={18} className="text-[#FE5000]" />
             <h2 className="text-lg font-bold text-zinc-900 dark:text-white">Report Templates</h2>
           </div>
           <p className="text-sm text-zinc-500">
@@ -193,7 +193,7 @@ export default function TemplatesPage() {
           {templates.map(template => (
             <div
               key={template.id}
-              className="rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-[#18181B] p-4 hover:border-[#FF5C00]/30 hover:shadow-sm transition-all"
+              className="rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-[#18181B] p-4 hover:border-[#FE5000]/30 hover:shadow-sm transition-all"
             >
               <div className="flex items-start justify-between mb-2">
                 <h3 className="text-xs font-semibold text-zinc-900 dark:text-white">{template.name}</h3>
@@ -223,7 +223,7 @@ export default function TemplatesPage() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => handleUseTemplate(template)}
-                  className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold bg-[#FF5C00] text-white hover:bg-[#E54800] transition-colors"
+                  className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold bg-[#FE5000] text-white hover:bg-[#CC4000] transition-colors"
                 >
                   <Play size={12} /> Use Template
                 </button>
@@ -248,7 +248,7 @@ export default function TemplatesPage() {
         {schedules.length > 0 && (
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <Calendar size={16} className="text-[#FF5C00]" />
+              <Calendar size={16} className="text-[#FE5000]" />
               <h3 className="text-xs font-semibold text-zinc-900 dark:text-white">Scheduled Reports</h3>
               <span className="text-[10px] text-zinc-400 bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 rounded-full">
                 Phase 3.4b: cron execution pending
@@ -343,7 +343,7 @@ export default function TemplatesPage() {
                 <button
                   onClick={handleSaveSchedule}
                   disabled={!scheduleRecipients.trim()}
-                  className="flex-1 rounded-lg px-4 py-2 text-xs font-semibold bg-[#FF5C00] text-white hover:bg-[#E54800] disabled:opacity-50 transition-colors"
+                  className="flex-1 rounded-lg px-4 py-2 text-xs font-semibold bg-[#FE5000] text-white hover:bg-[#CC4000] disabled:opacity-50 transition-colors"
                 >
                   Save Schedule
                 </button>

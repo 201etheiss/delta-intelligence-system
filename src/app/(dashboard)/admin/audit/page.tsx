@@ -117,7 +117,7 @@ function ByBreakdown({
               </div>
               <div className="h-1 rounded-full bg-[#27272A] overflow-hidden">
                 <div
-                  className="h-1 rounded-full bg-[#FF5C00]"
+                  className="h-1 rounded-full bg-[#FE5000]"
                   style={{ width: `${pct}%` }}
                 />
               </div>
@@ -215,7 +215,7 @@ export default function AuditLogPage() {
         {/* Admin header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <Settings size={20} className="text-[#FF5C00]" />
+            <Settings size={20} className="text-[#FE5000]" />
             <h1 className="text-lg font-semibold text-white">Administration</h1>
           </div>
           <div className="flex items-center gap-3">
@@ -246,7 +246,7 @@ export default function AuditLogPage() {
                 href={tab.href}
                 className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
                   active
-                    ? 'border-[#FF5C00] text-[#FF5C00]'
+                    ? 'border-[#FE5000] text-[#FE5000]'
                     : 'border-transparent text-zinc-500 hover:text-zinc-300'
                 }`}
               >
@@ -292,12 +292,12 @@ export default function AuditLogPage() {
             placeholder="Filter by user email..."
             value={filterUser}
             onChange={(e) => setFilterUser(e.target.value)}
-            className="bg-[#18181B] border border-[#27272A] rounded-md px-3 py-2 text-sm text-white placeholder-zinc-600 focus:border-[#FF5C00]/50 focus:outline-none"
+            className="bg-[#18181B] border border-[#27272A] rounded-md px-3 py-2 text-sm text-white placeholder-zinc-600 focus:border-[#FE5000]/50 focus:outline-none"
           />
           <select
             value={filterAction}
             onChange={(e) => setFilterAction(e.target.value)}
-            className="bg-[#18181B] border border-[#27272A] rounded-md px-3 py-2 text-sm text-white focus:border-[#FF5C00]/50 focus:outline-none"
+            className="bg-[#18181B] border border-[#27272A] rounded-md px-3 py-2 text-sm text-white focus:border-[#FE5000]/50 focus:outline-none"
           >
             <option value="">All action types</option>
             {ACTION_TYPES.map((a) => (
@@ -310,7 +310,7 @@ export default function AuditLogPage() {
             type="date"
             value={filterSince}
             onChange={(e) => setFilterSince(e.target.value)}
-            className="bg-[#18181B] border border-[#27272A] rounded-md px-3 py-2 text-sm text-white focus:border-[#FF5C00]/50 focus:outline-none"
+            className="bg-[#18181B] border border-[#27272A] rounded-md px-3 py-2 text-sm text-white focus:border-[#FE5000]/50 focus:outline-none"
           />
         </div>
 
@@ -376,7 +376,7 @@ export default function AuditLogPage() {
                         </span>
                       </td>
                       <td className="px-4 py-2.5">
-                        <span className="inline-flex px-2 py-0.5 rounded text-[10px] font-medium bg-[#FF5C00]/10 text-[#FF5C00] border border-[#FF5C00]/20">
+                        <span className="inline-flex px-2 py-0.5 rounded text-[10px] font-medium bg-[#FE5000]/10 text-[#FE5000] border border-[#FE5000]/20">
                           {entry.action}
                         </span>
                       </td>

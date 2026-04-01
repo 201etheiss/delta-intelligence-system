@@ -121,7 +121,7 @@ export default function HrDashboardPage() {
       label: 'Total Headcount',
       value: data?.totalEmployees ?? 0,
       icon: Users,
-      color: 'text-[#FF5C00]',
+      color: 'text-[#FE5000]',
       subLabel: `${data?.activeCount ?? 0} active`,
     },
     {
@@ -230,7 +230,7 @@ export default function HrDashboardPage() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`px-3 py-3 text-xs font-medium transition-colors border-b-2 ${
                   activeTab === tab.id
-                    ? 'text-[#FF5C00] border-[#FF5C00]'
+                    ? 'text-[#FE5000] border-[#FE5000]'
                     : 'text-zinc-500 border-transparent hover:text-zinc-300'
                 }`}
               >
@@ -252,7 +252,7 @@ export default function HrDashboardPage() {
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder="Search name, dept, title..."
-                      className="w-48 pl-8 pr-3 py-1.5 text-xs bg-[#09090B] border border-[#27272A] rounded-md text-zinc-300 placeholder:text-zinc-600 focus:outline-none focus:border-[#FF5C00]/50"
+                      className="w-48 pl-8 pr-3 py-1.5 text-xs bg-[#09090B] border border-[#27272A] rounded-md text-zinc-300 placeholder:text-zinc-600 focus:outline-none focus:border-[#FE5000]/50"
                     />
                   </div>
                 </div>
@@ -455,7 +455,7 @@ export default function HrDashboardPage() {
                     </div>
                     <div className="h-2 rounded-full bg-[#27272A] overflow-hidden">
                       <div
-                        className="h-full rounded-full bg-[#FF5C00]"
+                        className="h-full rounded-full bg-[#FE5000]"
                         style={{ width: `${pct}%` }}
                       />
                     </div>

@@ -36,7 +36,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#FF5C00" />
+        <meta name="theme-color" content="#FE5000" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <link rel="apple-touch-icon" href="/brand/delta logo mark.png" />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />

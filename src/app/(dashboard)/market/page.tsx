@@ -230,7 +230,7 @@ export default function MarketIntelligencePage() {
             href="http://localhost:3000"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 text-xs text-[#FF5C00] hover:text-[#FF7A33] transition-colors border border-[#FF5C00]/30 rounded-md px-3 py-1.5"
+            className="flex items-center gap-1.5 text-xs text-[#FE5000] hover:text-[#FF7A33] transition-colors border border-[#FE5000]/30 rounded-md px-3 py-1.5"
           >
             Open Rift Terminal
             <ExternalLink size={12} />
@@ -250,9 +250,9 @@ export default function MarketIntelligencePage() {
 
       {/* Rack Price banner */}
       {rackPrice && typeof rackPrice.price === 'number' && rackPrice.price > 0 && (
-        <div className="mb-2.5 rounded-lg border border-[#FF5C00]/20 bg-[#FF5C00]/5 px-3 py-2 flex items-center justify-between">
+        <div className="mb-2.5 rounded-lg border border-[#FE5000]/20 bg-[#FE5000]/5 px-3 py-2 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Fuel size={14} className="text-[#FF5C00]" />
+            <Fuel size={14} className="text-[#FE5000]" />
             <span className="text-sm text-zinc-300">{rackPrice.product}</span>
           </div>
           <span className="text-sm font-bold text-white tabular-nums">
@@ -343,9 +343,9 @@ export default function MarketIntelligencePage() {
           href="http://localhost:3000"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-3 rounded-lg border border-[#E4E4E7] dark:border-[#27272A] bg-white dark:bg-[#18181B] p-4 hover:border-[#FF5C00]/40 transition-colors group"
+          className="flex items-center gap-3 rounded-lg border border-[#E4E4E7] dark:border-[#27272A] bg-white dark:bg-[#18181B] p-4 hover:border-[#FE5000]/40 transition-colors group"
         >
-          <ExternalLink size={16} className="text-zinc-600 group-hover:text-[#FF5C00] transition-colors" />
+          <ExternalLink size={16} className="text-zinc-600 group-hover:text-[#FE5000] transition-colors" />
           <div>
             <div className="text-sm font-medium text-[#09090B] dark:text-white">Open Rift Terminal</div>
             <div className="text-xs text-zinc-500">Full Bloomberg-style terminal</div>
@@ -355,9 +355,9 @@ export default function MarketIntelligencePage() {
           href="http://localhost:3000"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-3 rounded-lg border border-[#E4E4E7] dark:border-[#27272A] bg-white dark:bg-[#18181B] p-4 hover:border-[#FF5C00]/40 transition-colors group"
+          className="flex items-center gap-3 rounded-lg border border-[#E4E4E7] dark:border-[#27272A] bg-white dark:bg-[#18181B] p-4 hover:border-[#FE5000]/40 transition-colors group"
         >
-          <Activity size={16} className="text-zinc-600 group-hover:text-[#FF5C00] transition-colors" />
+          <Activity size={16} className="text-zinc-600 group-hover:text-[#FE5000] transition-colors" />
           <div>
             <div className="text-sm font-medium text-[#09090B] dark:text-white">View Feed Health</div>
             <div className="text-xs text-zinc-500">53 feeds, 44 active</div>
@@ -367,9 +367,9 @@ export default function MarketIntelligencePage() {
           href="http://localhost:3000"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-3 rounded-lg border border-[#E4E4E7] dark:border-[#27272A] bg-white dark:bg-[#18181B] p-4 hover:border-[#FF5C00]/40 transition-colors group"
+          className="flex items-center gap-3 rounded-lg border border-[#E4E4E7] dark:border-[#27272A] bg-white dark:bg-[#18181B] p-4 hover:border-[#FE5000]/40 transition-colors group"
         >
-          <AlertCircle size={16} className="text-zinc-600 group-hover:text-[#FF5C00] transition-colors" />
+          <AlertCircle size={16} className="text-zinc-600 group-hover:text-[#FE5000] transition-colors" />
           <div>
             <div className="text-sm font-medium text-[#09090B] dark:text-white">Market Alerts</div>
             <div className="text-xs text-zinc-500">Price alerts and notifications</div>

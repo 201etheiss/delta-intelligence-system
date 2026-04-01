@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DI DataOS — Density Modes Comparison</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0a0a0a; color: #e4e4e7; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 24px; }
+  h1 { color: #FE5000; font-size: 28px; margin-bottom: 8px; font-family: Georgia, serif; }
+  h2 { color: #a1a1aa; font-size: 18px; margin-bottom: 32px; font-weight: 400; }
+  h3 { color: #FE5000; font-size: 16px; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px; }
+  .subtitle { color: #71717a; font-size: 14px; margin-bottom: 24px; }
+  hr { border: none; border-top: 1px solid #27272a; margin: 40px 0; }
+
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px; }
+
+  .mode-card {
+    background: #18181b; border: 1px solid #27272a; border-radius: 12px; overflow: hidden;
+  }
+  .mode-header {
+    padding: 14px 20px; border-bottom: 1px solid #27272a;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .mode-label { font-size: 14px; font-weight: 700; }
+  .mode-tag {
+    padding: 3px 10px; border-radius: 4px; font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+  .tag-exec { background: rgba(254,80,0,0.15); color: #FE5000; }
+  .tag-oper { background: rgba(59,130,246,0.15); color: #3b82f6; }
+  .mode-body { padding: 20px; }
+
+  /* Executive Mode Styles */
+  .exec-kpi-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .exec-kpi {
+    background: #0f0f11; border: 1px solid #27272a; border-radius: 10px; padding: 16px;
+  }
+  .exec-kpi-label { font-size: 11px; color: #71717a; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+  .exec-kpi-value { font-size: 28px; font-weight: 700; color: #e4e4e7; }
+  .exec-kpi-delta { font-size: 12px; margin-top: 4px; }
+  .delta-up { color: #22c55e; }
+  .delta-down { color: #ef4444; }
+  .exec-chart {
+    background: #0f0f11; border: 1px solid #27272a; border-radius: 10px; padding: 16px;
+    margin-bottom: 12px;
+  }
+  .exec-chart-title { font-size: 12px; color: #71717a; margin-bottom: 12px; }
+  .exec-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .exec-bar-label { font-size: 12px; color: #a1a1aa; width: 80px; }
+  .exec-bar-track { flex: 1; height: 20px; background: #1a1a1d; border-radius: 4px; overflow: hidden; }
+  .exec-bar-fill { height: 100%; border-radius: 4px; }
+  .exec-bar-val { font-size: 12px; color: #a1a1aa; width: 50px; text-align: right; }
+  .exec-insight {
+    background: rgba(254,80,0,0.05); border: 1px solid rgba(254,80,0,0.15);
+    border-radius: 8px; padding: 12px 16px; font-size: 12px; color: #d4d4d8;
+    display: flex; align-items: flex-start; gap: 10px;
+  }
+  .exec-insight-icon { color: #FE5000; font-size: 16px; flex-shrink: 0; }
+
+  /* Operator Mode Styles */
+  .oper-header-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .oper-title { font-size: 13px; font-weight: 600; font-family: 'SF Mono', 'Fira Code', monospace; }
+  .oper-controls { display: flex; gap: 4px; }
+  .oper-btn {
+    padding: 2px 8px; font-size: 10px; border-radius: 3px;
+    background: #27272a; color: #71717a; cursor: pointer;
+  }
+  .oper-kpi-strip {
+    display: flex; gap: 1px; margin-bottom: 8px; background: #27272a; border-radius: 4px; overflow: hidden;
+  }
+  .oper-kpi-cell {
+    flex: 1; background: #0f0f11; padding: 6px 8px; text-align: center;
+  }
+  .oper-kpi-cell-label { font-size: 9px; color: #52525b; text-transform: uppercase; letter-spacing: 0.5px; }
+  .oper-kpi-cell-value { font-size: 14px; font-weight: 700; font-family: 'SF Mono', 'Fira Code', monospace; margin-top: 2px; }
+
+  .oper-table {
+    width: 100%; border-collapse: collapse; font-size: 11px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+  .oper-table th {
+    text-align: left; padding: 4px 8px; color: #52525b; font-size: 9px;
+    text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #27272a;
+    font-weight: 600; position: sticky; top: 0; background: #18181b;
+  }
+  .oper-table td {
+    padding: 3px 8px; border-bottom: 1px solid #1a1a1d; color: #a1a1aa;
+  }
+  .oper-table tr:hover td { background: rgba(254,80,0,0.03); }
+  .oper-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .oper-table .pos { color: #22c55e; }
+  .oper-table .neg { color: #ef4444; }
+  .oper-table .highlight { color: #e4e4e7; font-weight: 600; }
+  .oper-scroll { max-height: 260px; overflow-y: auto; }
+
+  /* Pattern annotations */
+  .pattern-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .pattern {
+    background: #18181b; border: 1px solid #27272a; border-radius: 8px; padding: 16px;
+  }
+  .pattern h4 { font-size: 13px; margin-bottom: 8px; }
+  .pattern p { font-size: 12px; color: #a1a1aa; line-height: 1.5; }
+  .pattern .ex { color: #FE5000; font-weight: 600; }
+  .pattern .op { color: #3b82f6; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<h1>Density Modes — Content-Aware</h1>
+<h2>Same data, different presentations. Executive sees insight. Operator sees detail.</h2>
+
+<p class="subtitle">Each module renders differently based on density mode. Executive shows curated KPIs, progress bars, AI insights, and clean whitespace. Operator shows dense tables, monospace numbers, inline controls, and maximum information density. Toggle on Nova Bar applies globally. Each page implements both views.</p>
+
+<h3>Example: Financial Statements — Balance Sheet</h3>
+
+<div class="split">
+  <!-- EXECUTIVE MODE -->
+  <div class="mode-card">
+    <div class="mode-header">
+      <div class="mode-label">Executive Mode</div>
+      <div class="mode-tag tag-exec">EX</div>
+    </div>
+    <div class="mode-body">
+      <div class="exec-kpi-row">
+        <div class="exec-kpi">
+          <div class="exec-kpi-label">Total Assets</div>
+          <div class="exec-kpi-value">$48.2M</div>
+          <div class="exec-kpi-delta delta-up">&#9650; 4.2% vs prior month</div>
+        </div>
+        <div class="exec-kpi">
+          <div class="exec-kpi-label">Total Liabilities</div>
+          <div class="exec-kpi-value">$31.7M</div>
+          <div class="exec-kpi-delta delta-down">&#9650; 12.1% vs prior month</div>
+        </div>
+      </div>
+      <div class="exec-kpi-row">
+        <div class="exec-kpi">
+          <div class="exec-kpi-label">Net Equity</div>
+          <div class="exec-kpi-value">$16.5M</div>
+          <div class="exec-kpi-delta delta-down">&#9660; 2.8% vs prior month</div>
+        </div>
+        <div class="exec-kpi">
+          <div class="exec-kpi-label">Current Ratio</div>
+          <div class="exec-kpi-value">1.82</div>
+          <div class="exec-kpi-delta delta-up">Healthy (>1.5)</div>
+        </div>
+      </div>
+
+      <div class="exec-chart">
+        <div class="exec-chart-title">Asset Composition</div>
+        <div class="exec-bar-row">
+          <div class="exec-bar-label">Cash</div>
+          <div class="exec-bar-track"><div class="exec-bar-fill" style="width:22%;background:#22c55e;"></div></div>
+          <div class="exec-bar-val">$10.6M</div>
+        </div>
+        <div class="exec-bar-row">
+          <div class="exec-bar-label">Receivables</div>
+          <div class="exec-bar-track"><div class="exec-bar-fill" style="width:35%;background:#3b82f6;"></div></div>
+          <div class="exec-bar-val">$16.9M</div>
+        </div>
+        <div class="exec-bar-row">
+          <div class="exec-bar-label">Inventory</div>
+          <div class="exec-bar-track"><div class="exec-bar-fill" style="width:18%;background:#a855f7;"></div></div>
+          <div class="exec-bar-val">$8.7M</div>
+        </div>
+        <div class="exec-bar-row">
+          <div class="exec-bar-label">Fixed</div>
+          <div class="exec-bar-track"><div class="exec-bar-fill" style="width:25%;background:#eab308;"></div></div>
+          <div class="exec-bar-val">$12.0M</div>
+        </div>
+      </div>
+
+      <div class="exec-insight">
+        <div class="exec-insight-icon">&#128161;</div>
+        <div>
+          <strong>Nova Insight:</strong> Liabilities jumped 12% — driven by a $340K AP aging spike in the 61-90 day bucket. 4 Magellan invoices are past Net-30 terms. Recommend running AP Aging Audit.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPERATOR MODE -->
+  <div class="mode-card">
+    <div class="mode-header">
+      <div class="mode-label">Operator Mode</div>
+      <div class="mode-tag tag-oper">OP</div>
+    </div>
+    <div class="mode-body">
+      <div class="oper-header-row">
+        <div class="oper-title">BALANCE SHEET &mdash; MAR 2026</div>
+        <div class="oper-controls">
+          <div class="oper-btn">YoY</div>
+          <div class="oper-btn">MoM</div>
+          <div class="oper-btn">Export</div>
+          <div class="oper-btn">Drill</div>
+        </div>
+      </div>
+
+      <div class="oper-kpi-strip">
+        <div class="oper-kpi-cell">
+          <div class="oper-kpi-cell-label">Assets</div>
+          <div class="oper-kpi-cell-value">48,217,340</div>
+        </div>
+        <div class="oper-kpi-cell">
+          <div class="oper-kpi-cell-label">Liabilities</div>
+          <div class="oper-kpi-cell-value" style="color:#ef4444;">31,693,851</div>
+        </div>
+        <div class="oper-kpi-cell">
+          <div class="oper-kpi-cell-label">Equity</div>
+          <div class="oper-kpi-cell-value">16,523,489</div>
+        </div>
+        <div class="oper-kpi-cell">
+          <div class="oper-kpi-cell-label">Ratio</div>
+          <div class="oper-kpi-cell-value">1.82</div>
+        </div>
+      </div>
+
+      <div class="oper-scroll">
+        <table class="oper-table">
+          <thead>
+            <tr>
+              <th>Account</th>
+              <th>Code</th>
+              <th class="num">Balance</th>
+              <th class="num">Prior Mo</th>
+              <th class="num">Var $</th>
+              <th class="num">Var %</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="highlight" colspan="6" style="padding:6px 8px;background:#0f0f11;">CURRENT ASSETS</td></tr>
+            <tr><td>Cash & Equivalents</td><td>1010</td><td class="num">10,612,440</td><td class="num">10,233,100</td><td class="num pos">379,340</td><td class="num pos">3.7%</td></tr>
+            <tr><td>Accounts Receivable</td><td>1100</td><td class="num">16,892,350</td><td class="num">15,441,200</td><td class="num pos">1,451,150</td><td class="num pos">9.4%</td></tr>
+            <tr><td>Fuel Inventory</td><td>1200</td><td class="num">8,712,550</td><td class="num">8,980,400</td><td class="num neg">-267,850</td><td class="num neg">-3.0%</td></tr>
+            <tr><td>Prepaid Expenses</td><td>1300</td><td class="num">1,245,000</td><td class="num">1,180,000</td><td class="num pos">65,000</td><td class="num pos">5.5%</td></tr>
+            <tr><td class="highlight" colspan="6" style="padding:6px 8px;background:#0f0f11;">FIXED ASSETS</td></tr>
+            <tr><td>Vehicles & Equipment</td><td>1510</td><td class="num">8,440,000</td><td class="num">8,440,000</td><td class="num">0</td><td class="num">0.0%</td></tr>
+            <tr><td>Less: Depreciation</td><td>1520</td><td class="num neg">-2,115,000</td><td class="num neg">-2,045,000</td><td class="num neg">-70,000</td><td class="num neg">3.4%</td></tr>
+            <tr><td>Buildings & Land</td><td>1530</td><td class="num">4,430,000</td><td class="num">4,430,000</td><td class="num">0</td><td class="num">0.0%</td></tr>
+            <tr><td class="highlight" colspan="6" style="padding:6px 8px;background:#0f0f11;">CURRENT LIABILITIES</td></tr>
+            <tr><td>Accounts Payable</td><td>2010</td><td class="num" style="color:#ef4444;">14,892,100</td><td class="num">12,441,500</td><td class="num neg">2,450,600</td><td class="num neg">19.7%</td></tr>
+            <tr><td>Accrued Expenses</td><td>2020</td><td class="num">3,210,400</td><td class="num">3,180,200</td><td class="num neg">30,200</td><td class="num neg">0.9%</td></tr>
+            <tr><td>Fuel Tax Payable</td><td>2030</td><td class="num">1,845,000</td><td class="num">1,720,000</td><td class="num neg">125,000</td><td class="num neg">7.3%</td></tr>
+            <tr><td>Current Portion LTD</td><td>2040</td><td class="num">2,400,000</td><td class="num">2,400,000</td><td class="num">0</td><td class="num">0.0%</td></tr>
+            <tr><td class="highlight" colspan="6" style="padding:6px 8px;background:#0f0f11;">LONG-TERM LIABILITIES</td></tr>
+            <tr><td>Long-Term Debt</td><td>2510</td><td class="num">8,146,351</td><td class="num">8,446,351</td><td class="num pos">-300,000</td><td class="num pos">-3.6%</td></tr>
+            <tr><td>Deferred Revenue</td><td>2520</td><td class="num">1,200,000</td><td class="num">1,100,000</td><td class="num neg">100,000</td><td class="num neg">9.1%</td></tr>
+            <tr><td class="highlight" colspan="6" style="padding:6px 8px;background:#0f0f11;">EQUITY</td></tr>
+            <tr><td>Retained Earnings</td><td>3010</td><td class="num">14,523,489</td><td class="num">14,998,700</td><td class="num neg">-475,211</td><td class="num neg">-3.2%</td></tr>
+            <tr><td>Common Stock</td><td>3020</td><td class="num">2,000,000</td><td class="num">2,000,000</td><td class="num">0</td><td class="num">0.0%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<h3>Density Mode Pattern — How Pages Implement It</h3>
+
+<div class="pattern-grid">
+  <div class="pattern">
+    <h4>1. React Context Provider</h4>
+    <p>A <code>DensityProvider</code> wraps the shell. Exposes <code>useDensity()</code> hook. Returns <span class="ex">"executive"</span> or <span class="op">"operator"</span>. Toggle on Nova Bar updates context. Role determines default (managers→EX, accountants→OP). User override persists to localStorage.</p>
+  </div>
+  <div class="pattern">
+    <h4>2. Page-Level Rendering</h4>
+    <p>Each page reads density from context and renders accordingly. <span class="ex">Executive</span> renders KPI cards, progress bars, AI insight banners, summary charts. <span class="op">Operator</span> renders full data tables, monospace numbers, inline controls, section headers, drill-down buttons.</p>
+  </div>
+  <div class="pattern">
+    <h4>3. Shared Components</h4>
+    <p>Common density-aware components: <code>DensityKPI</code> (card vs inline strip), <code>DensityTable</code> (summary vs full), <code>DensityChart</code> (large visual vs sparkline). Pages compose from these — consistent look without per-page CSS work.</p>
+  </div>
+</div>
+
+<hr>
+
+<h3>Priority Pages for Content-Aware Density</h3>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+  <div class="pattern">
+    <h4 style="color:#22c55e;">Tier 1 — Build First (highest value)</h4>
+    <p style="line-height:1.8;">
+      <strong>/</strong> — Dashboard (KPIs vs feed)<br>
+      <strong>/financial-statements</strong> — BS/IS/TB (summary vs ledger)<br>
+      <strong>/ap/invoices</strong> — AP Console (aging chart vs full queue)<br>
+      <strong>/fleet</strong> — Operations Console (map+KPIs vs dispatch table)<br>
+      <strong>/cockpit</strong> — Controller Cockpit (alerts vs detail)
+    </p>
+  </div>
+  <div class="pattern">
+    <h4 style="color:#eab308;">Tier 2 — Next Wave</h4>
+    <p style="line-height:1.8;">
+      <strong>/sales</strong> — Sales Command Console<br>
+      <strong>/executive</strong> — Executive Dashboard<br>
+      <strong>/ar/collections</strong> — AR Collections<br>
+      <strong>/cash-flow</strong> — Cash Flow<br>
+      <strong>/budgets</strong> — Budget Tracking<br>
+      <strong>/inventory</strong> — Inventory & Margin<br>
+      <strong>/hr</strong> — HR Dashboard
+    </p>
+  </div>
+</div>
+
+</body>
+</html>

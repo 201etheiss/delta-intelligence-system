@@ -114,7 +114,7 @@ function AddWidgetDialog({
               className={[
                 'rounded-md px-3 py-1.5 text-xs font-medium border transition-colors',
                 selectedType === wt.type
-                  ? 'border-[#FF5C00] bg-[#FF5C00]/10 text-[#FF5C00]'
+                  ? 'border-[#FE5000] bg-[#FE5000]/10 text-[#FE5000]'
                   : 'border-[#E4E4E7] dark:border-[#27272A] text-[#71717A] dark:text-[#A1A1AA] hover:border-[#A1A1AA]',
               ].join(' ')}
             >
@@ -131,7 +131,7 @@ function AddWidgetDialog({
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Widget title..."
-          className="w-full rounded-md border border-[#E4E4E7] dark:border-[#27272A] px-3 py-2 text-sm text-[#09090B] dark:text-white placeholder-[#A1A1AA] outline-none focus:border-[#FF5C00]"
+          className="w-full rounded-md border border-[#E4E4E7] dark:border-[#27272A] px-3 py-2 text-sm text-[#09090B] dark:text-white placeholder-[#A1A1AA] outline-none focus:border-[#FE5000]"
         />
       </div>
 
@@ -143,7 +143,7 @@ function AddWidgetDialog({
             value={endpoint}
             onChange={(e) => setEndpoint(e.target.value)}
             placeholder="/ascend/ar/aging"
-            className="w-full rounded-md border border-[#E4E4E7] dark:border-[#27272A] px-3 py-2 text-sm text-[#09090B] dark:text-white placeholder-[#A1A1AA] outline-none focus:border-[#FF5C00] font-mono"
+            className="w-full rounded-md border border-[#E4E4E7] dark:border-[#27272A] px-3 py-2 text-sm text-[#09090B] dark:text-white placeholder-[#A1A1AA] outline-none focus:border-[#FE5000] font-mono"
           />
         </div>
       )}
@@ -152,7 +152,7 @@ function AddWidgetDialog({
         <button
           onClick={() => onAdd(selectedType, title, endpoint)}
           disabled={!title.trim()}
-          className="rounded-md px-4 py-2 text-sm font-medium bg-[#FF5C00] text-white hover:bg-[#E54800] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className="rounded-md px-4 py-2 text-sm font-medium bg-[#FE5000] text-white hover:bg-[#CC4000] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         >
           Add Widget
         </button>
@@ -270,7 +270,7 @@ export default function DashboardViewPage() {
         <div className="text-sm text-[#71717A] dark:text-[#A1A1AA] mb-2">Dashboard not found</div>
         <button
           onClick={() => router.push('/dashboards')}
-          className="text-sm text-[#FF5C00] hover:underline"
+          className="text-sm text-[#FE5000] hover:underline"
         >
           Back to Dashboards
         </button>
@@ -306,7 +306,7 @@ export default function DashboardViewPage() {
               <>
                 <button
                   onClick={() => setAdding(true)}
-                  className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium border border-[#E4E4E7] dark:border-[#27272A] text-[#71717A] dark:text-[#A1A1AA] hover:border-[#FF5C00] hover:text-[#FF5C00] transition-colors"
+                  className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium border border-[#E4E4E7] dark:border-[#27272A] text-[#71717A] dark:text-[#A1A1AA] hover:border-[#FE5000] hover:text-[#FE5000] transition-colors"
                 >
                   <Plus size={14} />
                   Add Widget
@@ -314,7 +314,7 @@ export default function DashboardViewPage() {
                 <button
                   onClick={handleSave}
                   disabled={saving}
-                  className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold bg-[#FF5C00] text-white hover:bg-[#E54800] disabled:opacity-50 transition-colors"
+                  className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold bg-[#FE5000] text-white hover:bg-[#CC4000] disabled:opacity-50 transition-colors"
                 >
                   <Save size={14} />
                   {saving ? 'Saving...' : 'Save'}
@@ -330,7 +330,7 @@ export default function DashboardViewPage() {
             ) : (
               <button
                 onClick={() => setEditing(true)}
-                className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium border border-[#E4E4E7] dark:border-[#27272A] text-[#71717A] dark:text-[#A1A1AA] hover:border-[#FF5C00] hover:text-[#FF5C00] transition-colors"
+                className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium border border-[#E4E4E7] dark:border-[#27272A] text-[#71717A] dark:text-[#A1A1AA] hover:border-[#FE5000] hover:text-[#FE5000] transition-colors"
               >
                 <Pencil size={14} />
                 Edit
@@ -357,7 +357,7 @@ export default function DashboardViewPage() {
             {!editing && (
               <button
                 onClick={() => setEditing(true)}
-                className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium bg-[#FF5C00] text-white hover:bg-[#E54800] transition-colors"
+                className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium bg-[#FE5000] text-white hover:bg-[#CC4000] transition-colors"
               >
                 <Pencil size={14} />
                 Start Editing

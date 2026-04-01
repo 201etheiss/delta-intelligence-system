@@ -78,7 +78,7 @@ function StatusDot({ status }: { status: string }) {
 
 const MODEL_COLORS: Record<string, string> = {
   Haiku: '#3B82F6',
-  Sonnet: '#FF5C00',
+  Sonnet: '#FE5000',
   Opus: '#8B5CF6',
   'GPT-4o': '#22C55E',
   'Gemini Flash': '#FBBF24',
@@ -308,7 +308,7 @@ export function WorkspaceSection({
           sorted.map((w) => (
             <div key={w.id} className="flex items-center gap-3">
               <span className="text-xs text-[#09090B] dark:text-white w-28 shrink-0 truncate">{w.name}</span>
-              <div className="flex-1"><BarInline value={w.usageCount} max={maxUsage} color="#FF5C00" /></div>
+              <div className="flex-1"><BarInline value={w.usageCount} max={maxUsage} color="#FE5000" /></div>
               <span className="text-xs font-mono text-[#A1A1AA] w-8 text-right">{w.usageCount}</span>
               {w.rating != null && <span className="text-[10px] text-[#FBBF24] w-10 text-right">{w.rating}/5</span>}
             </div>
@@ -401,7 +401,7 @@ export function ChatInsightsSection({ insights }: { insights: ChatInsights }) {
             className="flex-1 rounded-t transition-all hover:opacity-80"
             style={{
               height: `${Math.max(2, (count / maxHour) * 100)}%`,
-              backgroundColor: count > 0 ? '#FF5C00' : '#27272A',
+              backgroundColor: count > 0 ? '#FE5000' : '#27272A',
             }}
             title={`${hour}:00 - ${count} messages`}
           />

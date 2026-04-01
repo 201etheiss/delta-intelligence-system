@@ -72,7 +72,7 @@ export default function FleetMapPage() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-bold text-[#09090B] dark:text-white flex items-center gap-2">
-            <MapPin size={20} className="text-[#FF5C00]" />
+            <MapPin size={20} className="text-[#FE5000]" />
             Fleet Map
           </h2>
           <p className="mt-0.5 text-sm text-[#71717A]">
@@ -83,7 +83,7 @@ export default function FleetMapPage() {
         <button
           onClick={loadData}
           disabled={loading}
-          className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium border border-[#27272A] text-[#A1A1AA] hover:text-white hover:border-[#FF5C00]/40 transition-colors disabled:opacity-50"
+          className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium border border-[#27272A] text-[#A1A1AA] hover:text-white hover:border-[#FE5000]/40 transition-colors disabled:opacity-50"
         >
           <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
           Refresh
@@ -105,7 +105,7 @@ export default function FleetMapPage() {
 
       {/* Summary Stats */}
       <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
-        <StatCard label="Total Vehicles" value={stats.total} color="#FF5C00" loading={loading} />
+        <StatCard label="Total Vehicles" value={stats.total} color="#FE5000" loading={loading} />
         <StatCard label="Active" value={stats.active} color="#22C55E" loading={loading} />
         <StatCard label="Idle" value={stats.idle} color="#EAB308" loading={loading} />
         <StatCard label="Maintenance" value={stats.maintenance} color="#F97316" loading={loading} />

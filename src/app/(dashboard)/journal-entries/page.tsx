@@ -204,7 +204,7 @@ export default function JournalEntriesPage() {
             Refresh
           </button>
 
-          <button className="flex items-center gap-2 bg-[#FE5000] hover:bg-[#E54800] rounded-lg px-4 py-2 text-sm text-white transition-colors">
+          <button className="flex items-center gap-2 bg-[#FE5000] hover:bg-[#CC4000] rounded-lg px-4 py-2 text-sm text-white transition-colors">
             <Plus className="w-4 h-4" />
             New JE
           </button>

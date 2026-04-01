@@ -107,7 +107,7 @@ export default function SharedResultDetailPage() {
     return (
       <div className="h-full flex flex-col items-center justify-center bg-[#09090B] gap-3">
         <p className="text-sm text-[#52525B]">Shared result not found or access denied.</p>
-        <Link href="/shared" className="text-sm text-[#FF5C00] hover:underline">Back to Shared</Link>
+        <Link href="/shared" className="text-sm text-[#FE5000] hover:underline">Back to Shared</Link>
       </div>
     );
   }
@@ -175,12 +175,12 @@ export default function SharedResultDetailPage() {
                 onChange={e => setCommentText(e.target.value)}
                 onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleAddComment(); } }}
                 placeholder="Add a comment..."
-                className="flex-1 px-3 py-2.5 bg-[#18181B] border border-[#27272A] rounded-lg text-sm text-white placeholder-[#52525B] outline-none focus:border-[#FF5C00]/50"
+                className="flex-1 px-3 py-2.5 bg-[#18181B] border border-[#27272A] rounded-lg text-sm text-white placeholder-[#52525B] outline-none focus:border-[#FE5000]/50"
               />
               <button
                 onClick={handleAddComment}
                 disabled={!commentText.trim() || submitting}
-                className="px-3 py-2.5 bg-[#FF5C00] text-white rounded-lg hover:bg-[#E54800] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                className="px-3 py-2.5 bg-[#FE5000] text-white rounded-lg hover:bg-[#CC4000] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               >
                 <Send size={16} />
               </button>

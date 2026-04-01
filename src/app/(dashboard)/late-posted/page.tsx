@@ -106,7 +106,7 @@ function EntryRow({ entry }: { entry: LatePostedEntry }) {
       {expanded && (entry.lines ?? []).length > 0 && (
         <tr className="border-b border-[#27272A]">
           <td colSpan={8} className="px-0 py-0">
-            <div className="bg-[#09090B] border-l-2 border-[#FF5C00]/30 mx-4 my-2 rounded overflow-hidden">
+            <div className="bg-[#09090B] border-l-2 border-[#FE5000]/30 mx-4 my-2 rounded overflow-hidden">
               <table className="w-full">
                 <thead>
                   <tr className="text-[10px] text-zinc-600 uppercase tracking-wide">
@@ -218,7 +218,7 @@ export default function LatePostedPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-6">
         <div className="flex items-center gap-3">
-          <AlertTriangle size={20} className="text-[#FF5C00]" />
+          <AlertTriangle size={20} className="text-[#FE5000]" />
           <h1 className="text-lg font-semibold text-white">
             Late-Posted Journal Entries
           </h1>
@@ -233,7 +233,7 @@ export default function LatePostedPage() {
                 onClick={() => setDays(t)}
                 className={`px-3 py-1.5 text-xs font-medium transition-colors ${
                   days === t
-                    ? 'bg-[#FF5C00] text-white'
+                    ? 'bg-[#FE5000] text-white'
                     : 'bg-[#18181B] text-zinc-400 hover:text-white'
                 }`}
               >
@@ -246,7 +246,7 @@ export default function LatePostedPage() {
           <button
             onClick={() => fetchData(days)}
             disabled={loading}
-            className="flex items-center gap-2 px-4 py-1.5 rounded-lg bg-[#FF5C00] text-white text-xs font-semibold hover:bg-[#E54800] disabled:opacity-50 transition-colors"
+            className="flex items-center gap-2 px-4 py-1.5 rounded-lg bg-[#FE5000] text-white text-xs font-semibold hover:bg-[#CC4000] disabled:opacity-50 transition-colors"
           >
             <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
             {loading ? 'Loading...' : 'Refresh'}
@@ -321,7 +321,7 @@ export default function LatePostedPage() {
           </p>
           <button
             onClick={() => fetchData(days)}
-            className="px-4 py-2 rounded-lg bg-[#FF5C00] text-white text-xs font-semibold hover:bg-[#E54800] transition-colors"
+            className="px-4 py-2 rounded-lg bg-[#FE5000] text-white text-xs font-semibold hover:bg-[#CC4000] transition-colors"
           >
             Load Entries ({days}+ days late)
           </button>

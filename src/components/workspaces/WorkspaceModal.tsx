@@ -17,7 +17,7 @@ export function WorkspaceModal({
   const [name, setName] = useState(initial?.name ?? '');
   const [description, setDescription] = useState(initial?.description ?? '');
   const [longDescription, setLongDescription] = useState(initial?.longDescription ?? '');
-  const [color, setColor] = useState(initial?.color ?? '#FF5C00');
+  const [color, setColor] = useState(initial?.color ?? '#FE5000');
   const [category, setCategory] = useState<Workspace['category']>(initial?.category ?? 'custom');
   const [tags, setTags] = useState((initial?.tags ?? []).join(', '));
   const [dataSources, setDataSources] = useState<string[]>(initial?.dataSources ?? []);
@@ -76,7 +76,7 @@ export function WorkspaceModal({
                 <input
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full border border-zinc-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#FF5C00]"
+                  className="w-full border border-zinc-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#FE5000]"
                   placeholder="e.g. Logistics Planner"
                 />
               </div>
@@ -85,7 +85,7 @@ export function WorkspaceModal({
                 <input
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className="w-full border border-zinc-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#FF5C00]"
+                  className="w-full border border-zinc-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#FE5000]"
                   placeholder="Short description"
                 />
               </div>
@@ -95,7 +95,7 @@ export function WorkspaceModal({
                   value={longDescription}
                   onChange={(e) => setLongDescription(e.target.value)}
                   rows={3}
-                  className="w-full border border-zinc-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#FF5C00] resize-none"
+                  className="w-full border border-zinc-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#FE5000] resize-none"
                   placeholder="Detailed overview for the marketplace listing..."
                 />
               </div>
@@ -128,7 +128,7 @@ export function WorkspaceModal({
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value as Workspace['category'])}
-                  className="w-full border border-zinc-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#FF5C00]"
+                  className="w-full border border-zinc-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#FE5000]"
                 >
                   {CATEGORIES.filter((c) => c.value !== '').map((c) => (
                     <option key={c.value} value={c.value}>{c.label}</option>
@@ -140,7 +140,7 @@ export function WorkspaceModal({
                 <input
                   value={tags}
                   onChange={(e) => setTags(e.target.value)}
-                  className="w-full border border-zinc-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#FF5C00]"
+                  className="w-full border border-zinc-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#FE5000]"
                   placeholder="pricing, margins, DTN"
                 />
               </div>
@@ -157,7 +157,7 @@ export function WorkspaceModal({
                     type="checkbox"
                     checked={dataSources.includes(src)}
                     onChange={() => toggleSource(src)}
-                    className="w-4 h-4 rounded border-zinc-300 text-[#FF5C00] focus:ring-[#FF5C00]"
+                    className="w-4 h-4 rounded border-zinc-300 text-[#FE5000] focus:ring-[#FE5000]"
                   />
                   <span className="text-sm text-zinc-700 capitalize">{src}</span>
                 </label>
@@ -174,7 +174,7 @@ export function WorkspaceModal({
                 value={systemPrompt}
                 onChange={(e) => setSystemPrompt(e.target.value)}
                 rows={5}
-                className="w-full border border-zinc-300 rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:border-[#FF5C00] resize-none"
+                className="w-full border border-zinc-300 rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:border-[#FE5000] resize-none"
                 placeholder="Describe the role and focus areas..."
               />
             </div>
@@ -184,7 +184,7 @@ export function WorkspaceModal({
                 <select
                   value={preferredModel}
                   onChange={(e) => setPreferredModel(e.target.value)}
-                  className="w-full border border-zinc-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#FF5C00]"
+                  className="w-full border border-zinc-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#FE5000]"
                 >
                   {MODEL_OPTIONS.map((m) => (
                     <option key={m.value} value={m.value}>{m.label}</option>
@@ -202,7 +202,7 @@ export function WorkspaceModal({
                   step={0.1}
                   value={temperature}
                   onChange={(e) => setTemperature(parseFloat(e.target.value))}
-                  className="w-full accent-[#FF5C00]"
+                  className="w-full accent-[#FE5000]"
                 />
               </div>
               <div>
@@ -210,7 +210,7 @@ export function WorkspaceModal({
                 <select
                   value={responseFormat}
                   onChange={(e) => setResponseFormat(e.target.value)}
-                  className="w-full border border-zinc-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#FF5C00]"
+                  className="w-full border border-zinc-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#FE5000]"
                 >
                   {FORMAT_OPTIONS.map((f) => (
                     <option key={f} value={f}>{f}</option>
@@ -229,7 +229,7 @@ export function WorkspaceModal({
                 value={samplePrompts}
                 onChange={(e) => setSamplePrompts(e.target.value)}
                 rows={4}
-                className="w-full border border-zinc-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#FF5C00] resize-none"
+                className="w-full border border-zinc-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#FE5000] resize-none"
                 placeholder="Enter suggested questions, one per line"
               />
             </div>
@@ -244,7 +244,7 @@ export function WorkspaceModal({
                       value={v}
                       checked={visibility === v}
                       onChange={() => setVisibility(v)}
-                      className="text-[#FF5C00] focus:ring-[#FF5C00]"
+                      className="text-[#FE5000] focus:ring-[#FE5000]"
                     />
                     <span className="text-sm text-zinc-700 capitalize">{v}</span>
                   </label>
@@ -261,7 +261,7 @@ export function WorkspaceModal({
           <button
             onClick={handleSubmit}
             disabled={!name.trim() || !systemPrompt.trim()}
-            className="px-5 py-2 text-sm font-medium bg-[#FF5C00] text-white rounded-lg hover:bg-[#E54800] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="px-5 py-2 text-sm font-medium bg-[#FE5000] text-white rounded-lg hover:bg-[#CC4000] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           >
             {initial ? 'Save Changes' : 'Create Workspace'}
           </button>

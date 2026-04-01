@@ -327,7 +327,7 @@ export default function DigestPage() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-bold text-white flex items-center gap-2">
-            <Sunrise size={20} className="text-[#FF5C00]" />
+            <Sunrise size={20} className="text-[#FE5000]" />
             Daily Briefing
           </h2>
           <p className="mt-0.5 text-sm text-[#71717A]">{digest.date}</p>
@@ -336,7 +336,7 @@ export default function DigestPage() {
           <button
             onClick={handleGenerateAISummary}
             disabled={loadingAI}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium border border-[#27272A] text-[#A1A1AA] hover:text-[#FF5C00] hover:border-[#FF5C00]/40 transition-colors disabled:opacity-50"
+            className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium border border-[#27272A] text-[#A1A1AA] hover:text-[#FE5000] hover:border-[#FE5000]/40 transition-colors disabled:opacity-50"
           >
             <Sparkles size={14} className={loadingAI ? 'animate-spin' : ''} />
             AI Summary
@@ -344,12 +344,12 @@ export default function DigestPage() {
           <button
             onClick={handleSendEmail}
             disabled={sendingEmail || emailSent}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-[#FF5C00] text-white hover:bg-[#E54800] transition-colors disabled:opacity-50"
+            className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-[#FE5000] text-white hover:bg-[#CC4000] transition-colors disabled:opacity-50"
           >
             <Send size={14} />
             {emailSent ? 'Sent' : 'Send to Email'}
           </button>
-          <button className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium border border-[#27272A] text-[#A1A1AA] hover:text-white hover:border-[#FF5C00]/40 transition-colors">
+          <button className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium border border-[#27272A] text-[#A1A1AA] hover:text-white hover:border-[#FE5000]/40 transition-colors">
             <Settings size={14} />
             Configure
           </button>
@@ -358,10 +358,10 @@ export default function DigestPage() {
 
       {/* AI Summary */}
       {aiSummary && (
-        <div className="rounded-lg border border-[#FF5C00]/20 bg-[#FF5C00]/5 p-4">
+        <div className="rounded-lg border border-[#FE5000]/20 bg-[#FE5000]/5 p-4">
           <div className="flex items-center gap-2 mb-2">
-            <Sparkles size={14} className="text-[#FF5C00]" />
-            <span className="text-xs font-semibold text-[#FF5C00] uppercase tracking-wide">AI Narrative Summary</span>
+            <Sparkles size={14} className="text-[#FE5000]" />
+            <span className="text-xs font-semibold text-[#FE5000] uppercase tracking-wide">AI Narrative Summary</span>
           </div>
           <p className="text-sm text-[#A1A1AA] leading-relaxed">{aiSummary}</p>
         </div>
@@ -390,7 +390,7 @@ export default function DigestPage() {
         {/* Cash Position */}
         <div className="rounded-lg border border-[#27272A] bg-[#18181B] p-4">
           <div className="flex items-center gap-2 mb-2">
-            <Wallet size={14} className="text-[#FF5C00]" />
+            <Wallet size={14} className="text-[#FE5000]" />
             <span className="text-[11px] font-medium text-[#71717A] uppercase tracking-wider">Cash Position</span>
           </div>
           <div className="text-lg font-bold text-white tabular-nums">
@@ -402,7 +402,7 @@ export default function DigestPage() {
         {/* LOC Available */}
         <div className="rounded-lg border border-[#27272A] bg-[#18181B] p-4">
           <div className="flex items-center gap-2 mb-2">
-            <CreditCard size={14} className="text-[#FF5C00]" />
+            <CreditCard size={14} className="text-[#FE5000]" />
             <span className="text-[11px] font-medium text-[#71717A] uppercase tracking-wider">LOC Available</span>
           </div>
           <div className="text-lg font-bold text-green-400 tabular-nums">
@@ -416,7 +416,7 @@ export default function DigestPage() {
         {/* Close Progress */}
         <div className="rounded-lg border border-[#27272A] bg-[#18181B] p-4">
           <div className="flex items-center gap-2 mb-2">
-            <Clock size={14} className="text-[#FF5C00]" />
+            <Clock size={14} className="text-[#FE5000]" />
             <span className="text-[11px] font-medium text-[#71717A] uppercase tracking-wider">Close Progress</span>
           </div>
           {digest.closeProgress ? (
@@ -429,7 +429,7 @@ export default function DigestPage() {
               </div>
               <div className="w-full h-1.5 bg-[#27272A] rounded-full mt-2 overflow-hidden">
                 <div
-                  className="h-full rounded-full bg-[#FF5C00] transition-all"
+                  className="h-full rounded-full bg-[#FE5000] transition-all"
                   style={{
                     width: `${digest.closeProgress.totalSteps > 0 ? (digest.closeProgress.completedSteps / digest.closeProgress.totalSteps) * 100 : 0}%`,
                   }}
@@ -444,7 +444,7 @@ export default function DigestPage() {
         {/* Recon Exceptions */}
         <div className="rounded-lg border border-[#27272A] bg-[#18181B] p-4">
           <div className="flex items-center gap-2 mb-2">
-            <GitCompare size={14} className="text-[#FF5C00]" />
+            <GitCompare size={14} className="text-[#FE5000]" />
             <span className="text-[11px] font-medium text-[#71717A] uppercase tracking-wider">Recon Exceptions</span>
           </div>
           <div className={`text-lg font-bold tabular-nums ${(digest.reconExceptionCount ?? 0) > 0 ? 'text-red-400' : 'text-green-400'}`}>
@@ -461,7 +461,7 @@ export default function DigestPage() {
         {/* Fleet Status */}
         <div className="rounded-lg border border-[#27272A] bg-[#18181B] p-3.5">
           <h4 className="text-xs font-semibold text-white uppercase tracking-wide mb-2 flex items-center gap-2">
-            <Truck size={14} className="text-[#FF5C00]" />
+            <Truck size={14} className="text-[#FE5000]" />
             Fleet Status
           </h4>
           {digest.fleetStatus ? (
@@ -495,7 +495,7 @@ export default function DigestPage() {
         {/* Recent Journal Entries */}
         <div className="rounded-lg border border-[#27272A] bg-[#18181B] p-3.5">
           <h4 className="text-xs font-semibold text-white uppercase tracking-wide mb-2 flex items-center gap-2">
-            <BookOpen size={14} className="text-[#FF5C00]" />
+            <BookOpen size={14} className="text-[#FE5000]" />
             Recent Journal Entries (Last 24h)
           </h4>
           {(digest.recentJournalEntries ?? []).length > 0 ? (
@@ -520,7 +520,7 @@ export default function DigestPage() {
       {(digest.arAgingBuckets ?? []).length > 0 && (
         <div className="rounded-lg border border-[#27272A] bg-[#18181B] p-3.5">
           <h4 className="text-xs font-semibold text-white uppercase tracking-wide mb-2 flex items-center gap-2">
-            <DollarSign size={14} className="text-[#FF5C00]" />
+            <DollarSign size={14} className="text-[#FE5000]" />
             AR Aging Summary
           </h4>
           <div className="space-y-2">
@@ -567,7 +567,7 @@ export default function DigestPage() {
       {(digest.actionItems ?? []).length > 0 && (
         <div className="rounded-lg border border-[#27272A] bg-[#18181B] p-3.5">
           <h4 className="text-xs font-semibold text-white uppercase tracking-wide mb-2 flex items-center gap-2">
-            <CheckCircle2 size={14} className="text-[#FF5C00]" />
+            <CheckCircle2 size={14} className="text-[#FE5000]" />
             Action Items
           </h4>
           <div className="space-y-2">
@@ -601,7 +601,7 @@ export default function DigestPage() {
 // ── Sub-components ────────────────────────────────────────────
 
 const HIGHLIGHT_COLORS: Record<DigestHighlight['color'], string> = {
-  orange: 'border-[#FF5C00]/30 bg-[#FF5C00]/5',
+  orange: 'border-[#FE5000]/30 bg-[#FE5000]/5',
   green: 'border-green-500/30 bg-green-500/5',
   red: 'border-red-500/30 bg-red-500/5',
   blue: 'border-blue-500/30 bg-blue-500/5',
@@ -609,7 +609,7 @@ const HIGHLIGHT_COLORS: Record<DigestHighlight['color'], string> = {
 };
 
 const HIGHLIGHT_DOT_COLORS: Record<DigestHighlight['color'], string> = {
-  orange: '#FF5C00',
+  orange: '#FE5000',
   green: '#22C55E',
   red: '#EF4444',
   blue: '#3B82F6',

@@ -79,7 +79,7 @@ function CategoryPill({
       className={[
         'rounded-full px-3 py-1 text-xs font-medium border transition-colors whitespace-nowrap',
         active
-          ? 'border-[#FF5C00] bg-[#FF5C00]/10 text-[#FF5C00]'
+          ? 'border-[#FE5000] bg-[#FE5000]/10 text-[#FE5000]'
           : 'border-[#27272A] text-[#71717A] hover:border-[#52525B] hover:text-[#A1A1AA]',
       ].join(' ')}
     >
@@ -121,14 +121,14 @@ function CatalogCard({
         'relative text-left rounded-lg border p-3 transition-all',
         accessible
           ? selected
-            ? 'border-[#FF5C00] bg-[#FF5C00]/5 hover:bg-[#FF5C00]/10'
+            ? 'border-[#FE5000] bg-[#FE5000]/5 hover:bg-[#FE5000]/10'
             : 'border-[#27272A] bg-[#18181B] hover:border-[#3F3F46] hover:bg-[#1F1F22] cursor-pointer'
           : 'border-[#27272A]/40 bg-[#18181B]/40 cursor-not-allowed opacity-50',
       ].join(' ')}
     >
       {/* Selection indicator */}
       {accessible && selected && (
-        <span className="absolute top-2 right-2 flex items-center justify-center w-4 h-4 rounded-full bg-[#FF5C00]">
+        <span className="absolute top-2 right-2 flex items-center justify-center w-4 h-4 rounded-full bg-[#FE5000]">
           <Check size={10} className="text-white" />
         </span>
       )}
@@ -145,7 +145,7 @@ function CatalogCard({
             'flex items-center justify-center w-7 h-7 rounded-md',
             accessible
               ? selected
-                ? 'bg-[#FF5C00]/20 text-[#FF5C00]'
+                ? 'bg-[#FE5000]/20 text-[#FE5000]'
                 : 'bg-[#27272A] text-[#A1A1AA]'
               : 'bg-[#27272A]/50 text-[#52525B]',
           ].join(' ')}
@@ -195,7 +195,7 @@ function SelectedRow({
   const Icon = TYPE_ICONS[item.type] ?? Hash;
   return (
     <div className="flex items-center gap-2 rounded-md border border-[#27272A] bg-[#18181B] px-3 py-2">
-      <span className="flex items-center justify-center w-6 h-6 rounded bg-[#FF5C00]/15 text-[#FF5C00] shrink-0">
+      <span className="flex items-center justify-center w-6 h-6 rounded bg-[#FE5000]/15 text-[#FE5000] shrink-0">
         <Icon size={12} />
       </span>
       <span className="text-xs font-medium text-white flex-1 min-w-0 truncate">{item.name}</span>
@@ -208,7 +208,7 @@ function SelectedRow({
             className={[
               'rounded px-1.5 py-0.5 text-[10px] font-medium transition-colors',
               size === s.value
-                ? 'bg-[#FF5C00] text-white'
+                ? 'bg-[#FE5000] text-white'
                 : 'bg-[#27272A] text-[#A1A1AA] hover:bg-[#3F3F46]',
             ].join(' ')}
           >
@@ -336,7 +336,7 @@ export default function WidgetPicker({
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search widgets..."
-              className="w-full pl-9 pr-3 py-2 rounded-md border border-[#27272A] bg-[#18181B] text-sm text-white placeholder-[#52525B] outline-none focus:border-[#FF5C00] transition-colors"
+              className="w-full pl-9 pr-3 py-2 rounded-md border border-[#27272A] bg-[#18181B] text-sm text-white placeholder-[#52525B] outline-none focus:border-[#FE5000] transition-colors"
               autoFocus
             />
             {search && (
@@ -395,7 +395,7 @@ export default function WidgetPicker({
               <span className="text-[11px] font-semibold text-[#A1A1AA] uppercase tracking-wide">
                 Selected
               </span>
-              <span className="flex items-center justify-center w-4 h-4 rounded-full bg-[#FF5C00] text-[9px] font-bold text-white">
+              <span className="flex items-center justify-center w-4 h-4 rounded-full bg-[#FE5000] text-[9px] font-bold text-white">
                 {selectedItems.length}
               </span>
             </div>
@@ -430,7 +430,7 @@ export default function WidgetPicker({
             <button
               onClick={() => onConfirm(selected)}
               disabled={selected.length === 0}
-              className="inline-flex items-center gap-1.5 rounded-md px-4 py-1.5 text-xs font-semibold bg-[#FF5C00] text-white hover:bg-[#E54800] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-md px-4 py-1.5 text-xs font-semibold bg-[#FE5000] text-white hover:bg-[#CC4000] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
               Apply
               <ChevronRight size={13} />

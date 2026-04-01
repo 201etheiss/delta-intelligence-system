@@ -201,7 +201,7 @@ function KpiBody({ rows, config, loading }: KpiBodyProps) {
         </span>
       )}
       {hasTrend && !loading && (
-        <span className={`flex items-center gap-1 text-xs font-medium ${trendUp ? 'text-[#FF5C00]' : 'text-red-400'}`}>
+        <span className={`flex items-center gap-1 text-xs font-medium ${trendUp ? 'text-[#FE5000]' : 'text-red-400'}`}>
           {trendUp ? <TrendingUp size={13} /> : <TrendingDown size={13} />}
           vs prior period
         </span>
@@ -270,7 +270,7 @@ function ChartBody({ rows, config, loading }: ChartBodyProps) {
           />
           <YAxis tick={{ fontSize: 9, fill: '#A1A1AA' }} axisLine={false} tickLine={false} width={50} tickFormatter={yAxisFormatter} />
           <Tooltip contentStyle={tooltipStyle} cursor={{ fill: '#27272A' }} formatter={(v: unknown) => [typeof v === 'number' ? yAxisFormatter(v) : String(v ?? ''), '']} />
-          <Bar dataKey={valueKey} fill="#FF5C00" radius={[3, 3, 0, 0]} maxBarSize={40} />
+          <Bar dataKey={valueKey} fill="#FE5000" radius={[3, 3, 0, 0]} maxBarSize={40} />
         </BarChart>
       ) : (
         <LineChart data={data} margin={{ top: 4, right: 4, left: 0, bottom: 4 }}>
@@ -281,9 +281,9 @@ function ChartBody({ rows, config, loading }: ChartBodyProps) {
           <Line
             type="monotone"
             dataKey={valueKey}
-            stroke="#FF5C00"
+            stroke="#FE5000"
             strokeWidth={2}
-            dot={{ r: 3, fill: '#FF5C00', strokeWidth: 0 }}
+            dot={{ r: 3, fill: '#FE5000', strokeWidth: 0 }}
             activeDot={{ r: 5 }}
           />
         </LineChart>
@@ -361,7 +361,7 @@ function TableBody({ rows, config, loading }: TableBodyProps) {
               >
                 {col}
                 {sortKey === col && (
-                  <span className="ml-1 text-[#FF5C00]">{sortDir === 'asc' ? '↑' : '↓'}</span>
+                  <span className="ml-1 text-[#FE5000]">{sortDir === 'asc' ? '↑' : '↓'}</span>
                 )}
               </th>
             ))}
@@ -448,7 +448,7 @@ function GaugeBody({ rows, config, loading }: GaugeBodyProps) {
       <svg width="120" height="80" viewBox="0 0 120 80">
         <path d={trackPath} fill="none" stroke="#27272A" strokeWidth="8" strokeLinecap="round" />
         {fillPath && (
-          <path d={fillPath} fill="none" stroke="#FF5C00" strokeWidth="8" strokeLinecap="round" />
+          <path d={fillPath} fill="none" stroke="#FE5000" strokeWidth="8" strokeLinecap="round" />
         )}
         <text x={cx} y={cy + 10} textAnchor="middle" fontSize="18" fontWeight="700" fill="#FFFFFF" fontFamily="monospace">
           {formatValue(value, config.format ?? 'percent')}
@@ -502,7 +502,7 @@ function ListBody({ rows, config, loading }: ListBodyProps) {
             </div>
             <div className="h-1 rounded-full bg-[#27272A] overflow-hidden">
               <div
-                className="h-full rounded-full bg-[#FF5C00]/70 transition-all duration-500"
+                className="h-full rounded-full bg-[#FE5000]/70 transition-all duration-500"
                 style={{ width: `${barWidth}%` }}
               />
             </div>
@@ -516,7 +516,7 @@ function ListBody({ rows, config, loading }: ListBodyProps) {
 // ── Color palette ─────────────────────────────────────────────────
 
 const CHART_COLORS = [
-  '#FF5C00', '#3B82F6', '#10B981', '#F59E0B', '#8B5CF6',
+  '#FE5000', '#3B82F6', '#10B981', '#F59E0B', '#8B5CF6',
   '#EC4899', '#14B8A6', '#F97316',
 ];
 
@@ -624,15 +624,15 @@ function AreaBody({ rows, config, loading }: AreaBodyProps) {
       <AreaChart data={data} margin={{ top: 4, right: 4, left: 0, bottom: 4 }}>
         <defs>
           <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="#FF5C00" stopOpacity={0.3} />
-            <stop offset="95%" stopColor="#FF5C00" stopOpacity={0} />
+            <stop offset="5%" stopColor="#FE5000" stopOpacity={0.3} />
+            <stop offset="95%" stopColor="#FE5000" stopOpacity={0} />
           </linearGradient>
         </defs>
         <CartesianGrid strokeDasharray="3 3" stroke="#27272A" vertical={false} />
         <XAxis dataKey={labelKey} tick={{ fontSize: 10, fill: '#A1A1AA' }} axisLine={false} tickLine={false} />
         <YAxis tick={{ fontSize: 9, fill: '#A1A1AA' }} axisLine={false} tickLine={false} width={50} tickFormatter={yAxisFormatter} />
         <Tooltip contentStyle={tooltipStyle} formatter={(v: unknown) => [typeof v === 'number' ? yAxisFormatter(v) : String(v ?? ''), '']} />
-        <Area type="monotone" dataKey={valueKey} stroke="#FF5C00" strokeWidth={2} fill="url(#areaGrad)" />
+        <Area type="monotone" dataKey={valueKey} stroke="#FE5000" strokeWidth={2} fill="url(#areaGrad)" />
       </AreaChart>
     </ResponsiveContainer>
   );
@@ -747,17 +747,17 @@ function SparklineBody({ rows, config, loading }: SparklineBodyProps) {
       <svg viewBox={`0 0 ${width} ${height}`} className="flex-1 h-10">
         <defs>
           <linearGradient id="sparkGradWidget" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#FF5C00" stopOpacity={0.2} />
-            <stop offset="100%" stopColor="#FF5C00" stopOpacity={0} />
+            <stop offset="0%" stopColor="#FE5000" stopOpacity={0.2} />
+            <stop offset="100%" stopColor="#FE5000" stopOpacity={0} />
           </linearGradient>
         </defs>
         <path d={areaD} fill="url(#sparkGradWidget)" />
-        <path d={pathD} fill="none" stroke="#FF5C00" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d={pathD} fill="none" stroke="#FE5000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
       <span className="text-lg font-bold text-white font-mono shrink-0">
         {formatValue(lastVal, config.format)}
       </span>
-      <span className={`text-xs ${trendUp ? 'text-[#FF5C00]' : 'text-red-400'}`}>
+      <span className={`text-xs ${trendUp ? 'text-[#FE5000]' : 'text-red-400'}`}>
         {trendUp ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
       </span>
     </div>
@@ -960,7 +960,7 @@ export default function LiveWidget({ config, role = 'admin' }: LiveWidgetProps) 
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-[#27272A]">
         <div className="flex items-center gap-2 min-w-0">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#FF5C00] shrink-0" />
+          <span className="w-1.5 h-1.5 rounded-full bg-[#FE5000] shrink-0" />
           <h3 className="text-xs font-semibold text-white uppercase tracking-wide truncate">{config.title}</h3>
         </div>
         <button

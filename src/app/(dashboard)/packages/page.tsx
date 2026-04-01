@@ -182,7 +182,7 @@ export default function PackagesPage() {
           <button
             onClick={handleGenerate}
             disabled={generating}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#FF5C00] text-white text-sm font-medium hover:bg-[#E54800] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#FE5000] text-white text-sm font-medium hover:bg-[#CC4000] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {generating ? (
               <Loader2 size={16} className="animate-spin" />
@@ -198,7 +198,7 @@ export default function PackagesPage() {
       {generating && (
         <div className="flex items-center justify-center py-20">
           <div className="flex flex-col items-center gap-3">
-            <Loader2 size={28} className="animate-spin text-[#FF5C00]" />
+            <Loader2 size={28} className="animate-spin text-[#FE5000]" />
             <p className="text-sm text-zinc-500">
               Generating financial package for {period}...
             </p>

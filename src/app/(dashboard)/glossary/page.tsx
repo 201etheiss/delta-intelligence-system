@@ -122,7 +122,7 @@ export default function GlossaryPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <BookOpen size={24} className="text-[#FF5C00]" />
+            <BookOpen size={24} className="text-[#FE5000]" />
             <div>
               <h1 className="text-lg font-semibold">Domain Glossary</h1>
               <p className="text-sm text-[#71717A] dark:text-[#A1A1AA]">
@@ -133,7 +133,7 @@ export default function GlossaryPage() {
           {isAdmin && (
             <button
               onClick={() => { resetForm(); setShowAdd(true); }}
-              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#FF5C00] text-white text-sm font-medium hover:bg-[#E54800] transition-colors"
+              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#FE5000] text-white text-sm font-medium hover:bg-[#CC4000] transition-colors"
             >
               <Plus size={16} />
               Add Term
@@ -149,7 +149,7 @@ export default function GlossaryPage() {
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Search terms, definitions, aliases..."
-              className="w-full pl-10 pr-4 py-2.5 bg-[#18181B] border border-[#27272A] rounded-lg text-sm text-white placeholder-[#52525B] outline-none focus:border-[#FF5C00]/50"
+              className="w-full pl-10 pr-4 py-2.5 bg-[#18181B] border border-[#27272A] rounded-lg text-sm text-white placeholder-[#52525B] outline-none focus:border-[#FE5000]/50"
             />
             {search && (
               <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#52525B] hover:text-white">
@@ -165,7 +165,7 @@ export default function GlossaryPage() {
                 className={[
                   'px-3 py-2 rounded-lg text-xs font-medium capitalize whitespace-nowrap transition-colors border',
                   category === cat
-                    ? 'bg-[#FF5C00]/10 text-[#FF5C00] border-[#FF5C00]/30'
+                    ? 'bg-[#FE5000]/10 text-[#FE5000] border-[#FE5000]/30'
                     : 'bg-[#18181B] text-[#71717A] dark:text-[#A1A1AA] border-[#27272A] hover:text-white',
                 ].join(' ')}
               >
@@ -220,7 +220,7 @@ export default function GlossaryPage() {
               <button
                 onClick={handleSave}
                 disabled={!formTerm || !formDef}
-                className="px-4 py-1.5 bg-[#FF5C00] text-white text-sm rounded-lg hover:bg-[#E54800] disabled:opacity-40 disabled:cursor-not-allowed"
+                className="px-4 py-1.5 bg-[#FE5000] text-white text-sm rounded-lg hover:bg-[#CC4000] disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 {editId ? 'Update' : 'Add'}
               </button>
@@ -250,7 +250,7 @@ export default function GlossaryPage() {
                     className="flex items-center gap-3 w-full px-3 py-2 text-left hover:bg-[#1F1F23] transition-colors"
                   >
                     {isExpanded ? <ChevronDown size={14} className="text-[#52525B] shrink-0" /> : <ChevronRight size={14} className="text-[#52525B] shrink-0" />}
-                    <span className="font-mono font-semibold text-sm text-[#FF5C00] min-w-[80px]">{entry.term}</span>
+                    <span className="font-mono font-semibold text-sm text-[#FE5000] min-w-[80px]">{entry.term}</span>
                     <span className="text-sm text-[#A1A1AA] truncate flex-1">{entry.definition.slice(0, 100)}{entry.definition.length > 100 ? '...' : ''}</span>
                     <span className={`px-2 py-0.5 text-[10px] font-medium rounded border capitalize shrink-0 ${catColor}`}>
                       {entry.category}

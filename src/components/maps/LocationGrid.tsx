@@ -119,7 +119,7 @@ export default function LocationGrid({ locations }: LocationGridProps) {
           {grouped.map(([region, items]) => (
             <div key={region}>
               <h3 className="text-xs font-semibold text-[#09090B] dark:text-white uppercase tracking-wide mb-2 flex items-center gap-1.5">
-                <MapPin size={12} className="text-[#FF5C00]" />
+                <MapPin size={12} className="text-[#FE5000]" />
                 {region}
                 <span className="text-[#A1A1AA] font-normal">({items.length})</span>
               </h3>
@@ -127,7 +127,7 @@ export default function LocationGrid({ locations }: LocationGridProps) {
                 {items.map((loc) => (
                   <div
                     key={`${loc.name}-${loc.lat}-${loc.lng}`}
-                    className="flex items-start gap-3 rounded-lg border border-[#E4E4E7] dark:border-[#27272A] bg-white dark:bg-[#18181B] p-3 hover:border-[#FF5C00]/30 transition-colors"
+                    className="flex items-start gap-3 rounded-lg border border-[#E4E4E7] dark:border-[#27272A] bg-white dark:bg-[#18181B] p-3 hover:border-[#FE5000]/30 transition-colors"
                   >
                     <Truck size={16} className="text-[#71717A] shrink-0 mt-0.5" />
                     <div className="min-w-0 flex-1">

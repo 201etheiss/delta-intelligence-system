@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DI DataOS — Shell Architecture</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0a0a0a; color: #e4e4e7; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 24px; }
+  h1 { color: #FE5000; font-size: 28px; margin-bottom: 8px; font-family: Georgia, serif; }
+  h2 { color: #a1a1aa; font-size: 18px; margin-bottom: 32px; font-weight: 400; }
+  h3 { color: #FE5000; font-size: 16px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
+  .subtitle { color: #71717a; font-size: 14px; margin-bottom: 24px; }
+
+  .shell-diagram {
+    background: #18181b;
+    border: 1px solid #27272a;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 32px;
+  }
+
+  /* Nova Bar */
+  .nova-bar {
+    background: linear-gradient(90deg, #1a1a2e 0%, #16213e 50%, #1a1a2e 100%);
+    border-bottom: 1px solid #FE5000;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: relative;
+  }
+  .nova-bar::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, #FE5000 30%, #FE5000 70%, transparent 100%);
+    opacity: 0.6;
+  }
+  .nova-avatar {
+    width: 32px; height: 32px;
+    background: radial-gradient(circle, #FE5000 0%, #cc4000 100%);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px; color: white;
+    flex-shrink: 0;
+    box-shadow: 0 0 12px rgba(254, 80, 0, 0.3);
+  }
+  .nova-input {
+    flex: 1;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid #3f3f46;
+    border-radius: 8px;
+    padding: 8px 16px;
+    color: #a1a1aa;
+    font-size: 14px;
+    font-style: italic;
+  }
+  .nova-briefing {
+    background: rgba(254, 80, 0, 0.08);
+    border: 1px solid rgba(254, 80, 0, 0.2);
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 12px;
+    color: #FE5000;
+    white-space: nowrap;
+  }
+  .nova-bell {
+    width: 32px; height: 32px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    color: #71717a;
+    font-size: 16px;
+    position: relative;
+  }
+  .nova-bell .badge {
+    position: absolute; top: -2px; right: -2px;
+    width: 14px; height: 14px;
+    background: #FE5000;
+    border-radius: 50%;
+    font-size: 9px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 700;
+  }
+
+  /* Main Layout */
+  .main-layout {
+    display: flex;
+    min-height: 520px;
+  }
+
+  /* Status Rail */
+  .status-rail {
+    width: 48px;
+    background: #111113;
+    border-right: 1px solid #27272a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 0;
+    gap: 8px;
+  }
+  .rail-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #71717a;
+  }
+  .rail-icon:hover { background: rgba(254, 80, 0, 0.1); color: #FE5000; }
+  .rail-icon.active { background: rgba(254, 80, 0, 0.15); color: #FE5000; border-left: 2px solid #FE5000; }
+  .rail-divider { width: 24px; height: 1px; background: #27272a; margin: 4px 0; }
+  .health-dot { width: 8px; height: 8px; border-radius: 50%; margin: 2px; }
+  .health-green { background: #22c55e; box-shadow: 0 0 4px rgba(34, 197, 94, 0.4); }
+  .health-yellow { background: #eab308; box-shadow: 0 0 4px rgba(234, 179, 8, 0.4); }
+
+  /* Workspace */
+  .workspace {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Module Tabs */
+  .module-tabs {
+    background: #111113;
+    border-bottom: 1px solid #27272a;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 2px;
+    height: 36px;
+  }
+  .module-tab {
+    padding: 8px 16px;
+    font-size: 12px;
+    color: #71717a;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .module-tab.active {
+    color: #e4e4e7;
+    border-bottom-color: #FE5000;
+    background: rgba(254, 80, 0, 0.05);
+  }
+  .module-tab .close { font-size: 10px; opacity: 0.5; margin-left: 4px; }
+  .tab-add {
+    width: 24px; height: 24px;
+    display: flex; align-items: center; justify-content: center;
+    color: #52525b; font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  /* Module Content */
+  .module-content {
+    flex: 1;
+    padding: 24px;
+    background: #0f0f11;
+    overflow-y: auto;
+  }
+
+  /* Module Grid (Home) */
+  .module-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-top: 20px;
+  }
+  .module-tile {
+    background: #18181b;
+    border: 1px solid #27272a;
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .module-tile:hover {
+    border-color: #FE5000;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(254, 80, 0, 0.1);
+  }
+  .tile-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    margin-bottom: 12px;
+  }
+  .tile-finance .tile-icon { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+  .tile-ops .tile-icon { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+  .tile-intel .tile-icon { background: rgba(168, 85, 247, 0.15); color: #a855f7; }
+  .tile-compliance .tile-icon { background: rgba(234, 179, 8, 0.15); color: #eab308; }
+  .tile-admin .tile-icon { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+  .tile-portal .tile-icon { background: rgba(254, 80, 0, 0.15); color: #FE5000; }
+  .tile-add {
+    border: 2px dashed #27272a;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #52525b;
+    font-size: 14px;
+  }
+  .tile-add:hover { border-color: #FE5000; color: #FE5000; }
+  .tile-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .tile-desc { font-size: 12px; color: #71717a; }
+  .tile-status { display: flex; align-items: center; gap: 6px; margin-top: 8px; font-size: 11px; color: #52525b; }
+  .tile-badge { padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; }
+  .badge-live { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+  .badge-dev { background: rgba(234, 179, 8, 0.15); color: #eab308; }
+  .badge-planned { background: rgba(113, 113, 122, 0.15); color: #71717a; }
+
+  /* Labels */
+  .label {
+    position: absolute;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    z-index: 10;
+  }
+  .label-nova { background: rgba(254, 80, 0, 0.2); color: #FE5000; top: 4px; left: 60px; }
+  .label-rail { background: rgba(59, 130, 246, 0.2); color: #3b82f6; top: 60px; left: -70px; transform: rotate(-90deg); }
+  .label-workspace { background: rgba(168, 85, 247, 0.2); color: #a855f7; top: 50px; right: 20px; }
+  .label-tabs { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
+
+  /* Annotations */
+  .annotations {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 32px;
+  }
+  .annotation {
+    background: #18181b;
+    border: 1px solid #27272a;
+    border-radius: 8px;
+    padding: 16px;
+  }
+  .annotation h4 { font-size: 13px; color: #FE5000; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .annotation p { font-size: 13px; color: #a1a1aa; line-height: 1.5; }
+  .annotation .tag { font-size: 10px; padding: 2px 6px; border-radius: 3px; background: rgba(254,80,0,0.1); color: #FE5000; }
+
+  .section-divider {
+    border: none;
+    border-top: 1px solid #27272a;
+    margin: 32px 0;
+  }
+</style>
+</head>
+<body>
+
+<h1>Delta Intelligence — DataOS Shell Architecture</h1>
+<h2>The OS frame that wraps all 62 existing pages as modules</h2>
+
+<p class="subtitle">This is the foundational shell. Every existing DI page becomes a "module" that renders inside this frame. The shell is always present — Nova Bar, Status Rail, Module Tabs, and the Workspace area.</p>
+
+<div class="shell-diagram" style="position: relative;">
+  <!-- Nova Bar -->
+  <div class="nova-bar">
+    <div class="nova-avatar">N</div>
+    <div class="nova-input">Ask Nova anything... "What's our diesel margin this month?"</div>
+    <div class="nova-briefing">3 items need attention</div>
+    <div class="nova-bell">
+      &#128276;
+      <div class="badge">7</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;margin-left:8px;">
+      <div style="width:28px;height:28px;background:#27272a;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#a1a1aa;cursor:pointer;" title="Executive Mode">EX</div>
+      <div style="width:28px;height:28px;background:rgba(254,80,0,0.15);border:1px solid rgba(254,80,0,0.3);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#FE5000;cursor:pointer;" title="Operator Mode">OP</div>
+    </div>
+    <div style="width:32px;height:32px;background:#27272a;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;color:#a1a1aa;">ET</div>
+  </div>
+
+  <!-- Main Layout -->
+  <div class="main-layout">
+    <!-- Status Rail -->
+    <div class="status-rail">
+      <div class="rail-icon active" title="Home Grid">&#127968;</div>
+      <div class="rail-icon" title="Finance">&#128176;</div>
+      <div class="rail-icon" title="Operations">&#128666;</div>
+      <div class="rail-icon" title="Intelligence">&#128200;</div>
+      <div class="rail-icon" title="Compliance">&#128737;</div>
+      <div class="rail-icon" title="Admin">&#9881;</div>
+      <div class="rail-divider"></div>
+      <div class="rail-icon" title="Chat">&#128172;</div>
+      <div class="rail-icon" title="Search">&#128269;</div>
+      <div style="flex:1;"></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 0;">
+        <div class="health-dot health-green" title="Ascend"></div>
+        <div class="health-dot health-green" title="Salesforce"></div>
+        <div class="health-dot health-green" title="Samsara"></div>
+        <div class="health-dot health-yellow" title="Power BI"></div>
+      </div>
+    </div>
+
+    <!-- Workspace -->
+    <div class="workspace">
+      <!-- Module Tabs -->
+      <div class="module-tabs">
+        <div class="module-tab active">&#127968; Home <span class="close">&times;</span></div>
+        <div class="module-tab">&#128176; Financial Statements <span class="close">&times;</span></div>
+        <div class="module-tab">&#128666; Fleet Map <span class="close">&times;</span></div>
+        <div class="tab-add">+</div>
+      </div>
+
+      <!-- Module Content (Home Grid shown) -->
+      <div class="module-content">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+          <div>
+            <div style="font-size:20px;font-weight:700;">Good morning, Evan</div>
+            <div style="font-size:13px;color:#71717a;margin-top:4px;">April 1, 2026 &middot; 3 items need your attention</div>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <div style="padding:6px 14px;background:rgba(254,80,0,0.1);border:1px solid rgba(254,80,0,0.2);border-radius:6px;font-size:12px;color:#FE5000;cursor:pointer;">Daily Briefing</div>
+          </div>
+        </div>
+
+        <!-- Module Grid -->
+        <div class="module-grid">
+          <div class="module-tile tile-finance">
+            <div class="tile-icon">&#128176;</div>
+            <div class="tile-name">Finance</div>
+            <div class="tile-desc">GL, AP, AR, Statements, Close</div>
+            <div class="tile-status"><span class="tile-badge badge-live">LIVE</span> 14 pages</div>
+          </div>
+          <div class="module-tile tile-ops">
+            <div class="tile-icon">&#128666;</div>
+            <div class="tile-name">Operations</div>
+            <div class="tile-desc">Fleet, Assets, Inventory, Contracts</div>
+            <div class="tile-status"><span class="tile-badge badge-live">LIVE</span> 5 pages</div>
+          </div>
+          <div class="module-tile tile-intel">
+            <div class="tile-icon">&#128200;</div>
+            <div class="tile-name">Intelligence</div>
+            <div class="tile-desc">Executive, Market, Sales, Analytics</div>
+            <div class="tile-status"><span class="tile-badge badge-live">LIVE</span> 8 pages</div>
+          </div>
+          <div class="module-tile tile-compliance">
+            <div class="tile-icon">&#128737;</div>
+            <div class="tile-name">Compliance</div>
+            <div class="tile-desc">Evidence Vault, Audit, Controls</div>
+            <div class="tile-status"><span class="tile-badge badge-live">LIVE</span> 4 pages</div>
+          </div>
+          <div class="module-tile tile-portal">
+            <div class="tile-icon">&#127760;</div>
+            <div class="tile-name">Delta Portal</div>
+            <div class="tile-desc">Customer orders, tracking, invoices</div>
+            <div class="tile-status"><span class="tile-badge badge-dev">IN DEV</span> spoke</div>
+          </div>
+          <div class="module-tile" style="border-color: #3f3f46;">
+            <div class="tile-icon" style="background:rgba(113,113,122,0.15);color:#71717a;">&#128736;</div>
+            <div class="tile-name">Equipment Tracker</div>
+            <div class="tile-desc">Asset management, maintenance</div>
+            <div class="tile-status"><span class="tile-badge badge-live">DEPLOYED</span> spoke</div>
+          </div>
+          <div class="module-tile tile-admin">
+            <div class="tile-icon">&#9881;</div>
+            <div class="tile-name">Admin</div>
+            <div class="tile-desc">Users, Permissions, Health, Audit</div>
+            <div class="tile-status"><span class="tile-badge badge-live">LIVE</span> 7 pages</div>
+          </div>
+          <div class="module-tile tile-add">
+            <div style="font-size:28px;margin-bottom:8px;">+</div>
+            <div class="tile-name">Add Module</div>
+            <div class="tile-desc">Marketplace</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<h3>Shell Components</h3>
+
+<div class="annotations">
+  <div class="annotation">
+    <h4>&#9650; Nova Bar <span class="tag">ALWAYS VISIBLE</span></h4>
+    <p>Persistent AI intelligence strip across the top. Nova input field for natural language queries from anywhere. Proactive briefing badge ("3 items need attention"). Notification bell. Density mode toggle (EX/OP). User avatar. This never goes away — it's the OS-level AI presence.</p>
+  </div>
+  <div class="annotation">
+    <h4>&#9664; Status Rail <span class="tag">ALWAYS VISIBLE</span></h4>
+    <p>Thin icon bar on the left (VS Code activity bar pattern). Module group icons for quick navigation. Service health dots at the bottom (green/yellow/red for each data source). Chat and Search are always accessible from the rail.</p>
+  </div>
+  <div class="annotation">
+    <h4>&#9654; Module Tabs <span class="tag">MULTI-MODULE</span></h4>
+    <p>Browser-tab pattern for open modules. Multiple modules open simultaneously. Close individual tabs. "+" to open a new module (returns to home grid). Active tab highlighted with orange underline. This replaces the current sidebar navigation.</p>
+  </div>
+  <div class="annotation">
+    <h4>&#9660; Workspace <span class="tag">MODULE CONTENT</span></h4>
+    <p>The main content area where module pages render. This is where all 62 existing DI pages will live. Each page is wrapped as a module within the workspace. The workspace respects the current density mode (Executive/Operator).</p>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<h3>Key Design Decisions to Confirm</h3>
+
+<div class="annotations" style="grid-template-columns: 1fr;">
+  <div class="annotation">
+    <h4>1. Navigation Model</h4>
+    <p><strong>Current:</strong> Traditional sidebar with 7 collapsible groups + 50 nav items<br>
+    <strong>Proposed:</strong> Status Rail (icons only) + Module Grid home + Module Tabs (open pages as tabs)<br>
+    <strong>Effect:</strong> The sidebar goes away entirely. Navigation is: click a module tile on home grid, or click a rail icon to jump to that module group. Individual pages within a module use SubNavTabs (already exists in DI).</p>
+  </div>
+  <div class="annotation">
+    <h4>2. How Existing Pages Map</h4>
+    <p>All 62 pages are grouped into ~7 modules (Finance, Operations, Intelligence, Compliance, Organization, Platform, Admin). Within each module, pages are accessible via the existing SubNavTabs component. So: Rail icon → Module Tab opens → SubNavTabs for page switching within the module. Same pages, new container.</p>
+  </div>
+  <div class="annotation">
+    <h4>3. Incremental Approach</h4>
+    <p>Build the shell (Nova Bar + Rail + Tabs + Workspace) as a new layout wrapper. Mount existing pages inside it. No page rewrites needed initially — just re-nesting. Then iterate: density modes, Nova integration, module grid polish.</p>
+  </div>
+</div>
+
+</body>
+</html>
