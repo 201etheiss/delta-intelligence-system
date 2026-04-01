@@ -124,6 +124,8 @@ interface TokenMeta {
 interface ChatInterfaceProps {
   isAdmin?: boolean;
   role?: string;
+  /** Compact mode for embedding in the 380px side panel. Hides artifact panel, help tooltip, workspace features, and adjusts layout. */
+  compact?: boolean;
 }
 
 interface WorkspaceConfig {
@@ -140,7 +142,7 @@ interface WorkspaceConfig {
   samplePrompts?: string[];
 }
 
-export default function ChatInterface({ isAdmin = false, role = 'readonly' }: ChatInterfaceProps) {
+export default function ChatInterface({ isAdmin = false, role = 'readonly', compact = false }: ChatInterfaceProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -263,8 +265,10 @@ export default function ChatInterface({ isAdmin = false, role = 'readonly' }: Ch
     setStreamStatus(null);
     setStreamingMessageId(null);
     setActiveId(newId);
-    router.replace('/chat');
-  }, [router]);
+    if (!compact) {
+      router.replace('/chat');
+    }
+  }, [router, compact]);
 
   const sendMessage = useCallback(async () => {
     const trimmed = input.trim();
@@ -601,12 +605,14 @@ export default function ChatInterface({ isAdmin = false, role = 'readonly' }: Ch
         </div>
       )}
       {/* Header bar */}
-      <div className="flex items-center justify-between px-6 py-3 border-b border-[#E4E4E7] dark:border-[#27272A] bg-white dark:bg-[#18181B] shrink-0">
-        <div className="flex items-center gap-3">
-          <h2 className="text-sm font-semibold text-[#09090B] dark:text-white">
-            {workspace ? workspace.name : 'Chat'}
-          </h2>
-          {workspace && (
+      <div className={`flex items-center justify-between border-b border-[#E4E4E7] dark:border-[#27272A] bg-white dark:bg-[#18181B] shrink-0 ${compact ? 'px-3 py-2' : 'px-6 py-3'}`}>
+        <div className="flex items-center gap-2">
+          {!compact && (
+            <h2 className="text-sm font-semibold text-[#09090B] dark:text-white">
+              {workspace ? workspace.name : 'Chat'}
+            </h2>
+          )}
+          {!compact && workspace && (
             <span
               className="inline-flex items-center rounded px-2 py-0.5 text-[10px] font-medium text-white"
               style={{ backgroundColor: workspace.color }}
@@ -626,17 +632,17 @@ export default function ChatInterface({ isAdmin = false, role = 'readonly' }: Ch
           )}
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           {/* New chat */}
           <button
             onClick={startNewChat}
             className="text-xs text-[#A1A1AA] hover:text-[#09090B] dark:hover:text-white transition-colors"
           >
-            + New Chat
+            + New
           </button>
 
-          {/* Generate Report from conversation */}
-          {messages.length >= 2 && (
+          {/* Generate Report from conversation (hide in compact) */}
+          {!compact && messages.length >= 2 && (
             <button
               onClick={() => {
                 const lastAssistant = [...messages].reverse().find(m => m.role === 'assistant');
@@ -654,16 +660,16 @@ export default function ChatInterface({ isAdmin = false, role = 'readonly' }: Ch
 
           {/* Model selector */}
           {isAdmin && (
-            <div className="flex items-center gap-2">
-              <HelpTooltip text="Auto routes to the best model based on query complexity" position="bottom" />
+            <div className="flex items-center gap-1">
+              {!compact && <HelpTooltip text="Auto routes to the best model based on query complexity" position="bottom" />}
               <select
                 value={selectedModel}
                 onChange={(e) => setSelectedModel(e.target.value as ModelOption)}
-                className="appearance-none bg-[#FAFAFA] dark:bg-[#27272A] border border-[#E4E4E7] dark:border-[#3F3F46] text-[#09090B] dark:text-white text-xs rounded-lg pl-3 pr-8 py-1.5 focus:outline-none focus:border-[#FE5000] focus:ring-1 focus:ring-[#FE5000]/30 cursor-pointer"
+                className={`appearance-none bg-[#FAFAFA] dark:bg-[#27272A] border border-[#E4E4E7] dark:border-[#3F3F46] text-[#09090B] dark:text-white rounded-lg focus:outline-none focus:border-[#FE5000] focus:ring-1 focus:ring-[#FE5000]/30 cursor-pointer ${compact ? 'text-[10px] pl-2 pr-5 py-1' : 'text-xs pl-3 pr-8 py-1.5'}`}
               >
                 {MODEL_CHOICES.map((m) => (
                   <option key={m.id} value={m.id}>
-                    {m.label} — {m.description}
+                    {compact ? m.label : `${m.label} — ${m.description}`}
                   </option>
                 ))}
               </select>
@@ -699,9 +705,9 @@ export default function ChatInterface({ isAdmin = false, role = 'readonly' }: Ch
           </div>
         )}
         {messages.length === 0 && !isLoading ? (
-          <EmptyState onSelect={(text) => { setInput(text); }} role={role} />
+          <EmptyState onSelect={(text) => { setInput(text); }} role={role} compact={compact} />
         ) : (
-          <div className="max-w-3xl mx-auto px-4 py-6">
+          <div className={compact ? 'px-3 py-4' : 'max-w-3xl mx-auto px-4 py-6'}>
             {messages.map((message, idx) => {
               // Find the preceding user query for pin button on assistant messages
               let precedingUserQuery: string | undefined;
@@ -755,8 +761,8 @@ export default function ChatInterface({ isAdmin = false, role = 'readonly' }: Ch
         )}
       </div>
 
-      {/* Artifact Panel (slide-out sidebar) */}
-      {activeArtifact && (
+      {/* Artifact Panel (slide-out sidebar) — hidden in compact panel mode */}
+      {!compact && activeArtifact && (
         <ArtifactPanel
           artifact={activeArtifact}
           onClose={() => setActiveArtifact(null)}
@@ -765,8 +771,8 @@ export default function ChatInterface({ isAdmin = false, role = 'readonly' }: Ch
       </div>
 
       {/* Input */}
-      <div className="border-t border-[#E4E4E7] dark:border-[#27272A] bg-white dark:bg-[#18181B] px-4 py-3 shrink-0">
-        <div className="max-w-3xl mx-auto">
+      <div className={`border-t border-[#E4E4E7] dark:border-[#27272A] bg-white dark:bg-[#18181B] shrink-0 ${compact ? 'px-2 py-2' : 'px-4 py-3'}`}>
+        <div className={compact ? '' : 'max-w-3xl mx-auto'}>
           {/* Attached document pills */}
           {uploadedDocuments.length > 0 && (
             <div className="flex flex-wrap gap-1.5 mb-2">
@@ -1019,7 +1025,7 @@ const ROLE_PROMPTS: Record<string, { subtitle: string; prompts: string[] }> = {
   },
 };
 
-function EmptyState({ onSelect, role = 'readonly' }: { onSelect: (text: string) => void; role?: string }) {
+function EmptyState({ onSelect, role = 'readonly', compact = false }: { onSelect: (text: string) => void; role?: string; compact?: boolean }) {
   const [favorites, setFavorites] = useState<FavoriteItem[]>([]);
 
   useEffect(() => {
@@ -1051,32 +1057,36 @@ function EmptyState({ onSelect, role = 'readonly' }: { onSelect: (text: string) 
   ];
 
   return (
-    <div className="flex flex-col items-center justify-center h-full min-h-[400px] px-4">
+    <div className={`flex flex-col items-center justify-center h-full px-4 ${compact ? 'min-h-[200px]' : 'min-h-[400px]'}`}>
       {/* Logo */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/brand/delta logo mark.png"
         alt="Delta Intelligence"
-        className="w-14 h-14 object-contain mb-4 opacity-80"
+        className={`object-contain mb-3 opacity-80 ${compact ? 'w-10 h-10' : 'w-14 h-14 mb-4'}`}
       />
-      <h2 className="text-[#09090B] dark:text-white font-bold text-lg mb-1">Delta Intelligence</h2>
-      <p className="text-[#71717A] dark:text-[#A1A1AA] text-sm text-center max-w-md mb-5">
-        {roleConfig.subtitle}
+      <h2 className={`text-[#09090B] dark:text-white font-bold mb-1 ${compact ? 'text-sm' : 'text-lg'}`}>
+        {compact ? 'Nova' : 'Delta Intelligence'}
+      </h2>
+      <p className={`text-[#71717A] dark:text-[#A1A1AA] text-center max-w-md ${compact ? 'text-xs mb-3' : 'text-sm mb-5'}`}>
+        {compact ? 'Ask anything about Delta360 data' : roleConfig.subtitle}
       </p>
 
-      {/* Capability chips */}
-      <div className="flex items-center gap-2 mb-6 flex-wrap justify-center">
-        {CAPABILITIES.map((cap) => (
-          <div key={cap.label} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800/50">
-            <svg className="w-3.5 h-3.5 text-[#FE5000]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d={cap.icon} />
-            </svg>
-            <span className="text-[11px] text-zinc-700 dark:text-zinc-300 font-medium">{cap.label}</span>
-            <span className="text-[10px] text-zinc-400">·</span>
-            <span className="text-[10px] text-zinc-400">{cap.desc}</span>
-          </div>
-        ))}
-      </div>
+      {/* Capability chips — hide in compact */}
+      {!compact && (
+        <div className="flex items-center gap-2 mb-6 flex-wrap justify-center">
+          {CAPABILITIES.map((cap) => (
+            <div key={cap.label} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800/50">
+              <svg className="w-3.5 h-3.5 text-[#FE5000]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d={cap.icon} />
+              </svg>
+              <span className="text-[11px] text-zinc-700 dark:text-zinc-300 font-medium">{cap.label}</span>
+              <span className="text-[10px] text-zinc-400">·</span>
+              <span className="text-[10px] text-zinc-400">{cap.desc}</span>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Pinned queries + sample prompts */}
       {favorites.length > 0 && (
@@ -1084,8 +1094,8 @@ function EmptyState({ onSelect, role = 'readonly' }: { onSelect: (text: string) 
           Pinned Queries
         </p>
       )}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-xl w-full">
-        {uniquePrompts.map((prompt) => {
+      <div className={`grid gap-2 w-full ${compact ? 'grid-cols-1 max-w-full' : 'grid-cols-1 sm:grid-cols-2 max-w-xl'}`}>
+        {(compact ? uniquePrompts.slice(0, 3) : uniquePrompts).map((prompt) => {
           const isPinned = favorites.some((f) => f.query === prompt);
           return (
             <button
@@ -1108,8 +1118,8 @@ function EmptyState({ onSelect, role = 'readonly' }: { onSelect: (text: string) 
         })}
       </div>
 
-      {/* Workflow templates */}
-      {workflows.length > 0 && (
+      {/* Workflow templates — hide in compact */}
+      {!compact && workflows.length > 0 && (
         <div className="mt-5 max-w-xl w-full">
           <p className="text-[10px] text-[#A1A1AA] uppercase tracking-wide font-medium mb-2">Guided Workflows</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -1127,8 +1137,8 @@ function EmptyState({ onSelect, role = 'readonly' }: { onSelect: (text: string) 
         </div>
       )}
 
-      {/* Drag and drop hint + keyboard shortcuts */}
-      <div className="mt-6 flex items-center gap-4 text-[10px] text-[#A1A1AA]">
+      {/* Drag and drop hint + keyboard shortcuts — hide in compact */}
+      {!compact && <div className="mt-6 flex items-center gap-4 text-[10px] text-[#A1A1AA]">
         <span className="flex items-center gap-1">
           <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
@@ -1143,7 +1153,7 @@ function EmptyState({ onSelect, role = 'readonly' }: { onSelect: (text: string) 
         <span>
           <kbd className="px-1.5 py-0.5 rounded bg-[#F4F4F5] dark:bg-[#27272A] border border-[#E4E4E7] dark:border-[#3F3F46] text-[#71717A] dark:text-[#A1A1AA] font-mono text-[9px]">&#8984;P</kbd> search
         </span>
-      </div>
+      </div>}
     </div>
   );
 }
