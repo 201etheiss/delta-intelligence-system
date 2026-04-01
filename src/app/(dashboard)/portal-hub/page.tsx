@@ -23,10 +23,10 @@ interface KPICard {
 }
 
 const KPI_CARDS: KPICard[] = [
-  { label: 'Active Customers', value: '21,311', sub: 'From Salesforce' },
-  { label: 'Open Orders', value: '342', sub: 'Placeholder' },
-  { label: 'Deliveries in Transit', value: '18', sub: 'Live updates pending' },
-  { label: 'Outstanding Invoices', value: '$1.2M', sub: 'Awaiting payment' },
+  { label: 'Portal Pages Built', value: '32', sub: '20 portal + 9 admin + 3 other' },
+  { label: 'API Routes', value: '32', sub: '14 live gateway + 18 mock/portal' },
+  { label: 'UI Components', value: '58', sub: '20 domain directories' },
+  { label: 'DB Migrations', value: '8', sub: 'Supabase + packages/db' },
 ];
 
 type FeatureStatus = 'built' | 'in-progress' | 'planned';
@@ -40,40 +40,88 @@ interface Feature {
 
 const FEATURES: Feature[] = [
   {
+    icon: LayoutDashboard,
+    title: 'Customer Dashboard',
+    description: '/dashboard — stat cards, quick actions, recent orders, insights preview',
+    status: 'built',
+  },
+  {
     icon: Package,
     title: 'Product Catalog',
-    description: 'Browse fuel products, pricing, and availability',
+    description: '/products — searchable/filterable catalog with category grid, product detail pages',
     status: 'built',
   },
   {
     icon: ShoppingCart,
-    title: 'Order Placement',
-    description: 'Submit and manage fuel delivery orders',
+    title: 'Cart & Checkout',
+    description: '/cart + /checkout — cart state via Zustand, tax breakdown, payment method selector',
+    status: 'built',
+  },
+  {
+    icon: FileText,
+    title: 'Orders',
+    description: '/orders — order list with tab filters, detail page, create page, recurring orders',
+    status: 'built',
+  },
+  {
+    icon: FileText,
+    title: 'Invoices',
+    description: '/invoices — aging summary, tab filters (unpaid/paid/overdue), invoice detail + pay page',
     status: 'built',
   },
   {
     icon: Truck,
     title: 'Delivery Tracking',
-    description: 'Real-time delivery status and ETA visibility',
-    status: 'in-progress',
-  },
-  {
-    icon: FileText,
-    title: 'Invoice Management',
-    description: 'View, download, and dispute invoices',
+    description: '/tracking — active deliveries, mock map, tank gauges, asset pages; Samsara not yet wired',
     status: 'in-progress',
   },
   {
     icon: CreditCard,
-    title: 'Payment Processing',
-    description: 'ACH, EFT, and card payment methods',
-    status: 'planned',
+    title: 'Insights & Analytics',
+    description: '/insights — price charts (Recharts), spend pie/bar, budget cards, recommendations; data is mock',
+    status: 'in-progress',
+  },
+  {
+    icon: Package,
+    title: 'Tank Leasing',
+    description: '/leasing — tank catalog cards, lease-vs-buy feature list; configure page built',
+    status: 'in-progress',
+  },
+  {
+    icon: KeyRound,
+    title: 'Account & KYC',
+    description: '/account — profile page, contracts list with signature timeline, KYC onboarding form',
+    status: 'built',
+  },
+  {
+    icon: FileText,
+    title: 'Quotes',
+    description: '/quotes — quote builder with line items, customer search, quote detail page',
+    status: 'built',
+  },
+  {
+    icon: GitBranch,
+    title: 'Notifications',
+    description: '/notifications — notification card list; no push subscription wired yet',
+    status: 'in-progress',
   },
   {
     icon: LayoutDashboard,
-    title: 'Customer Dashboard',
-    description: 'Spend analytics, account health, and history',
-    status: 'planned',
+    title: 'Admin Panel',
+    description: '/admin — dashboard, customers (list + detail), orders, invoices, pricing, products, reports',
+    status: 'built',
+  },
+  {
+    icon: Server,
+    title: 'Live Gateway API Routes',
+    description: '14 /api/live/* routes hitting DI gateway at :3847 — revenue, customers, pricing, CRM, tanks, AR',
+    status: 'built',
+  },
+  {
+    icon: CreditCard,
+    title: 'Payment Processing',
+    description: 'ACH form, card form, payment method selector components built; Stripe not wired',
+    status: 'in-progress',
   },
 ];
 
@@ -89,9 +137,12 @@ interface ArchNote {
 }
 
 const ARCH_NOTES: ArchNote[] = [
-  { icon: Server, text: 'Shares backend gateway at :3847' },
-  { icon: GitBranch, text: '8 data services connected' },
-  { icon: KeyRound, text: 'Authentication via DI federated auth' },
+  { icon: Server, text: 'Turborepo monorepo: apps/web + packages/shared + packages/ui + packages/db' },
+  { icon: GitBranch, text: '14 live API routes proxy to DI gateway (:3847) with mock fallback' },
+  { icon: KeyRound, text: 'Next.js 14 App Router — (portal), (admin), (auth) route groups' },
+  { icon: LayoutDashboard, text: 'State: Zustand (cart/auth) + TanStack Query + Supabase Realtime (planned)' },
+  { icon: Package, text: 'All pricing stored as cents integers; Zod validation on all API inputs' },
+  { icon: CreditCard, text: 'Supabase (auth/db/storage) + Stripe (ACH/card) + Samsara (tracking) — integrations scaffolded' },
 ];
 
 export default function PortalHubPage() {
@@ -186,7 +237,7 @@ export default function PortalHubPage() {
       {/* Architecture Notes */}
       <div className="rounded-xl bg-[#18181b] border border-[#27272a] p-5">
         <h2 className="text-sm font-medium text-[#A1A1AA] mb-4 uppercase tracking-wide">Architecture Notes</h2>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {ARCH_NOTES.map((note) => {
             const Icon = note.icon;
             return (
