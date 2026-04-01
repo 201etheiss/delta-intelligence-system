@@ -94,15 +94,30 @@ export function NovaBar({
         setNotifications(placeholderNotifications);
       });
 
-    fetch('/api/admin/health')
+    // Use Nova briefing for alert count (critical + high priority items)
+    fetch('/api/nova/briefing')
       .then((r) => r.json())
       .then((data: unknown) => {
-        const services = (data as { services?: Array<{ status: string }> })?.services ?? [];
-        const errorCount = services.filter((s) => s.status === 'error' || s.status === 'degraded').length;
-        setAlertCount(errorCount);
+        const d = data as { success: boolean; data?: { items?: Array<{ priority: string }> } };
+        if (d.success && d.data?.items) {
+          const urgentCount = d.data.items.filter(
+            (i) => i.priority === 'critical' || i.priority === 'high'
+          ).length;
+          setAlertCount(urgentCount);
+        }
       })
       .catch(() => {
-        setAlertCount(0);
+        // Fall back to health-based count
+        fetch('/api/admin/health')
+          .then((r) => r.json())
+          .then((data: unknown) => {
+            const services = (data as { services?: Array<{ status: string }> })?.services ?? [];
+            const errorCount = services.filter(
+              (s) => s.status === 'error' || s.status === 'degraded'
+            ).length;
+            setAlertCount(errorCount);
+          })
+          .catch(() => setAlertCount(0));
       });
 
     fetch('/api/automations')
@@ -245,6 +260,7 @@ export function NovaBar({
           <button
             ref={alertPillRef}
             onClick={() => togglePopover('alerts')}
+            title={alertCount > 0 ? `${alertCount} item${alertCount !== 1 ? 's' : ''} need your attention` : 'No alerts'}
             style={{
               display: 'flex',
               alignItems: 'center',

@@ -2,19 +2,24 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { AlertCircle } from 'lucide-react';
+import Link from 'next/link';
 
-interface AlertItem {
+interface BriefingAlertItem {
   id: string;
+  priority: 'critical' | 'high' | 'medium' | 'low';
   title: string;
   description: string;
-  severity: 'critical' | 'warning' | 'info';
-  time: string;
+  module: string;
+  actionUrl?: string;
+  actionLabel?: string;
+  timestamp: string;
 }
 
-const SEVERITY_STYLES: Record<AlertItem['severity'], React.CSSProperties> = {
+const PRIORITY_STYLES: Record<BriefingAlertItem['priority'], React.CSSProperties> = {
   critical: { background: 'rgba(239,68,68,0.15)', color: '#f87171', border: '1px solid rgba(239,68,68,0.3)' },
-  warning: { background: 'rgba(251,191,36,0.15)', color: '#fbbf24', border: '1px solid rgba(251,191,36,0.3)' },
-  info: { background: 'rgba(96,165,250,0.15)', color: '#60a5fa', border: '1px solid rgba(96,165,250,0.3)' },
+  high: { background: 'rgba(251,191,36,0.15)', color: '#fbbf24', border: '1px solid rgba(251,191,36,0.3)' },
+  medium: { background: 'rgba(96,165,250,0.15)', color: '#60a5fa', border: '1px solid rgba(96,165,250,0.3)' },
+  low: { background: 'rgba(161,161,170,0.12)', color: '#a1a1aa', border: '1px solid rgba(161,161,170,0.2)' },
 };
 
 interface AlertPopoverProps {
@@ -25,45 +30,70 @@ interface AlertPopoverProps {
 
 export function AlertPopover({ open, onClose, triggerRef }: AlertPopoverProps) {
   const popoverRef = useRef<HTMLDivElement>(null);
-  const [alerts, setAlerts] = useState<AlertItem[]>([]);
+  const [items, setItems] = useState<BriefingAlertItem[]>([]);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     if (!open || loaded) return;
-    fetch('/api/admin/health')
+
+    fetch('/api/nova/briefing')
       .then((r) => r.json())
       .then((data: unknown) => {
-        const services = (data as { services?: Array<{ name: string; status: string; error?: string; responseTime?: number }> })?.services ?? [];
-        const derived: AlertItem[] = services
-          .filter((s) => s.status === 'error' || s.status === 'degraded')
-          .map((s, i) => ({
-            id: `svc-${i}`,
-            title: `${s.name} ${s.status === 'error' ? 'Unreachable' : 'Degraded'}`,
-            description: s.error ?? (s.status === 'degraded' ? `Response time: ${s.responseTime ?? '?'}ms` : 'Service unavailable'),
-            severity: s.status === 'error' ? 'critical' as const : 'warning' as const,
-            time: 'just now',
-          }));
-        setAlerts(derived.length > 0 ? derived : [
-          {
+        const d = data as {
+          success: boolean;
+          data?: { items?: Array<{
+            id: string;
+            priority: string;
+            title: string;
+            description: string;
+            module: string;
+            actionUrl?: string;
+            actionLabel?: string;
+            timestamp: string;
+          }> };
+        };
+
+        if (d.success && d.data?.items) {
+          // Show critical + high + medium; sort by priority
+          const priorityOrder: Record<string, number> = { critical: 0, high: 1, medium: 2, low: 3 };
+          const filtered = d.data.items
+            .filter((i) => i.priority !== 'low')
+            .sort((a, b) => (priorityOrder[a.priority] ?? 3) - (priorityOrder[b.priority] ?? 3))
+            .slice(0, 8)
+            .map((i) => ({
+              ...i,
+              priority: i.priority as BriefingAlertItem['priority'],
+            }));
+
+          setItems(filtered.length > 0 ? filtered : [{
             id: 'all-ok',
-            title: 'All Services Healthy',
+            priority: 'medium' as const,
+            title: 'All clear',
             description: 'No active alerts at this time',
-            severity: 'info',
-            time: 'just now',
-          },
-        ]);
+            module: 'System',
+            timestamp: new Date().toISOString(),
+          }]);
+        } else {
+          setItems([{
+            id: 'all-ok',
+            priority: 'medium' as const,
+            title: 'All clear',
+            description: 'No active alerts at this time',
+            module: 'System',
+            timestamp: new Date().toISOString(),
+          }]);
+        }
         setLoaded(true);
       })
       .catch(() => {
-        setAlerts([
-          {
-            id: 'err',
-            title: 'Health Check Unavailable',
-            description: 'Could not reach health endpoint',
-            severity: 'warning',
-            time: 'just now',
-          },
-        ]);
+        setItems([{
+          id: 'err',
+          priority: 'high' as const,
+          title: 'Briefing Unavailable',
+          description: 'Could not reach the Nova briefing service',
+          module: 'System',
+          timestamp: new Date().toISOString(),
+        }]);
         setLoaded(true);
       });
   }, [open, loaded]);
@@ -86,6 +116,10 @@ export function AlertPopover({ open, onClose, triggerRef }: AlertPopoverProps) {
 
   if (!open) return null;
 
+  const urgentCount = items.filter(
+    (i) => i.priority === 'critical' || i.priority === 'high'
+  ).length;
+
   return (
     <div
       ref={popoverRef}
@@ -94,7 +128,7 @@ export function AlertPopover({ open, onClose, triggerRef }: AlertPopoverProps) {
         top: '100%',
         left: 0,
         marginTop: '8px',
-        width: '320px',
+        width: '340px',
         background: '#18181b',
         border: '1px solid #27272a',
         borderRadius: '8px',
@@ -114,34 +148,36 @@ export function AlertPopover({ open, onClose, triggerRef }: AlertPopoverProps) {
       >
         <AlertCircle size={14} color="#FE5000" />
         <span style={{ color: '#e4e4e7', fontSize: '13px', fontWeight: 600 }}>
-          Active Alerts
+          Nova Alerts
         </span>
-        <span
-          style={{
-            marginLeft: 'auto',
-            background: 'rgba(254,80,0,0.2)',
-            color: '#FE5000',
-            borderRadius: '10px',
-            padding: '1px 7px',
-            fontSize: '11px',
-            fontWeight: 700,
-          }}
-        >
-          {alerts.filter((a) => a.severity !== 'info').length || alerts.length}
-        </span>
+        {urgentCount > 0 && (
+          <span
+            style={{
+              marginLeft: 'auto',
+              background: 'rgba(254,80,0,0.2)',
+              color: '#FE5000',
+              borderRadius: '10px',
+              padding: '1px 7px',
+              fontSize: '11px',
+              fontWeight: 700,
+            }}
+          >
+            {urgentCount} urgent
+          </span>
+        )}
       </div>
 
-      <div style={{ maxHeight: '280px', overflowY: 'auto' }}>
+      <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
         {!loaded && (
           <div style={{ padding: '16px', color: '#52525b', fontSize: '12px', textAlign: 'center' }}>
-            Checking services...
+            Loading briefing...
           </div>
         )}
-        {alerts.map((alert) => (
+        {items.map((item) => (
           <div
-            key={alert.id}
+            key={item.id}
             style={{
-              padding: '12px 16px',
+              padding: '10px 16px',
               borderBottom: '1px solid #27272a',
               display: 'flex',
               flexDirection: 'column',
@@ -157,25 +193,58 @@ export function AlertPopover({ open, onClose, triggerRef }: AlertPopoverProps) {
                   borderRadius: '4px',
                   textTransform: 'uppercase',
                   letterSpacing: '0.05em',
-                  ...SEVERITY_STYLES[alert.severity],
+                  ...PRIORITY_STYLES[item.priority],
                 }}
               >
-                {alert.severity}
+                {item.priority}
               </span>
-              <span
-                style={{ marginLeft: 'auto', color: '#71717a', fontSize: '11px' }}
-              >
-                {alert.time}
+              <span style={{ color: '#52525b', fontSize: '10px', marginLeft: 'auto' }}>
+                {item.module}
               </span>
             </div>
-            <span style={{ color: '#e4e4e7', fontSize: '13px', fontWeight: 500 }}>
-              {alert.title}
+            <span style={{ color: '#e4e4e7', fontSize: '12px', fontWeight: 500 }}>
+              {item.title}
             </span>
-            <span style={{ color: '#71717a', fontSize: '12px' }}>
-              {alert.description}
+            <span
+              style={{
+                color: '#71717a',
+                fontSize: '11px',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
+              }}
+            >
+              {item.description}
             </span>
+            {item.actionUrl && (
+              <Link
+                href={item.actionUrl}
+                onClick={onClose}
+                style={{ fontSize: '11px', color: '#FE5000', textDecoration: 'none', fontWeight: 500, marginTop: '2px' }}
+              >
+                {item.actionLabel ?? 'View'} →
+              </Link>
+            )}
           </div>
         ))}
+      </div>
+
+      <div
+        style={{
+          padding: '10px 16px',
+          borderTop: '1px solid #27272a',
+          textAlign: 'center',
+        }}
+      >
+        <Link
+          href="/"
+          onClick={onClose}
+          style={{ fontSize: '12px', color: '#FE5000', textDecoration: 'none', fontWeight: 500 }}
+        >
+          View Full Briefing →
+        </Link>
       </div>
     </div>
   );
