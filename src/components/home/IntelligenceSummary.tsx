@@ -2,15 +2,32 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 import { getSessionState } from '@/lib/shell/session-state';
 import type { SessionState } from '@/lib/shell/session-state';
 
+function getGreeting(): string {
+  const hour = new Date().getHours();
+  if (hour < 12) return 'Good morning';
+  if (hour < 17) return 'Good afternoon';
+  return 'Good evening';
+}
+
+function deriveFirstName(name: string | null | undefined): string {
+  if (!name) return '';
+  return name.trim().split(/\s+/)[0] ?? '';
+}
+
 export function IntelligenceSummary() {
+  const { data: authSession } = useSession();
   const [session, setSession] = useState<SessionState | null>(null);
 
   useEffect(() => {
     setSession(getSessionState());
   }, []);
+
+  const firstName = deriveFirstName(authSession?.user?.name);
+  const greeting = firstName ? `${getGreeting()}, ${firstName}` : 'Welcome';
 
   return (
     <div
@@ -57,7 +74,7 @@ export function IntelligenceSummary() {
           </>
         ) : (
           <p style={{ fontSize: '13px', fontWeight: 600, color: '#E4E4E7', margin: '6px 0 0' }}>
-            Welcome to Delta Intelligence
+            {greeting}
           </p>
         )}
       </div>

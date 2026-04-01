@@ -1,7 +1,9 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Bell, AlertCircle, Bot, Zap } from 'lucide-react';
+import { Bell, AlertCircle, Bot, Zap, LogOut, Settings } from 'lucide-react';
+import { useSession, signOut } from 'next-auth/react';
+import Link from 'next/link';
 import { AlertPopover } from './AlertPopover';
 import { BotPopover } from './BotPopover';
 import { AutomationPopover } from './AutomationPopover';
@@ -24,6 +26,13 @@ interface Notification {
 
 type ActivePopover = 'alerts' | 'bots' | 'automations' | 'notifications' | null;
 
+function deriveInitials(name: string | null | undefined): string {
+  if (!name) return '?';
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 1) return parts[0][0]?.toUpperCase() ?? '?';
+  return ((parts[0][0] ?? '') + (parts[parts.length - 1][0] ?? '')).toUpperCase();
+}
+
 export function NovaBar({
   currentModule,
   currentPage,
@@ -31,7 +40,11 @@ export function NovaBar({
   onDensityToggle,
   onNovaClick,
 }: NovaBarProps) {
+  const { data: session } = useSession();
   const [activePopover, setActivePopover] = useState<ActivePopover>(null);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+  const userAvatarRef = useRef<HTMLButtonElement>(null);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [alertCount, setAlertCount] = useState<number>(3);
 
@@ -90,6 +103,21 @@ export function NovaBar({
         setAlertCount(3);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (
+        userMenuRef.current &&
+        !userMenuRef.current.contains(e.target as Node) &&
+        userAvatarRef.current &&
+        !userAvatarRef.current.contains(e.target as Node)
+      ) {
+        setUserMenuOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   const displayNotifications =
@@ -430,25 +458,141 @@ export function NovaBar({
         )}
       </div>
 
-      {/* User Avatar */}
-      <div
-        style={{
-          width: '30px',
-          height: '30px',
-          borderRadius: '50%',
-          background: '#27272a',
-          border: '1px solid #3f3f46',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: '#e4e4e7',
-          fontSize: '11px',
-          fontWeight: 700,
-          flexShrink: 0,
-          userSelect: 'none',
-        }}
-      >
-        ET
+      {/* User Avatar + Dropdown */}
+      <div style={{ position: 'relative', flexShrink: 0 }}>
+        <button
+          ref={userAvatarRef}
+          onClick={() => setUserMenuOpen((prev) => !prev)}
+          title={session?.user?.name ?? 'User menu'}
+          aria-label="User menu"
+          style={{
+            width: '30px',
+            height: '30px',
+            borderRadius: '50%',
+            background: '#27272a',
+            border: '1px solid #3f3f46',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#e4e4e7',
+            fontSize: '11px',
+            fontWeight: 700,
+            cursor: 'pointer',
+            userSelect: 'none',
+          }}
+        >
+          {deriveInitials(session?.user?.name)}
+        </button>
+
+        {userMenuOpen && (
+          <div
+            ref={userMenuRef}
+            style={{
+              position: 'absolute',
+              top: '100%',
+              right: 0,
+              marginTop: '8px',
+              width: '220px',
+              background: '#18181b',
+              border: '1px solid #27272a',
+              borderRadius: '8px',
+              zIndex: 1000,
+              boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+              overflow: 'hidden',
+            }}
+          >
+            {/* Identity header */}
+            <div
+              style={{
+                padding: '12px 14px',
+                borderBottom: '1px solid #27272a',
+              }}
+            >
+              <div style={{ fontSize: '13px', fontWeight: 600, color: '#e4e4e7' }}>
+                {session?.user?.name ?? 'User'}
+              </div>
+              <div style={{ fontSize: '11px', color: '#71717a', marginTop: '2px' }}>
+                {session?.user?.email ?? ''}
+              </div>
+              {(session?.user as { role?: string })?.role && (
+                <div
+                  style={{
+                    marginTop: '6px',
+                    display: 'inline-block',
+                    fontSize: '10px',
+                    fontWeight: 700,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    padding: '2px 7px',
+                    borderRadius: '10px',
+                    background: 'rgba(254,80,0,0.15)',
+                    color: '#FE5000',
+                    border: '1px solid rgba(254,80,0,0.3)',
+                  }}
+                >
+                  {(session?.user as { role?: string }).role}
+                </div>
+              )}
+            </div>
+
+            {/* Actions */}
+            <div style={{ padding: '6px 0' }}>
+              <Link
+                href="/settings"
+                onClick={() => setUserMenuOpen(false)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '8px 14px',
+                  fontSize: '13px',
+                  color: '#a1a1aa',
+                  textDecoration: 'none',
+                  transition: 'background 0.1s, color 0.1s',
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.background = 'rgba(255,255,255,0.05)';
+                  (e.currentTarget as HTMLAnchorElement).style.color = '#e4e4e7';
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.background = 'transparent';
+                  (e.currentTarget as HTMLAnchorElement).style.color = '#a1a1aa';
+                }}
+              >
+                <Settings size={13} />
+                Settings
+              </Link>
+              <button
+                onClick={() => signOut({ callbackUrl: '/login' })}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  width: '100%',
+                  padding: '8px 14px',
+                  fontSize: '13px',
+                  color: '#a1a1aa',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  transition: 'background 0.1s, color 0.1s',
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.background = 'rgba(254,80,0,0.08)';
+                  (e.currentTarget as HTMLButtonElement).style.color = '#FE5000';
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
+                  (e.currentTarget as HTMLButtonElement).style.color = '#a1a1aa';
+                }}
+              >
+                <LogOut size={13} />
+                Logout
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
