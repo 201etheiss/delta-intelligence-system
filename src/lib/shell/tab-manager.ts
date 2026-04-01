@@ -73,7 +73,7 @@ export function closeTab(moduleId: string): TabState[] {
   return updated;
 }
 
-export function setActiveTab(moduleId: string): TabState[] {
+export function setActiveTab(_moduleId: string): TabState[] {
   // Per spec: "just marks which is active (no reorder)" — no structural change needed;
   // callers track the active id themselves. We still return the current array so
   // the caller has a consistent snapshot.
