@@ -97,12 +97,12 @@ export function NovaBar({
     fetch('/api/admin/health')
       .then((r) => r.json())
       .then((data: unknown) => {
-        if (data && typeof data === 'object' && 'alertCount' in data) {
-          setAlertCount(Number((data as Record<string, unknown>).alertCount) || 3);
-        }
+        const services = (data as { services?: Array<{ status: string }> })?.services ?? [];
+        const errorCount = services.filter((s) => s.status === 'error' || s.status === 'degraded').length;
+        setAlertCount(errorCount);
       })
       .catch(() => {
-        setAlertCount(3);
+        setAlertCount(0);
       });
 
     fetch('/api/automations')

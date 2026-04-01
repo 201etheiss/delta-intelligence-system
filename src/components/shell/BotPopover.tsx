@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Bot } from 'lucide-react';
 
 interface BotItem {
@@ -8,39 +8,8 @@ interface BotItem {
   name: string;
   description: string;
   status: 'running' | 'idle' | 'failed';
-  uptime: string;
+  lastRunAt: string | null;
 }
-
-const PLACEHOLDER_BOTS: BotItem[] = [
-  {
-    id: '1',
-    name: 'Nova Core',
-    description: 'Main intelligence orchestrator',
-    status: 'running',
-    uptime: '14h 22m',
-  },
-  {
-    id: '2',
-    name: 'Data Sync Agent',
-    description: 'Ascend → DI pipeline sync',
-    status: 'running',
-    uptime: '6h 08m',
-  },
-  {
-    id: '3',
-    name: 'Report Generator',
-    description: 'Automated financial reporting',
-    status: 'idle',
-    uptime: '—',
-  },
-  {
-    id: '4',
-    name: 'Anomaly Detector',
-    description: 'GL anomaly scanning',
-    status: 'failed',
-    uptime: 'Crashed 3m ago',
-  },
-];
 
 const STATUS_STYLES: Record<BotItem['status'], React.CSSProperties> = {
   running: { background: 'rgba(34,197,94,0.15)', color: '#4ade80', border: '1px solid rgba(34,197,94,0.3)' },
@@ -54,6 +23,23 @@ const STATUS_DOT: Record<BotItem['status'], string> = {
   failed: '#f87171',
 };
 
+function deriveBotStatus(enabled: boolean, lastRunStatus: string | null): BotItem['status'] {
+  if (!enabled) return 'idle';
+  if (lastRunStatus === 'error') return 'failed';
+  return 'running';
+}
+
+function formatRelative(iso: string | null): string {
+  if (!iso) return 'never';
+  const diffMs = Date.now() - new Date(iso).getTime();
+  const diffMin = Math.floor(diffMs / 60000);
+  if (diffMin < 1) return 'just now';
+  if (diffMin < 60) return `${diffMin}m ago`;
+  const diffHr = Math.floor(diffMin / 60);
+  if (diffHr < 24) return `${diffHr}h ago`;
+  return `${Math.floor(diffHr / 24)}d ago`;
+}
+
 interface BotPopoverProps {
   open: boolean;
   onClose: () => void;
@@ -62,6 +48,26 @@ interface BotPopoverProps {
 
 export function BotPopover({ open, onClose, triggerRef }: BotPopoverProps) {
   const popoverRef = useRef<HTMLDivElement>(null);
+  const [bots, setBots] = useState<BotItem[]>([]);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    if (!open || loaded) return;
+    fetch('/api/automations')
+      .then((r) => r.json())
+      .then((data: unknown) => {
+        const raw = (data as { automations?: Array<{ id: string; name: string; description: string; enabled: boolean; lastRunStatus: string | null; lastRunAt: string | null }> })?.automations ?? [];
+        setBots(raw.map((a) => ({
+          id: a.id,
+          name: a.name,
+          description: a.description,
+          status: deriveBotStatus(a.enabled, a.lastRunStatus),
+          lastRunAt: a.lastRunAt,
+        })));
+        setLoaded(true);
+      })
+      .catch(() => setLoaded(true));
+  }, [open, loaded]);
 
   useEffect(() => {
     if (!open) return;
@@ -81,7 +87,7 @@ export function BotPopover({ open, onClose, triggerRef }: BotPopoverProps) {
 
   if (!open) return null;
 
-  const runningCount = PLACEHOLDER_BOTS.filter((b) => b.status === 'running').length;
+  const runningCount = bots.filter((b) => b.status === 'running').length;
 
   return (
     <div
@@ -129,7 +135,17 @@ export function BotPopover({ open, onClose, triggerRef }: BotPopoverProps) {
       </div>
 
       <div style={{ maxHeight: '280px', overflowY: 'auto' }}>
-        {PLACEHOLDER_BOTS.map((bot) => (
+        {!loaded && (
+          <div style={{ padding: '16px', color: '#52525b', fontSize: '12px', textAlign: 'center' }}>
+            Loading...
+          </div>
+        )}
+        {loaded && bots.length === 0 && (
+          <div style={{ padding: '16px', color: '#52525b', fontSize: '12px', textAlign: 'center' }}>
+            No automations configured
+          </div>
+        )}
+        {bots.map((bot) => (
           <div
             key={bot.id}
             style={{
@@ -173,7 +189,7 @@ export function BotPopover({ open, onClose, triggerRef }: BotPopoverProps) {
               </div>
               <span style={{ color: '#71717a', fontSize: '12px' }}>{bot.description}</span>
               <div style={{ color: '#52525b', fontSize: '11px', marginTop: '2px' }}>
-                Uptime: {bot.uptime}
+                Last run: {formatRelative(bot.lastRunAt)}
               </div>
             </div>
           </div>

@@ -11,34 +11,10 @@ interface AlertItem {
   time: string;
 }
 
-const PLACEHOLDER_ALERTS: AlertItem[] = [
-  {
-    id: '1',
-    title: 'Pipeline Latency High',
-    description: 'Data ingestion latency exceeded 5s threshold',
-    severity: 'critical',
-    time: '2m ago',
-  },
-  {
-    id: '2',
-    title: 'Supabase Connection Pool',
-    description: 'Connection pool at 87% capacity',
-    severity: 'warning',
-    time: '15m ago',
-  },
-  {
-    id: '3',
-    title: 'Scheduled Sync Complete',
-    description: 'Ascend sync completed successfully',
-    severity: 'info',
-    time: '1h ago',
-  },
-];
-
-const SEVERITY_STYLES: Record<AlertItem['severity'], string> = {
-  critical: 'background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3);',
-  warning: 'background: rgba(251,191,36,0.15); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3);',
-  info: 'background: rgba(96,165,250,0.15); color: #60a5fa; border: 1px solid rgba(96,165,250,0.3);',
+const SEVERITY_STYLES: Record<AlertItem['severity'], React.CSSProperties> = {
+  critical: { background: 'rgba(239,68,68,0.15)', color: '#f87171', border: '1px solid rgba(239,68,68,0.3)' },
+  warning: { background: 'rgba(251,191,36,0.15)', color: '#fbbf24', border: '1px solid rgba(251,191,36,0.3)' },
+  info: { background: 'rgba(96,165,250,0.15)', color: '#60a5fa', border: '1px solid rgba(96,165,250,0.3)' },
 };
 
 interface AlertPopoverProps {
@@ -49,6 +25,48 @@ interface AlertPopoverProps {
 
 export function AlertPopover({ open, onClose, triggerRef }: AlertPopoverProps) {
   const popoverRef = useRef<HTMLDivElement>(null);
+  const [alerts, setAlerts] = useState<AlertItem[]>([]);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    if (!open || loaded) return;
+    fetch('/api/admin/health')
+      .then((r) => r.json())
+      .then((data: unknown) => {
+        const services = (data as { services?: Array<{ name: string; status: string; error?: string; responseTime?: number }> })?.services ?? [];
+        const derived: AlertItem[] = services
+          .filter((s) => s.status === 'error' || s.status === 'degraded')
+          .map((s, i) => ({
+            id: `svc-${i}`,
+            title: `${s.name} ${s.status === 'error' ? 'Unreachable' : 'Degraded'}`,
+            description: s.error ?? (s.status === 'degraded' ? `Response time: ${s.responseTime ?? '?'}ms` : 'Service unavailable'),
+            severity: s.status === 'error' ? 'critical' as const : 'warning' as const,
+            time: 'just now',
+          }));
+        setAlerts(derived.length > 0 ? derived : [
+          {
+            id: 'all-ok',
+            title: 'All Services Healthy',
+            description: 'No active alerts at this time',
+            severity: 'info',
+            time: 'just now',
+          },
+        ]);
+        setLoaded(true);
+      })
+      .catch(() => {
+        setAlerts([
+          {
+            id: 'err',
+            title: 'Health Check Unavailable',
+            description: 'Could not reach health endpoint',
+            severity: 'warning',
+            time: 'just now',
+          },
+        ]);
+        setLoaded(true);
+      });
+  }, [open, loaded]);
 
   useEffect(() => {
     if (!open) return;
@@ -109,12 +127,17 @@ export function AlertPopover({ open, onClose, triggerRef }: AlertPopoverProps) {
             fontWeight: 700,
           }}
         >
-          {PLACEHOLDER_ALERTS.length}
+          {alerts.filter((a) => a.severity !== 'info').length || alerts.length}
         </span>
       </div>
 
       <div style={{ maxHeight: '280px', overflowY: 'auto' }}>
-        {PLACEHOLDER_ALERTS.map((alert) => (
+        {!loaded && (
+          <div style={{ padding: '16px', color: '#52525b', fontSize: '12px', textAlign: 'center' }}>
+            Checking services...
+          </div>
+        )}
+        {alerts.map((alert) => (
           <div
             key={alert.id}
             style={{
@@ -134,20 +157,7 @@ export function AlertPopover({ open, onClose, triggerRef }: AlertPopoverProps) {
                   borderRadius: '4px',
                   textTransform: 'uppercase',
                   letterSpacing: '0.05em',
-                  ...(Object.fromEntries(
-                    SEVERITY_STYLES[alert.severity]
-                      .split(';')
-                      .filter(Boolean)
-                      .map((s) => {
-                        const [k, v] = s.split(':').map((x) => x.trim());
-                        return [
-                          k
-                            .replace(/-([a-z])/g, (_, c) => c.toUpperCase())
-                            .trim(),
-                          v,
-                        ];
-                      })
-                  ) as React.CSSProperties),
+                  ...SEVERITY_STYLES[alert.severity],
                 }}
               >
                 {alert.severity}

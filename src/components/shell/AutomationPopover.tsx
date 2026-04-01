@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Zap } from 'lucide-react';
 
 interface AutomationItem {
@@ -8,82 +8,32 @@ interface AutomationItem {
   name: string;
   description: string;
   lastRun: string;
-  nextRun: string;
   status: 'success' | 'pending' | 'failed';
 }
-
-const PLACEHOLDER_AUTOMATIONS: AutomationItem[] = [
-  {
-    id: '1',
-    name: 'Daily GL Sync',
-    description: 'Pull GL data from Ascend',
-    lastRun: '6:00 AM',
-    nextRun: 'Tomorrow 6:00 AM',
-    status: 'success',
-  },
-  {
-    id: '2',
-    name: 'Weekly AR Aging',
-    description: 'Generate AR aging report',
-    lastRun: 'Mon 8:00 AM',
-    nextRun: 'Mon 8:00 AM',
-    status: 'success',
-  },
-  {
-    id: '3',
-    name: 'Salesforce CRM Sync',
-    description: 'Sync contacts and opportunities',
-    lastRun: '2h ago',
-    nextRun: 'In 4h',
-    status: 'success',
-  },
-  {
-    id: '4',
-    name: 'Payroll Export',
-    description: 'Paylocity payroll data export',
-    lastRun: 'Pending',
-    nextRun: 'Fri 5:00 PM',
-    status: 'pending',
-  },
-  {
-    id: '5',
-    name: 'Inventory Margin Calc',
-    description: 'Recalculate product margins',
-    lastRun: 'Yesterday',
-    nextRun: 'Tonight 11:00 PM',
-    status: 'success',
-  },
-  {
-    id: '6',
-    name: 'Fleet Data Refresh',
-    description: 'Samsara fleet telemetry pull',
-    lastRun: '15m ago',
-    nextRun: 'In 45m',
-    status: 'success',
-  },
-  {
-    id: '7',
-    name: 'Budget Variance Alert',
-    description: 'Check budget vs actuals',
-    lastRun: '1h ago',
-    nextRun: 'In 23h',
-    status: 'failed',
-  },
-  {
-    id: '8',
-    name: 'Evidence Vault Backup',
-    description: 'Archive audit evidence',
-    lastRun: '3h ago',
-    nextRun: 'In 21h',
-    status: 'success',
-  },
-];
 
 const STATUS_STYLES: Record<AutomationItem['status'], React.CSSProperties> = {
   success: { background: 'rgba(34,197,94,0.15)', color: '#4ade80', border: '1px solid rgba(34,197,94,0.3)' },
   pending: { background: 'rgba(251,191,36,0.15)', color: '#fbbf24', border: '1px solid rgba(251,191,36,0.3)' },
   failed: { background: 'rgba(239,68,68,0.15)', color: '#f87171', border: '1px solid rgba(239,68,68,0.3)' },
 };
+
+function deriveStatus(enabled: boolean, lastRunStatus: string | null): AutomationItem['status'] {
+  if (!enabled) return 'pending';
+  if (lastRunStatus === 'error') return 'failed';
+  if (lastRunStatus === 'success') return 'success';
+  return 'pending';
+}
+
+function formatRelative(iso: string | null): string {
+  if (!iso) return 'never';
+  const diffMs = Date.now() - new Date(iso).getTime();
+  const diffMin = Math.floor(diffMs / 60000);
+  if (diffMin < 1) return 'just now';
+  if (diffMin < 60) return `${diffMin}m ago`;
+  const diffHr = Math.floor(diffMin / 60);
+  if (diffHr < 24) return `${diffHr}h ago`;
+  return `${Math.floor(diffHr / 24)}d ago`;
+}
 
 interface AutomationPopoverProps {
   open: boolean;
@@ -93,6 +43,26 @@ interface AutomationPopoverProps {
 
 export function AutomationPopover({ open, onClose, triggerRef }: AutomationPopoverProps) {
   const popoverRef = useRef<HTMLDivElement>(null);
+  const [automations, setAutomations] = useState<AutomationItem[]>([]);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    if (!open || loaded) return;
+    fetch('/api/automations')
+      .then((r) => r.json())
+      .then((data: unknown) => {
+        const raw = (data as { automations?: Array<{ id: string; name: string; description: string; enabled: boolean; lastRunStatus: string | null; lastRunAt: string | null }> })?.automations ?? [];
+        setAutomations(raw.map((a) => ({
+          id: a.id,
+          name: a.name,
+          description: a.description,
+          lastRun: formatRelative(a.lastRunAt),
+          status: deriveStatus(a.enabled, a.lastRunStatus),
+        })));
+        setLoaded(true);
+      })
+      .catch(() => setLoaded(true));
+  }, [open, loaded]);
 
   useEffect(() => {
     if (!open) return;
@@ -153,12 +123,22 @@ export function AutomationPopover({ open, onClose, triggerRef }: AutomationPopov
             fontWeight: 700,
           }}
         >
-          {PLACEHOLDER_AUTOMATIONS.length} total
+          {automations.length} total
         </span>
       </div>
 
       <div style={{ maxHeight: '320px', overflowY: 'auto' }}>
-        {PLACEHOLDER_AUTOMATIONS.map((automation) => (
+        {!loaded && (
+          <div style={{ padding: '16px', color: '#52525b', fontSize: '12px', textAlign: 'center' }}>
+            Loading...
+          </div>
+        )}
+        {loaded && automations.length === 0 && (
+          <div style={{ padding: '16px', color: '#52525b', fontSize: '12px', textAlign: 'center' }}>
+            No automations configured
+          </div>
+        )}
+        {automations.map((automation) => (
           <div
             key={automation.id}
             style={{
@@ -190,14 +170,9 @@ export function AutomationPopover({ open, onClose, triggerRef }: AutomationPopov
               </span>
             </div>
             <span style={{ color: '#71717a', fontSize: '12px' }}>{automation.description}</span>
-            <div style={{ display: 'flex', gap: '12px', marginTop: '2px' }}>
-              <span style={{ color: '#52525b', fontSize: '11px' }}>
-                Last: {automation.lastRun}
-              </span>
-              <span style={{ color: '#52525b', fontSize: '11px' }}>
-                Next: {automation.nextRun}
-              </span>
-            </div>
+            <span style={{ color: '#52525b', fontSize: '11px' }}>
+              Last: {automation.lastRun}
+            </span>
           </div>
         ))}
       </div>
