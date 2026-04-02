@@ -15,6 +15,7 @@ import {
   Send,
 } from 'lucide-react';
 import { AIInsightsBanner } from '@/components/common/AIInsightsBanner';
+import { useDensity } from '@/components/density/DensityProvider';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -101,6 +102,7 @@ const TABS: { id: TabId; label: string }[] = [
 // ---------------------------------------------------------------------------
 
 export default function JournalEntriesPage() {
+  const density = useDensity();
   const periods = getPeriodOptions();
   const [period, setPeriod] = useState(periods[0]?.value ?? '2026-03');
   const [activeTab, setActiveTab] = useState<TabId>('all');
@@ -214,32 +216,44 @@ export default function JournalEntriesPage() {
       <AIInsightsBanner module="journal-entries" compact />
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-6">
-        <div className="bg-[#18181B] border border-zinc-800 rounded-lg p-4">
-          <div className="flex items-center gap-2 text-zinc-500 text-xs mb-1">
-            <BookOpen size={14} /> Total JEs
+      {density === 'executive' ? (
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-6">
+          <div className="bg-[#18181B] border border-zinc-800 rounded-lg p-4">
+            <div className="flex items-center gap-2 text-zinc-500 text-xs mb-1">
+              <BookOpen size={14} /> Total JEs
+            </div>
+            <div className="text-lg font-bold text-white">{totalJEs}</div>
           </div>
-          <div className="text-lg font-bold text-white">{totalJEs}</div>
-        </div>
-        <div className="bg-[#18181B] border border-zinc-800 rounded-lg p-4">
-          <div className="flex items-center gap-2 text-zinc-500 text-xs mb-1">
-            <Clock size={14} /> Pending Review
+          <div className="bg-[#18181B] border border-zinc-800 rounded-lg p-4">
+            <div className="flex items-center gap-2 text-zinc-500 text-xs mb-1">
+              <Clock size={14} /> Pending Review
+            </div>
+            <div className="text-lg font-bold text-yellow-400">{pendingReview}</div>
           </div>
-          <div className="text-lg font-bold text-yellow-400">{pendingReview}</div>
-        </div>
-        <div className="bg-[#18181B] border border-zinc-800 rounded-lg p-4">
-          <div className="flex items-center gap-2 text-zinc-500 text-xs mb-1">
-            <CheckCircle2 size={14} /> Posted This Period
+          <div className="bg-[#18181B] border border-zinc-800 rounded-lg p-4">
+            <div className="flex items-center gap-2 text-zinc-500 text-xs mb-1">
+              <CheckCircle2 size={14} /> Posted This Period
+            </div>
+            <div className="text-lg font-bold text-green-400">{postedThisPeriod}</div>
           </div>
-          <div className="text-lg font-bold text-green-400">{postedThisPeriod}</div>
-        </div>
-        <div className="bg-[#18181B] border border-zinc-800 rounded-lg p-4">
-          <div className="flex items-center gap-2 text-zinc-500 text-xs mb-1">
-            <FileEdit size={14} /> Total Amount
+          <div className="bg-[#18181B] border border-zinc-800 rounded-lg p-4">
+            <div className="flex items-center gap-2 text-zinc-500 text-xs mb-1">
+              <FileEdit size={14} /> Total Amount
+            </div>
+            <div className="text-lg font-bold text-white">{fmt(totalAmount)}</div>
           </div>
-          <div className="text-lg font-bold text-white">{fmt(totalAmount)}</div>
         </div>
-      </div>
+      ) : (
+        <div className="flex items-center gap-6 text-xs px-4 py-2 mb-6 bg-zinc-900 border border-zinc-800 rounded-lg">
+          <span className="text-zinc-500">JEs:</span><span className="font-mono text-white">{totalJEs}</span>
+          <span className="text-zinc-700">|</span>
+          <span className="text-zinc-500">Pending:</span><span className="font-mono text-yellow-400">{pendingReview}</span>
+          <span className="text-zinc-700">|</span>
+          <span className="text-zinc-500">Posted:</span><span className="font-mono text-green-400">{postedThisPeriod}</span>
+          <span className="text-zinc-700">|</span>
+          <span className="text-zinc-500">Amount:</span><span className="font-mono text-white">{fmt(totalAmount)}</span>
+        </div>
+      )}
 
       {/* Search */}
       <div className="relative mb-2.5">

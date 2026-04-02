@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useDensity } from '@/components/density/DensityProvider';
 import {
   BarChart,
   Bar,
@@ -106,6 +107,7 @@ LIMIT 30`;
 
 // ── Component ────────────────────────────────────────────────
 export default function AccountsPayablePage() {
+  const density = useDensity();
   const [aging, setAging] = useState<AgingRow[]>([]);
   const [vendors, setVendors] = useState<VendorSpend[]>([]);
   const [categories, setCategories] = useState<GLCategory[]>([]);
@@ -246,30 +248,42 @@ export default function AccountsPayablePage() {
       )}
 
       {/* KPI Bar */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-        <KPICard
-          label="Total AP YTD"
-          value={fmtCompact(totalAP)}
-          loading={loading}
-        />
-        <KPICard
-          label="90+ Days Overdue"
-          value={fmtCompact(overdue90)}
-          loading={loading}
-          highlight={overdue90 > 0}
-        />
-        <KPICard
-          label="Top Vendor"
-          value={topVendor}
-          loading={loading}
-          isText
-        />
-        <KPICard
-          label="Vendor Count"
-          value={String(vendorCount)}
-          loading={loading}
-        />
-      </div>
+      {density === 'executive' ? (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+          <KPICard
+            label="Total AP YTD"
+            value={fmtCompact(totalAP)}
+            loading={loading}
+          />
+          <KPICard
+            label="90+ Days Overdue"
+            value={fmtCompact(overdue90)}
+            loading={loading}
+            highlight={overdue90 > 0}
+          />
+          <KPICard
+            label="Top Vendor"
+            value={topVendor}
+            loading={loading}
+            isText
+          />
+          <KPICard
+            label="Vendor Count"
+            value={String(vendorCount)}
+            loading={loading}
+          />
+        </div>
+      ) : (
+        <div className="flex items-center gap-6 text-xs px-4 py-2 mb-6 bg-zinc-900 border border-zinc-800 rounded-lg">
+          <span className="text-zinc-500">AP YTD:</span><span className="font-mono text-white">{fmtCompact(totalAP)}</span>
+          <span className="text-zinc-700">|</span>
+          <span className="text-zinc-500">90+ Overdue:</span><span className={`font-mono ${overdue90 > 0 ? 'text-red-400' : 'text-green-400'}`}>{fmtCompact(overdue90)}</span>
+          <span className="text-zinc-700">|</span>
+          <span className="text-zinc-500">Top:</span><span className="font-mono text-white truncate max-w-[120px]">{topVendor}</span>
+          <span className="text-zinc-700">|</span>
+          <span className="text-zinc-500">Vendors:</span><span className="font-mono text-white">{vendorCount}</span>
+        </div>
+      )}
 
       {/* AP Aging Table */}
       <div className="rounded-lg border border-zinc-800 bg-zinc-900 mb-6 overflow-hidden">

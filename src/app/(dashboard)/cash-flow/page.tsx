@@ -12,6 +12,7 @@ import {
   BarChart3,
 } from 'lucide-react';
 import { AIInsightsBanner } from '@/components/common/AIInsightsBanner';
+import { useDensity } from '@/components/density/DensityProvider';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -349,6 +350,7 @@ function BorrowingBaseView({ data }: { data: BorrowingBase }) {
 // ---------------------------------------------------------------------------
 
 export default function CashFlowPage() {
+  const density = useDensity();
   const [activeTab, setActiveTab] = useState<TabId>('position');
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
@@ -432,31 +434,43 @@ export default function CashFlowPage() {
       <AIInsightsBanner module="cash-flow" compact />
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-6">
-        <KPICard
-          label="Current Cash"
-          value={position ? fmtCompact(position.bankBalance) : '--'}
-          icon={Wallet}
-          color={position && position.bankBalance >= 0 ? 'text-green-400' : 'text-red-400'}
-        />
-        <KPICard
-          label="LOC Available"
-          value={position ? fmtCompact(position.locAvailable) : '--'}
-          icon={CreditCard}
-        />
-        <KPICard
-          label="Net Working Capital"
-          value={position ? fmtCompact(position.netWorkingCapital) : '--'}
-          icon={position && position.netWorkingCapital >= 0 ? TrendingUp : TrendingDown}
-          color={position && position.netWorkingCapital >= 0 ? 'text-green-400' : 'text-red-400'}
-        />
-        <KPICard
-          label="Borrowing Utilization"
-          value={bb ? fmtPct(borrowingUtil) : '--'}
-          icon={Landmark}
-          color={borrowingUtil > 80 ? 'text-red-400' : borrowingUtil > 60 ? 'text-yellow-400' : 'text-green-400'}
-        />
-      </div>
+      {density === 'executive' ? (
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-6">
+          <KPICard
+            label="Current Cash"
+            value={position ? fmtCompact(position.bankBalance) : '--'}
+            icon={Wallet}
+            color={position && position.bankBalance >= 0 ? 'text-green-400' : 'text-red-400'}
+          />
+          <KPICard
+            label="LOC Available"
+            value={position ? fmtCompact(position.locAvailable) : '--'}
+            icon={CreditCard}
+          />
+          <KPICard
+            label="Net Working Capital"
+            value={position ? fmtCompact(position.netWorkingCapital) : '--'}
+            icon={position && position.netWorkingCapital >= 0 ? TrendingUp : TrendingDown}
+            color={position && position.netWorkingCapital >= 0 ? 'text-green-400' : 'text-red-400'}
+          />
+          <KPICard
+            label="Borrowing Utilization"
+            value={bb ? fmtPct(borrowingUtil) : '--'}
+            icon={Landmark}
+            color={borrowingUtil > 80 ? 'text-red-400' : borrowingUtil > 60 ? 'text-yellow-400' : 'text-green-400'}
+          />
+        </div>
+      ) : (
+        <div className="flex items-center gap-6 text-xs px-4 py-2 mb-6 bg-zinc-900 border border-zinc-800 rounded-lg">
+          <span className="text-zinc-500">Cash:</span><span className={`font-mono ${position && position.bankBalance >= 0 ? 'text-green-400' : 'text-red-400'}`}>{position ? fmtCompact(position.bankBalance) : '--'}</span>
+          <span className="text-zinc-700">|</span>
+          <span className="text-zinc-500">LOC:</span><span className="font-mono text-white">{position ? fmtCompact(position.locAvailable) : '--'}</span>
+          <span className="text-zinc-700">|</span>
+          <span className="text-zinc-500">NWC:</span><span className={`font-mono ${position && position.netWorkingCapital >= 0 ? 'text-green-400' : 'text-red-400'}`}>{position ? fmtCompact(position.netWorkingCapital) : '--'}</span>
+          <span className="text-zinc-700">|</span>
+          <span className="text-zinc-500">Borrow:</span><span className={`font-mono ${borrowingUtil > 80 ? 'text-red-400' : borrowingUtil > 60 ? 'text-yellow-400' : 'text-green-400'}`}>{bb ? fmtPct(borrowingUtil) : '--'}</span>
+        </div>
+      )}
 
       {/* Tabs */}
       <div className="flex gap-1 mb-6 border-b border-zinc-800">

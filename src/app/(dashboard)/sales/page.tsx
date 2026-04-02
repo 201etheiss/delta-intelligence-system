@@ -17,6 +17,7 @@ import {
   BarChart3,
 } from 'lucide-react';
 import { AIInsightsBanner } from '@/components/common/AIInsightsBanner';
+import { useDensity } from '@/components/density/DensityProvider';
 
 // ── Types ────────────────────────────────────────────────────
 
@@ -91,6 +92,7 @@ function SkeletonCard() {
 // ── Page ─────────────────────────────────────────────────────
 
 export default function SalesCommandConsolePage() {
+  const density = useDensity();
   const [data, setData] = useState<SalesSummary | null>(null);
   const [healthData, setHealthData] = useState<CustomerHealthItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -259,6 +261,16 @@ export default function SalesCommandConsolePage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {Array.from({ length: 4 }).map((_, i) => (
               <SkeletonCard key={i} />
+            ))}
+          </div>
+        ) : density === 'operator' ? (
+          <div className="flex items-center gap-6 text-xs px-4 py-2 bg-zinc-900 border border-zinc-800 rounded-lg">
+            {kpis.map((kpi, i) => (
+              <span key={kpi.label} className="flex items-center gap-1.5">
+                {i > 0 && <span className="text-zinc-700 mr-1.5">|</span>}
+                <span className="text-zinc-500">{kpi.label}:</span>
+                <span className={`font-mono ${kpi.color}`}>{kpi.value}</span>
+              </span>
             ))}
           </div>
         ) : (

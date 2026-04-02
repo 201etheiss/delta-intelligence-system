@@ -15,6 +15,7 @@ import {
   CalendarDays,
 } from 'lucide-react';
 import { AIInsightsBanner } from '@/components/common/AIInsightsBanner';
+import { useDensity } from '@/components/density/DensityProvider';
 
 // ── Types ────────────────────────────────────────────────────
 
@@ -72,6 +73,7 @@ interface HrKpi {
 // ── Page ─────────────────────────────────────────────────────
 
 export default function HrDashboardPage() {
+  const density = useDensity();
   const [data, setData] = useState<HrSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -184,27 +186,39 @@ export default function HrDashboardPage() {
       <AIInsightsBanner module="hr" compact />
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
-        {kpis.map((kpi) => {
-          const Icon = kpi.icon;
-          return (
-            <div key={kpi.label} className="rounded-lg border border-[#27272A] bg-[#18181B] p-4">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[10px] text-zinc-500 font-medium uppercase tracking-wide">
-                  {kpi.label}
-                </span>
-                <Icon size={14} className="text-zinc-600" />
+      {density === 'executive' ? (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
+          {kpis.map((kpi) => {
+            const Icon = kpi.icon;
+            return (
+              <div key={kpi.label} className="rounded-lg border border-[#27272A] bg-[#18181B] p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[10px] text-zinc-500 font-medium uppercase tracking-wide">
+                    {kpi.label}
+                  </span>
+                  <Icon size={14} className="text-zinc-600" />
+                </div>
+                <div className={`text-lg font-bold tabular-nums ${kpi.color}`}>
+                  {kpi.value}
+                </div>
+                {kpi.subLabel && (
+                  <div className="text-[10px] text-zinc-600 mt-0.5">{kpi.subLabel}</div>
+                )}
               </div>
-              <div className={`text-lg font-bold tabular-nums ${kpi.color}`}>
-                {kpi.value}
-              </div>
-              {kpi.subLabel && (
-                <div className="text-[10px] text-zinc-600 mt-0.5">{kpi.subLabel}</div>
-              )}
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="flex items-center gap-6 text-xs px-4 py-2 mb-6 bg-zinc-900 border border-zinc-800 rounded-lg">
+          {kpis.map((kpi, i) => (
+            <span key={kpi.label} className="flex items-center gap-1.5">
+              {i > 0 && <span className="text-zinc-700 mr-1.5">|</span>}
+              <span className="text-zinc-500">{kpi.label}:</span>
+              <span className={`font-mono font-bold ${kpi.color}`}>{kpi.value}</span>
+            </span>
+          ))}
+        </div>
+      )}
 
       {/* Error State */}
       {error && (

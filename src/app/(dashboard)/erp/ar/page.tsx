@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useDensity } from '@/components/density/DensityProvider';
 import {
   Banknote,
   RefreshCw,
@@ -117,6 +118,7 @@ function StatusBadge({ status }: { status: string }) {
 // ---------------------------------------------------------------------------
 
 export default function AccountsReceivablePage() {
+  const density = useDensity();
   const [agingRows, setAgingRows] = useState<AgingRow[]>([]);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [revenueByCustomer, setRevenueByCustomer] = useState<RevenueByCustomer[]>([]);
@@ -218,30 +220,42 @@ export default function AccountsReceivablePage() {
       )}
 
       {/* KPI Bar */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <KpiCard
-          label="Total AR Outstanding"
-          value={safeCompact(totalAR)}
-          icon={<Banknote className="h-4 w-4 text-orange-400" />}
-        />
-        <KpiCard
-          label="90+ Days"
-          value={safeCompact(total90Plus)}
-          icon={<AlertTriangle className="h-4 w-4 text-orange-400" />}
-          highlight={total90Plus > 0}
-        />
-        <KpiCard
-          label="DSO"
-          value={`${dso} days`}
-          icon={<Clock className="h-4 w-4 text-orange-400" />}
-        />
-        <KpiCard
-          label="Top Customer"
-          value={topCustomer}
-          icon={<Users className="h-4 w-4 text-orange-400" />}
-          small
-        />
-      </div>
+      {density === 'executive' ? (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <KpiCard
+            label="Total AR Outstanding"
+            value={safeCompact(totalAR)}
+            icon={<Banknote className="h-4 w-4 text-orange-400" />}
+          />
+          <KpiCard
+            label="90+ Days"
+            value={safeCompact(total90Plus)}
+            icon={<AlertTriangle className="h-4 w-4 text-orange-400" />}
+            highlight={total90Plus > 0}
+          />
+          <KpiCard
+            label="DSO"
+            value={`${dso} days`}
+            icon={<Clock className="h-4 w-4 text-orange-400" />}
+          />
+          <KpiCard
+            label="Top Customer"
+            value={topCustomer}
+            icon={<Users className="h-4 w-4 text-orange-400" />}
+            small
+          />
+        </div>
+      ) : (
+        <div className="flex items-center gap-6 text-xs px-4 py-2 bg-zinc-900 border border-zinc-800 rounded-lg">
+          <span className="text-zinc-500">AR:</span><span className="font-mono text-white">{safeCompact(totalAR)}</span>
+          <span className="text-zinc-700">|</span>
+          <span className="text-zinc-500">90+:</span><span className={`font-mono ${total90Plus > 0 ? 'text-red-400' : 'text-green-400'}`}>{safeCompact(total90Plus)}</span>
+          <span className="text-zinc-700">|</span>
+          <span className="text-zinc-500">DSO:</span><span className="font-mono text-white">{dso} days</span>
+          <span className="text-zinc-700">|</span>
+          <span className="text-zinc-500">Top:</span><span className="font-mono text-white truncate max-w-[120px]">{topCustomer}</span>
+        </div>
+      )}
 
       {/* Loading skeleton */}
       {loading && !error && (

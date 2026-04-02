@@ -22,6 +22,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { AIInsightsBanner } from '@/components/common/AIInsightsBanner';
+import { useDensity } from '@/components/density/DensityProvider';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -440,6 +441,7 @@ function RollingForecastView({ data }: { data: BudgetsData }) {
 // ---------------------------------------------------------------------------
 
 export default function BudgetsPage() {
+  const density = useDensity();
   const periods = getPeriodOptions();
   const [period, setPeriod] = useState(periods[0]?.value ?? '2026-03');
   const [department, setDepartment] = useState('All');
@@ -564,30 +566,42 @@ export default function BudgetsPage() {
       <AIInsightsBanner module="budgets" compact />
 
       {/* Summary KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-6">
-        <KPICard
-          icon={<DollarSign className="w-4 h-4" />}
-          label="Total Budget"
-          value={fmtCompact(data?.summary?.totalBudget ?? 0)}
-        />
-        <KPICard
-          icon={<DollarSign className="w-4 h-4" />}
-          label="Total Actual"
-          value={fmtCompact(data?.summary?.totalActual ?? 0)}
-        />
-        <KPICard
-          icon={(data?.summary?.netVariance ?? 0) >= 0 ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
-          label="Net Variance"
-          value={fmtCompact(data?.summary?.netVariance ?? 0)}
-          color={(data?.summary?.netVariance ?? 0) >= 0 ? 'text-green-400' : 'text-red-400'}
-        />
-        <KPICard
-          icon={<AlertTriangle className="w-4 h-4" />}
-          label="Material Variances"
-          value={`${data?.summary?.materialVarianceCount ?? 0}`}
-          color={(data?.summary?.materialVarianceCount ?? 0) > 0 ? 'text-yellow-400' : 'text-green-400'}
-        />
-      </div>
+      {density === 'executive' ? (
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-6">
+          <KPICard
+            icon={<DollarSign className="w-4 h-4" />}
+            label="Total Budget"
+            value={fmtCompact(data?.summary?.totalBudget ?? 0)}
+          />
+          <KPICard
+            icon={<DollarSign className="w-4 h-4" />}
+            label="Total Actual"
+            value={fmtCompact(data?.summary?.totalActual ?? 0)}
+          />
+          <KPICard
+            icon={(data?.summary?.netVariance ?? 0) >= 0 ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
+            label="Net Variance"
+            value={fmtCompact(data?.summary?.netVariance ?? 0)}
+            color={(data?.summary?.netVariance ?? 0) >= 0 ? 'text-green-400' : 'text-red-400'}
+          />
+          <KPICard
+            icon={<AlertTriangle className="w-4 h-4" />}
+            label="Material Variances"
+            value={`${data?.summary?.materialVarianceCount ?? 0}`}
+            color={(data?.summary?.materialVarianceCount ?? 0) > 0 ? 'text-yellow-400' : 'text-green-400'}
+          />
+        </div>
+      ) : (
+        <div className="flex items-center gap-6 text-xs px-4 py-2 mb-6 bg-zinc-900 border border-zinc-800 rounded-lg">
+          <span className="text-zinc-500">Budget:</span><span className="font-mono text-white">{fmtCompact(data?.summary?.totalBudget ?? 0)}</span>
+          <span className="text-zinc-700">|</span>
+          <span className="text-zinc-500">Actual:</span><span className="font-mono text-white">{fmtCompact(data?.summary?.totalActual ?? 0)}</span>
+          <span className="text-zinc-700">|</span>
+          <span className="text-zinc-500">Variance:</span><span className={`font-mono ${(data?.summary?.netVariance ?? 0) >= 0 ? 'text-green-400' : 'text-red-400'}`}>{fmtCompact(data?.summary?.netVariance ?? 0)}</span>
+          <span className="text-zinc-700">|</span>
+          <span className="text-zinc-500">Material:</span><span className={`font-mono ${(data?.summary?.materialVarianceCount ?? 0) > 0 ? 'text-yellow-400' : 'text-green-400'}`}>{data?.summary?.materialVarianceCount ?? 0}</span>
+        </div>
+      )}
 
       {/* Tabs */}
       <div className="flex gap-1 mb-6 border-b border-zinc-800">

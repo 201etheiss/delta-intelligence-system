@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useDensity } from '@/components/density/DensityProvider';
 import {
   Receipt,
   Banknote,
@@ -148,6 +149,7 @@ const ERP_MODULES: readonly ModuleTile[] = [
 ] as const;
 
 export default function ERPHubPage() {
+  const density = useDensity();
   const [kpis, setKpis] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState<Record<string, boolean>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -206,10 +208,23 @@ export default function ERPHubPage() {
         </p>
       </div>
 
+      {/* Operator mode: compact module summary bar */}
+      {density === 'operator' && (
+        <div className="flex items-center gap-6 text-xs px-4 py-2 bg-zinc-900 border border-zinc-800 rounded-lg mb-3 flex-wrap">
+          {ERP_MODULES.map((mod, i) => (
+            <Link key={mod.id} href={mod.href} className="flex items-center gap-1.5 hover:text-[#FE5000] transition-colors text-zinc-300 no-underline">
+              {i > 0 && <span className="text-zinc-700 mr-1.5">|</span>}
+              <span className="text-zinc-500">{mod.name}:</span>
+              <span className="font-mono font-semibold text-white">{kpis[mod.id] ?? '...'}</span>
+            </Link>
+          ))}
+        </div>
+      )}
+
       {/* Module Tiles Grid */}
       <div
         style={{
-          display: 'grid',
+          display: density === 'operator' ? 'none' : 'grid',
           gridTemplateColumns: 'repeat(1, 1fr)',
           gap: '12px',
         }}

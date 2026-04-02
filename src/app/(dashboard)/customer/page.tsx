@@ -21,6 +21,7 @@ import {
   ArrowUpRight,
 } from 'lucide-react';
 import { AIInsightsBanner } from '@/components/common/AIInsightsBanner';
+import { useDensity } from '@/components/density/DensityProvider';
 
 // ── Types ─────────────────────────────────────────────────────
 
@@ -476,6 +477,7 @@ async function fetchCustomer360(name: string): Promise<Partial<Customer360State>
 // ── Page ──────────────────────────────────────────────────────
 
 function Customer360Inner() {
+  const density = useDensity();
   const searchParams = useSearchParams();
   const router = useRouter();
   const customerName = searchParams.get('name') ?? '';
@@ -668,6 +670,16 @@ function Customer360Inner() {
                         <SkeletonLine w="w-32" h="h-6" />
                       </div>
                     ))}
+                  </div>
+                ) : density === 'operator' ? (
+                  <div className="flex items-center gap-5 text-xs flex-wrap">
+                    <span><span className="text-zinc-500">Rev:</span> <span className="font-mono text-[#FE5000] font-bold">{fmt(financial?.revenueYTD)}</span></span>
+                    <span className="text-zinc-700">|</span>
+                    <span><span className="text-zinc-500">GP:</span> <span className="font-mono text-white font-bold">{fmt(financial?.gpYTD)}</span></span>
+                    <span className="text-zinc-700">|</span>
+                    <span><span className="text-zinc-500">Margin:</span> <span className="font-mono text-white font-bold">{fmtPct(financial?.gpMarginPct)}</span></span>
+                    <span className="text-zinc-700">|</span>
+                    <span><span className="text-zinc-500">AR:</span> <span className="font-mono text-white font-bold">{fmt(financial?.arOutstanding)}</span></span>
                   </div>
                 ) : (
                   <div className="grid grid-cols-2 gap-x-6 gap-y-5">

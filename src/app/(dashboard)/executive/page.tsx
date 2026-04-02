@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { AIInsightsBanner } from '@/components/common/AIInsightsBanner';
+import { useDensity } from '@/components/density/DensityProvider';
 
 // Lazy-load recharts — heavy bundle, only needed after KPI cards render
 const BarChart = dynamic(() => import('recharts').then(m => ({ default: m.BarChart })), { ssr: false });
@@ -300,6 +301,7 @@ function Top5List({ title, items, icon: Icon, valuePrefix }: {
 // ── Main Page ────────────────────────────────────────────────
 
 export default function ExecutiveSnapshotPage() {
+  const density = useDensity();
   const [data, setData] = useState<SnapshotData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -547,46 +549,62 @@ export default function ExecutiveSnapshotPage() {
             ))}
           </div>
         ) : kpis ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            <KPICard
-              label="Revenue YTD"
-              value={fmt(kpis.revenueYTD)}
-              subtext={flash?.priorYear ? `PY: ${fmt(flash.priorYear.revenue)}` : undefined}
-              icon={TrendingUp}
-              accent
-              yoyChange={flash?.priorYear ? changePct(kpis.revenueYTD, flash.priorYear.revenue) : undefined}
-            />
-            <KPICard
-              label="Gross Profit YTD"
-              value={fmt(kpis.gpYTD)}
-              subtext={flash?.priorYear ? `PY: ${fmt(flash.priorYear.grossProfit)}` : undefined}
-              icon={DollarSign}
-              yoyChange={flash?.priorYear ? changePct(kpis.gpYTD, flash.priorYear.grossProfit) : undefined}
-            />
-            <KPICard
-              label="GP Margin"
-              value={fmtPct(kpis.gpMarginPct)}
-              subtext={flash?.priorYear ? `PY: ${fmtPct(flash.priorYear.grossMarginPct)}` : undefined}
-              icon={BarChart3}
-            />
-            <KPICard
-              label="Cash Position"
-              value={fmt(kpis.cashBalance)}
-              icon={Wallet}
-            />
-            <KPICard
-              label="LOC Available"
-              value={fmt(kpis.locAvailable)}
-              subtext={`Drawn: ${fmt(kpis.locBalance)}`}
-              icon={CreditCard}
-            />
-            <KPICard
-              label="AR Outstanding"
-              value={fmt(kpis.arTotal)}
-              subtext={`DSO: ${typeof kpis.dso === 'number' ? kpis.dso.toFixed(1) : '0'} days`}
-              icon={TrendingDown}
-            />
-          </div>
+          density === 'executive' ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+              <KPICard
+                label="Revenue YTD"
+                value={fmt(kpis.revenueYTD)}
+                subtext={flash?.priorYear ? `PY: ${fmt(flash.priorYear.revenue)}` : undefined}
+                icon={TrendingUp}
+                accent
+                yoyChange={flash?.priorYear ? changePct(kpis.revenueYTD, flash.priorYear.revenue) : undefined}
+              />
+              <KPICard
+                label="Gross Profit YTD"
+                value={fmt(kpis.gpYTD)}
+                subtext={flash?.priorYear ? `PY: ${fmt(flash.priorYear.grossProfit)}` : undefined}
+                icon={DollarSign}
+                yoyChange={flash?.priorYear ? changePct(kpis.gpYTD, flash.priorYear.grossProfit) : undefined}
+              />
+              <KPICard
+                label="GP Margin"
+                value={fmtPct(kpis.gpMarginPct)}
+                subtext={flash?.priorYear ? `PY: ${fmtPct(flash.priorYear.grossMarginPct)}` : undefined}
+                icon={BarChart3}
+              />
+              <KPICard
+                label="Cash Position"
+                value={fmt(kpis.cashBalance)}
+                icon={Wallet}
+              />
+              <KPICard
+                label="LOC Available"
+                value={fmt(kpis.locAvailable)}
+                subtext={`Drawn: ${fmt(kpis.locBalance)}`}
+                icon={CreditCard}
+              />
+              <KPICard
+                label="AR Outstanding"
+                value={fmt(kpis.arTotal)}
+                subtext={`DSO: ${typeof kpis.dso === 'number' ? kpis.dso.toFixed(1) : '0'} days`}
+                icon={TrendingDown}
+              />
+            </div>
+          ) : (
+            <div className="flex items-center gap-6 text-xs px-4 py-2 bg-zinc-900 border border-zinc-800 rounded-lg">
+              <span className="text-zinc-500">Rev:</span><span className="font-mono text-white">{fmt(kpis.revenueYTD)}</span>
+              <span className="text-zinc-700">|</span>
+              <span className="text-zinc-500">GP:</span><span className="font-mono text-white">{fmt(kpis.gpYTD)}</span>
+              <span className="text-zinc-700">|</span>
+              <span className="text-zinc-500">Margin:</span><span className="font-mono text-white">{fmtPct(kpis.gpMarginPct)}</span>
+              <span className="text-zinc-700">|</span>
+              <span className="text-zinc-500">Cash:</span><span className="font-mono text-white">{fmt(kpis.cashBalance)}</span>
+              <span className="text-zinc-700">|</span>
+              <span className="text-zinc-500">LOC:</span><span className="font-mono text-white">{fmt(kpis.locAvailable)}</span>
+              <span className="text-zinc-700">|</span>
+              <span className="text-zinc-500">AR:</span><span className="font-mono text-white">{fmt(kpis.arTotal)}</span>
+            </div>
+          )
         ) : null}
 
         {/* Row 1.5 -- Secondary KPIs: Headcount, Fleet, AP */}
