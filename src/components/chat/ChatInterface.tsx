@@ -250,8 +250,8 @@ export default function ChatInterface({ isAdmin = false, role = 'readonly', comp
     const el = textareaRef.current;
     if (!el) return;
     el.style.height = 'auto';
-    el.style.height = `${Math.min(el.scrollHeight, 320)}px`;
-  }, [input]);
+    el.style.height = `${Math.min(el.scrollHeight, compact ? 60 : 320)}px`;
+  }, [input, compact]);
 
   const startNewChat = useCallback(() => {
     // Abort any in-flight stream
@@ -597,21 +597,21 @@ export default function ChatInterface({ isAdmin = false, role = 'readonly', comp
     >
       {/* Full-window drag overlay */}
       {isDragOver && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center bg-[#FE5000]/5 dark:bg-[#FE5000]/10 border-2 border-dashed border-[#FE5000]/40 backdrop-blur-sm">
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-[#FE5000]/10 border-2 border-dashed border-[#FE5000]/40 backdrop-blur-sm">
           <div className="flex flex-col items-center gap-2">
             <svg className="w-10 h-10 text-[#FE5000]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
             </svg>
             <p className="text-sm font-semibold text-[#FE5000]">Drop files to analyze</p>
-            <p className="text-[11px] text-zinc-500 dark:text-zinc-400">PDF, DOCX, XLSX, CSV, PPTX, images</p>
+            <p className="text-[11px] text-[#A1A1AA]">PDF, DOCX, XLSX, CSV, PPTX, images</p>
           </div>
         </div>
       )}
       {/* Header bar */}
-      <div className={`flex items-center justify-between border-b border-[#E4E4E7] dark:border-[#27272A] bg-white dark:bg-[#18181B] shrink-0 ${compact ? 'px-3 py-2' : 'px-6 py-3'}`}>
+      <div className={`flex items-center justify-between border-b border-[#27272A] bg-[#18181B] shrink-0 ${compact ? 'px-3 py-1.5' : 'px-6 py-3'}`}>
         <div className="flex items-center gap-2">
           {!compact && (
-            <h2 className="text-sm font-semibold text-[#09090B] dark:text-white">
+            <h2 className="text-sm font-semibold text-white">
               {workspace ? workspace.name : 'Chat'}
             </h2>
           )}
@@ -639,7 +639,7 @@ export default function ChatInterface({ isAdmin = false, role = 'readonly', comp
           {/* New chat */}
           <button
             onClick={startNewChat}
-            className="text-xs text-[#A1A1AA] hover:text-[#09090B] dark:hover:text-white transition-colors"
+            className="text-xs text-[#A1A1AA] hover:text-white transition-colors"
           >
             + New
           </button>
@@ -668,7 +668,7 @@ export default function ChatInterface({ isAdmin = false, role = 'readonly', comp
               <select
                 value={selectedModel}
                 onChange={(e) => setSelectedModel(e.target.value as ModelOption)}
-                className={`appearance-none bg-[#FAFAFA] dark:bg-[#27272A] border border-[#E4E4E7] dark:border-[#3F3F46] text-[#09090B] dark:text-white rounded-lg focus:outline-none focus:border-[#FE5000] focus:ring-1 focus:ring-[#FE5000]/30 cursor-pointer ${compact ? 'text-[10px] pl-2 pr-5 py-1' : 'text-xs pl-3 pr-8 py-1.5'}`}
+                className={`appearance-none bg-[#27272A] border border-[#3F3F46] text-white rounded-lg focus:outline-none focus:border-[#FE5000] focus:ring-1 focus:ring-[#FE5000]/30 cursor-pointer ${compact ? 'text-[10px] pl-2 pr-5 py-0.5' : 'text-xs pl-3 pr-8 py-1.5'}`}
               >
                 {MODEL_CHOICES.map((m) => (
                   <option key={m.id} value={m.id}>
@@ -684,7 +684,7 @@ export default function ChatInterface({ isAdmin = false, role = 'readonly', comp
       {/* Messages area + Artifact panel row */}
       <div className="flex-1 flex overflow-hidden">
       <div
-        className="flex-1 overflow-y-auto bg-[#FAFAFA] dark:bg-[#09090B] relative"
+        className="flex-1 overflow-y-auto bg-[#09090B] relative"
         onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); setIsDragOver(true); }}
         onDragLeave={(e) => { e.preventDefault(); e.stopPropagation(); setIsDragOver(false); }}
         onDrop={(e) => {
@@ -697,7 +697,7 @@ export default function ChatInterface({ isAdmin = false, role = 'readonly', comp
         }}
       >
         {isDragOver && (
-          <div className="absolute inset-0 z-20 flex items-center justify-center bg-[#FE5000]/5 dark:bg-[#FE5000]/10 border-2 border-dashed border-[#FE5000]/40 rounded-lg backdrop-blur-sm">
+          <div className="absolute inset-0 z-20 flex items-center justify-center bg-[#FE5000]/10 border-2 border-dashed border-[#FE5000]/40 rounded-lg backdrop-blur-sm">
             <div className="flex flex-col items-center gap-2">
               <svg className="w-8 h-8 text-[#FE5000]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
@@ -738,7 +738,7 @@ export default function ChatInterface({ isAdmin = false, role = 'readonly', comp
 
             {streamStatus && (
               <div className="flex justify-start mb-4 animate-fade-in">
-                <div className="flex items-center gap-2 text-xs text-[#71717A] bg-white dark:bg-[#18181B] border border-[#E4E4E7] dark:border-[#27272A] rounded-xl px-3 py-2">
+                <div className="flex items-center gap-2 text-xs text-[#71717A] bg-[#18181B] border border-[#27272A] rounded-xl px-3 py-2">
                   <svg className="w-3.5 h-3.5 animate-spin text-[#FE5000]" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
@@ -750,7 +750,7 @@ export default function ChatInterface({ isAdmin = false, role = 'readonly', comp
 
             {error && (
               <div className="flex justify-center mb-4">
-                <div className="flex items-center gap-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/40 text-red-700 dark:text-red-400 text-xs px-4 py-2.5 rounded-xl">
+                <div className="flex items-center gap-2 bg-red-900/20 border border-red-800/40 text-red-400 text-xs px-4 py-2.5 rounded-xl">
                   <span>{error}</span>
                   <button onClick={() => setError(null)} className="ml-1 text-red-500 hover:text-red-700">
                     &times;
@@ -774,7 +774,7 @@ export default function ChatInterface({ isAdmin = false, role = 'readonly', comp
       </div>
 
       {/* Input */}
-      <div className={`border-t border-[#E4E4E7] dark:border-[#27272A] bg-white dark:bg-[#18181B] shrink-0 ${compact ? 'px-2 py-2' : 'px-4 py-3'}`}>
+      <div className={`border-t border-[#27272A] bg-[#18181B] shrink-0 ${compact ? 'px-2 py-1.5' : 'px-4 py-3'}`}>
         <div className={compact ? '' : 'max-w-3xl mx-auto'}>
           {/* Attached document pills */}
           {uploadedDocuments.length > 0 && (
@@ -782,7 +782,7 @@ export default function ChatInterface({ isAdmin = false, role = 'readonly', comp
               {uploadedDocuments.map((doc) => (
                 <span
                   key={doc.name}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-[#FE5000]/10 dark:bg-[#FE5000]/15 text-[#FE5000] text-xs px-3 py-1 border border-[#FE5000]/20"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-[#FE5000]/15 text-[#FE5000] text-xs px-3 py-1 border border-[#FE5000]/20"
                 >
                   <svg className="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
@@ -814,12 +814,12 @@ export default function ChatInterface({ isAdmin = false, role = 'readonly', comp
             }}
           />
 
-          <div className="flex items-end gap-3 bg-white dark:bg-[#27272A] border border-[#D4D4D8] dark:border-[#3F3F46] rounded-xl px-3 py-2.5 focus-within:border-[#FE5000] focus-within:ring-1 focus-within:ring-[#FE5000]/20 transition-colors shadow-sm">
+          <div className={`flex items-end gap-2 bg-[#27272A] border border-[#3F3F46] rounded-xl focus-within:border-[#FE5000] focus-within:ring-1 focus-within:ring-[#FE5000]/20 transition-colors ${compact ? 'px-2 py-1.5' : 'px-3 py-2.5 shadow-sm'}`}>
             {/* Paperclip / attach button */}
             <button
               onClick={() => fileInputRef.current?.click()}
               disabled={isUploadingFile}
-              className="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-all text-[#71717A] hover:text-[#FE5000] hover:bg-[#FE5000]/10 dark:hover:bg-[#FE5000]/15 disabled:opacity-30 disabled:cursor-not-allowed"
+              className="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-all text-[#71717A] hover:text-[#FE5000] hover:bg-[#FE5000]/15 disabled:opacity-30 disabled:cursor-not-allowed"
               aria-label="Attach file"
             >
               {isUploadingFile ? (
@@ -845,7 +845,7 @@ export default function ChatInterface({ isAdmin = false, role = 'readonly', comp
               placeholder="Ask Delta Intelligence anything..."
               rows={1}
               disabled={isLoading}
-              className={`flex-1 resize-none bg-transparent text-sm text-[#09090B] dark:text-white placeholder-[#A1A1AA] outline-none leading-relaxed disabled:opacity-60 min-h-[24px] ${compact ? 'max-h-[80px]' : 'max-h-[320px]'}`}
+              className={`flex-1 resize-none bg-transparent text-sm text-white placeholder-[#71717A] outline-none leading-relaxed disabled:opacity-60 ${compact ? 'min-h-[20px] max-h-[60px]' : 'min-h-[24px] max-h-[320px]'}`}
             />
             <button
               onClick={sendMessage}
@@ -867,8 +867,8 @@ export default function ChatInterface({ isAdmin = false, role = 'readonly', comp
           </div>
 
           {/* Footer: token usage + hints */}
-          <div className="flex items-center justify-between mt-1.5">
-            <p className="text-[10px] text-[#A1A1AA] text-center flex-1">
+          <div className={`flex items-center justify-between ${compact ? 'mt-0.5' : 'mt-1.5'}`}>
+            <p className={`text-[#71717A] text-center flex-1 ${compact ? 'text-[9px]' : 'text-[10px]'}`}>
               Enter to send — Shift+Enter for new line
               {isAdmin && selectedModel !== 'auto' && (
                 <span className="ml-2 text-[#FE5000]/70">
@@ -962,7 +962,7 @@ function VoiceMicButton({ onTranscript }: VoiceMicButtonProps) {
         'shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-all',
         listening
           ? 'bg-red-500/20 text-red-500 animate-pulse'
-          : 'text-[#71717A] hover:text-[#09090B] hover:bg-[#F4F4F5]',
+          : 'text-[#71717A] hover:text-white hover:bg-[#3F3F46]',
       ].join(' ')}
       aria-label={listening ? 'Stop listening' : 'Voice input'}
       title={listening ? 'Listening... click to stop' : 'Voice input'}
@@ -1060,18 +1060,18 @@ function EmptyState({ onSelect, role = 'readonly', compact = false }: { onSelect
   ];
 
   return (
-    <div className={`flex flex-col items-center justify-center h-full px-4 ${compact ? 'min-h-[200px]' : 'min-h-[400px]'}`}>
+    <div className={`flex flex-col items-center px-4 ${compact ? 'justify-start pt-6 min-h-0' : 'justify-center min-h-[400px]'}`}>
       {/* Logo */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/brand/delta logo mark.png"
         alt="Delta Intelligence"
-        className={`object-contain mb-3 opacity-80 ${compact ? 'w-10 h-10' : 'w-14 h-14 mb-4'}`}
+        className={`object-contain opacity-80 ${compact ? 'w-8 h-8 mb-2' : 'w-14 h-14 mb-4'}`}
       />
-      <h2 className={`text-[#09090B] dark:text-white font-bold mb-1 ${compact ? 'text-sm' : 'text-lg'}`}>
+      <h2 className={`text-white font-bold mb-0.5 ${compact ? 'text-xs' : 'text-lg'}`}>
         {compact ? 'Nova' : 'Delta Intelligence'}
       </h2>
-      <p className={`text-[#71717A] dark:text-[#A1A1AA] text-center max-w-md ${compact ? 'text-xs mb-3' : 'text-sm mb-5'}`}>
+      <p className={`text-[#A1A1AA] text-center max-w-md ${compact ? 'text-[10px] mb-2' : 'text-sm mb-5'}`}>
         {compact ? 'Ask anything about Delta360 data' : roleConfig.subtitle}
       </p>
 
@@ -1079,13 +1079,13 @@ function EmptyState({ onSelect, role = 'readonly', compact = false }: { onSelect
       {!compact && (
         <div className="flex items-center gap-2 mb-6 flex-wrap justify-center">
           {CAPABILITIES.map((cap) => (
-            <div key={cap.label} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800/50">
+            <div key={cap.label} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[#27272A] bg-[#18181B]">
               <svg className="w-3.5 h-3.5 text-[#FE5000]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d={cap.icon} />
               </svg>
-              <span className="text-[11px] text-zinc-700 dark:text-zinc-300 font-medium">{cap.label}</span>
-              <span className="text-[10px] text-zinc-400">·</span>
-              <span className="text-[10px] text-zinc-400">{cap.desc}</span>
+              <span className="text-[11px] text-[#FAFAFA] font-medium">{cap.label}</span>
+              <span className="text-[10px] text-[#52525B]">·</span>
+              <span className="text-[10px] text-[#71717A]">{cap.desc}</span>
             </div>
           ))}
         </div>
@@ -1104,10 +1104,10 @@ function EmptyState({ onSelect, role = 'readonly', compact = false }: { onSelect
             <button
               key={prompt}
               onClick={() => onSelect(prompt)}
-              className={`text-left px-4 py-3 rounded-xl border text-sm leading-relaxed transition-all ${
+              className={`text-left rounded-xl border transition-all ${compact ? 'px-3 py-2 text-xs leading-snug' : 'px-4 py-3 text-sm leading-relaxed'} ${
                 isPinned
-                  ? 'border-[#FE5000]/30 bg-[#FE5000]/5 text-[#09090B] dark:text-white hover:border-[#FE5000]/50 hover:bg-[#FE5000]/10 hover:shadow-sm'
-                  : 'border-[#E4E4E7] dark:border-[#27272A] bg-white dark:bg-[#18181B] text-[#71717A] hover:border-[#FE5000]/40 hover:text-[#09090B] dark:hover:text-white hover:bg-[#FAFAFA] dark:hover:bg-[#27272A] hover:shadow-sm'
+                  ? 'border-[#FE5000]/30 bg-[#FE5000]/5 text-white hover:border-[#FE5000]/50 hover:bg-[#FE5000]/10'
+                  : 'border-[#27272A] bg-[#18181B] text-[#A1A1AA] hover:border-[#FE5000]/40 hover:text-white hover:bg-[#27272A]'
               }`}
             >
               {isPinned && (
@@ -1130,10 +1130,10 @@ function EmptyState({ onSelect, role = 'readonly', compact = false }: { onSelect
               <button
                 key={wf.id}
                 onClick={() => onSelect(wf.steps[0])}
-                className="text-left px-3 py-2.5 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800/50 hover:border-[#FE5000]/30 hover:shadow-sm transition-all group"
+                className="text-left px-3 py-2.5 rounded-lg border border-[#27272A] bg-[#18181B] hover:border-[#FE5000]/30 transition-all group"
               >
-                <p className="text-xs font-medium text-zinc-700 dark:text-zinc-200 group-hover:text-[#FE5000] transition-colors">{wf.name}</p>
-                <p className="text-[10px] text-zinc-400 mt-0.5">{wf.steps.length} steps</p>
+                <p className="text-xs font-medium text-[#FAFAFA] group-hover:text-[#FE5000] transition-colors">{wf.name}</p>
+                <p className="text-[10px] text-[#71717A] mt-0.5">{wf.steps.length} steps</p>
               </button>
             ))}
           </div>
@@ -1150,11 +1150,11 @@ function EmptyState({ onSelect, role = 'readonly', compact = false }: { onSelect
         </span>
         <span>&middot;</span>
         <span>
-          <kbd className="px-1.5 py-0.5 rounded bg-[#F4F4F5] dark:bg-[#27272A] border border-[#E4E4E7] dark:border-[#3F3F46] text-[#71717A] dark:text-[#A1A1AA] font-mono text-[9px]">&#8984;K</kbd> chat
+          <kbd className="px-1.5 py-0.5 rounded bg-[#27272A] border border-[#3F3F46] text-[#A1A1AA] font-mono text-[9px]">&#8984;K</kbd> chat
         </span>
         <span>&middot;</span>
         <span>
-          <kbd className="px-1.5 py-0.5 rounded bg-[#F4F4F5] dark:bg-[#27272A] border border-[#E4E4E7] dark:border-[#3F3F46] text-[#71717A] dark:text-[#A1A1AA] font-mono text-[9px]">&#8984;P</kbd> search
+          <kbd className="px-1.5 py-0.5 rounded bg-[#27272A] border border-[#3F3F46] text-[#A1A1AA] font-mono text-[9px]">&#8984;P</kbd> search
         </span>
       </div>}
     </div>
@@ -1170,7 +1170,7 @@ function TypingIndicator() {
             <path d="M12 2L2 19h20L12 2z" />
           </svg>
         </div>
-        <div className="bg-white dark:bg-[#18181B] border border-[#E4E4E7] dark:border-[#27272A] rounded-2xl rounded-tl-sm px-4 py-3">
+        <div className="bg-[#18181B] border border-[#27272A] rounded-2xl rounded-tl-sm px-4 py-3">
           <div className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-[#A1A1AA] animate-bounce [animation-delay:-0.3s]" />
             <span className="w-1.5 h-1.5 rounded-full bg-[#A1A1AA] animate-bounce [animation-delay:-0.15s]" />

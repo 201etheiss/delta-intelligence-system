@@ -86,13 +86,13 @@ export default function ExportBar({ content, title, onExport, compact = false }:
   if (compact) {
     return (
       <div className="flex items-center gap-1">
-        <span className="text-[10px] text-zinc-400 mr-0.5">Export:</span>
+        <span className="text-[10px] text-[#71717A] mr-0.5">Export:</span>
         {FORMATS.map((f) => (
           <button
             key={f.id}
             onClick={() => handleExport(f.id)}
             disabled={!!exporting}
-            className="text-[10px] px-1.5 py-0.5 rounded border border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:border-[#FE5000]/40 hover:text-[#FE5000] hover:bg-[#FE5000]/5 dark:hover:bg-[#FE5000]/10 transition-colors disabled:opacity-50"
+            className="text-[10px] px-1.5 py-0.5 rounded border border-[#3F3F46] text-[#A1A1AA] hover:border-[#FE5000]/40 hover:text-[#FE5000] hover:bg-[#FE5000]/10 transition-colors disabled:opacity-50"
           >
             {exporting === f.id ? '...' : f.id === 'copy' ? (copied ? 'Copied' : f.label) : f.label}
           </button>
@@ -102,9 +102,9 @@ export default function ExportBar({ content, title, onExport, compact = false }:
   }
 
   return (
-    <div className="mt-3 pt-3 border-t border-zinc-100 dark:border-zinc-800">
+    <div className="mt-3 pt-3 border-t border-[#27272A]">
       <div className="flex items-center gap-2 flex-wrap">
-        <span className="text-[10px] text-zinc-400 dark:text-zinc-500 font-medium uppercase tracking-wide mr-1">Export</span>
+        <span className="text-[10px] text-[#71717A] font-medium uppercase tracking-wide mr-1">Export</span>
         <HelpTooltip text="Download this response as a file" position="top" />
         <div className="flex items-center gap-1.5 flex-wrap">
           {FORMATS.map((f) => (
@@ -112,7 +112,7 @@ export default function ExportBar({ content, title, onExport, compact = false }:
               key={f.id}
               onClick={() => handleExport(f.id)}
               disabled={!!exporting}
-              className="text-[11px] px-3 py-1.5 rounded-md border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 font-medium hover:border-[#FE5000]/50 hover:text-[#FE5000] hover:bg-[#FE5000]/5 dark:hover:bg-[#FE5000]/10 transition-colors disabled:opacity-50"
+              className="text-[11px] px-3 py-1.5 rounded-md border border-[#3F3F46] text-[#A1A1AA] font-medium hover:border-[#FE5000]/50 hover:text-[#FE5000] hover:bg-[#FE5000]/10 transition-colors disabled:opacity-50"
             >
               {exporting === f.id ? '...' : f.id === 'copy' ? (copied ? 'Copied!' : f.label) : f.label}
             </button>

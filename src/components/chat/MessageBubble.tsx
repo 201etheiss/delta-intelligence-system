@@ -190,11 +190,11 @@ function renderContent(raw: string): string {
   // Inline code
   html = html.replace(
     /`([^`\n]+)`/g,
-    '<code class="bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 px-1 py-0.5 rounded text-xs font-mono">$1</code>'
+    '<code class="bg-[#27272A] text-[#FAFAFA] px-1 py-0.5 rounded text-xs font-mono">$1</code>'
   );
 
   // Bold (**text**) — use font-bold (700) for visible weight difference
-  html = html.replace(/\*\*(.+?)\*\*/g, '<strong class="font-bold text-zinc-900 dark:text-white">$1</strong>');
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong class="font-bold text-white">$1</strong>');
 
   // Italic (*text*)
   html = html.replace(/\*([^*\n]+)\*/g, '<em class="italic">$1</em>');
@@ -212,12 +212,12 @@ function renderContent(raw: string): string {
   html = html.replace(/^\d+\. (.+)$/gm, '<li class="ml-4 list-decimal">$1</li>');
 
   // Horizontal rule (--- or ***)
-  html = html.replace(/^[-*]{3,}$/gm, '<hr class="my-3 border-zinc-200 dark:border-zinc-700" />');
+  html = html.replace(/^[-*]{3,}$/gm, '<hr class="my-3 border-[#27272A]" />');
 
   // Headings — bold + distinct sizes + dark mode colors
-  html = html.replace(/^### (.+)$/gm, '<h3 class="font-bold text-sm mt-3 mb-1 text-zinc-900 dark:text-white">$1</h3>');
-  html = html.replace(/^## (.+)$/gm, '<h2 class="font-bold text-base mt-4 mb-1.5 text-zinc-900 dark:text-white">$1</h2>');
-  html = html.replace(/^# (.+)$/gm, '<h1 class="font-bold text-lg mt-4 mb-2 text-zinc-900 dark:text-white">$1</h1>');
+  html = html.replace(/^### (.+)$/gm, '<h3 class="font-bold text-sm mt-3 mb-1 text-white">$1</h3>');
+  html = html.replace(/^## (.+)$/gm, '<h2 class="font-bold text-base mt-4 mb-1.5 text-white">$1</h2>');
+  html = html.replace(/^# (.+)$/gm, '<h1 class="font-bold text-lg mt-4 mb-2 text-white">$1</h1>');
 
   // Tables: detect lines with | delimiters — wrap in scrollable container
   html = html.replace(
@@ -231,15 +231,15 @@ function renderContent(raw: string): string {
         const cells = row.split('|').slice(1, -1).map(c => c.trim());
         const tag = isHeader ? 'th' : 'td';
         const cellClass = isHeader
-          ? 'px-3 py-1.5 text-left text-xs font-semibold bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-700 whitespace-nowrap'
-          : 'px-3 py-1.5 text-xs text-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-700 whitespace-nowrap';
+          ? 'px-3 py-1.5 text-left text-xs font-semibold bg-[#27272A] text-[#FAFAFA] border border-[#3F3F46] whitespace-nowrap'
+          : 'px-3 py-1.5 text-xs text-[#FAFAFA] border border-[#3F3F46] whitespace-nowrap';
         return `<tr>${cells.map(c => `<${tag} class="${cellClass}">${c}</${tag}>`).join('')}</tr>`;
       };
       const headerRow = isSeparator ? renderRow(dataRows[0], true) : '';
       const bodyRows = (isSeparator ? dataRows.slice(1) : dataRows)
         .map((r, i) => {
           const rowHtml = renderRow(r, false);
-          return i % 2 === 1 ? rowHtml.replace('<tr>', '<tr class="bg-zinc-50 dark:bg-zinc-800/50">') : rowHtml;
+          return i % 2 === 1 ? rowHtml.replace('<tr>', '<tr class="bg-[#18181B]">') : rowHtml;
         })
         .join('');
       return `<div class="overflow-x-auto -mx-1 my-2"><table class="w-full border-collapse text-sm min-w-[400px]"><thead>${headerRow}</thead><tbody>${bodyRows}</tbody></table></div>`;
@@ -545,7 +545,7 @@ export default function MessageBubble({
         </div>
         <div
           ref={contentRef}
-          className={`relative bg-white dark:bg-[#18181B] border rounded-2xl rounded-tl-sm px-4 py-3 text-sm leading-relaxed text-zinc-800 dark:text-zinc-200 ${isStreaming ? 'border-[#FE5000]/30' : 'border-zinc-200 dark:border-[#27272A]'}`}
+          className={`relative bg-[#18181B] border rounded-2xl rounded-tl-sm px-4 py-3 text-sm leading-relaxed text-[#FAFAFA] ${isStreaming ? 'border-[#FE5000]/30' : 'border-[#27272A]'}`}
         >
           {message.content ? (
             <>
@@ -612,7 +612,7 @@ export default function MessageBubble({
                 <button
                   key={i}
                   onClick={() => onFollowUp(clean)}
-                  className="text-left flex items-start gap-2.5 px-3.5 py-2.5 rounded-xl border border-[#FE5000]/20 bg-[#FE5000]/5 text-sm font-medium text-[#09090B] dark:text-white hover:border-[#FE5000]/50 hover:bg-[#FE5000]/10 hover:shadow-sm transition-all"
+                  className="text-left flex items-start gap-2.5 px-3.5 py-2.5 rounded-xl border border-[#FE5000]/20 bg-[#FE5000]/5 text-sm font-medium text-white hover:border-[#FE5000]/50 hover:bg-[#FE5000]/10 transition-all"
                 >
                   <span className="shrink-0 w-6 h-6 rounded-full bg-[#FE5000] text-white flex items-center justify-center text-xs font-bold mt-0.5">
                     {i + 1}
