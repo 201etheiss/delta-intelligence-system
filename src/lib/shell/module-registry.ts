@@ -124,6 +124,11 @@ export const MODULE_GROUPS: ModuleGroup[] = [
     defaultPagePath: '/platform',
     pages: [
       { href: '/platform', label: 'Platform' },
+      { href: '/chat', label: 'Chat' },
+      { href: '/assistant', label: 'Assistant' },
+      { href: '/automations', label: 'Automations' },
+      { href: '/search', label: 'Search' },
+      { href: '/cockpit', label: 'Cockpit' },
       { href: '/dashboards', label: 'Dashboards' },
       { href: '/dashboards/[id]', label: 'Dashboard' },
       { href: '/workspaces', label: 'Workspaces' },

@@ -738,7 +738,7 @@ export default function ChatInterface({ isAdmin = false, role = 'readonly', comp
 
             {streamStatus && (
               <div className="flex justify-start mb-4 animate-fade-in">
-                <div className="flex items-center gap-2 text-xs text-[#71717A] bg-white border border-[#E4E4E7] rounded-xl px-3 py-2">
+                <div className="flex items-center gap-2 text-xs text-[#71717A] bg-white dark:bg-[#18181B] border border-[#E4E4E7] dark:border-[#27272A] rounded-xl px-3 py-2">
                   <svg className="w-3.5 h-3.5 animate-spin text-[#FE5000]" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
@@ -750,7 +750,7 @@ export default function ChatInterface({ isAdmin = false, role = 'readonly', comp
 
             {error && (
               <div className="flex justify-center mb-4">
-                <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 text-xs px-4 py-2.5 rounded-xl">
+                <div className="flex items-center gap-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/40 text-red-700 dark:text-red-400 text-xs px-4 py-2.5 rounded-xl">
                   <span>{error}</span>
                   <button onClick={() => setError(null)} className="ml-1 text-red-500 hover:text-red-700">
                     &times;

@@ -30,10 +30,11 @@ export default function RootLayout({
 }>) {
   // Static inline script to prevent flash of wrong theme on load.
   // Content is a hardcoded string literal with no user input — safe from XSS.
-  const themeScript = `try { if (localStorage.getItem('di_dark_mode') === 'true') document.documentElement.classList.add('dark'); } catch {}`;
+  // Dark mode is DEFAULT for DataOS. Only remove if user explicitly opts for light.
+  const themeScript = `try { if (localStorage.getItem('di_dark_mode') === 'false') document.documentElement.classList.remove('dark'); } catch {}`;
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className="dark" suppressHydrationWarning>
       <head>
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#FE5000" />
