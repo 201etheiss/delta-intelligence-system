@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { DensityProvider, useDensity, useDensityToggle } from '@/components/density/DensityProvider';
 import { NovaBar } from '@/components/shell/NovaBar';
 import { NovaCommandPalette } from '@/components/shell/NovaCommandPalette';
@@ -36,8 +37,8 @@ function ShellInner({ children }: { children: React.ReactNode }) {
   const densityToggle = useDensityToggle();
 
   // Role-filtered modules for StatusRail
-  // In dev mode without session, default to admin (sees everything)
-  const userRole: UserRole = 'admin'; // TODO: wire to useSession().data?.user?.role when auth is live
+  const { data: session } = useSession();
+  const userRole: UserRole = (session?.user?.role as UserRole) ?? 'admin';
   const filteredModules = getModulesForRole(userRole);
 
   // Derived active module
