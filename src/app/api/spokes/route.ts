@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 import {
   SPOKE_REGISTRY,
   checkAllSpokeHealth,
@@ -11,7 +13,12 @@ interface SpokeResponse {
   healthResults?: SpokeHealthResult[];
 }
 
-export async function GET(request: Request): Promise<NextResponse<SpokeResponse>> {
+export async function GET(request: Request): Promise<NextResponse<SpokeResponse | { success: false; error: string }>> {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return NextResponse.json({ success: false as const, error: 'Unauthorized' }, { status: 401 });
+  }
+
   const { searchParams } = new URL(request.url);
   const shouldCheck = searchParams.get('check') === 'true';
 

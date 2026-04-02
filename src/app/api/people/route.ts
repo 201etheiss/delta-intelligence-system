@@ -1,7 +1,14 @@
 import { NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 import { fetchMS365Users, fetchMS365Org } from '@/lib/engines/data-bridge';
 
 export async function GET() {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const [users, org] = await Promise.all([
       fetchMS365Users(),

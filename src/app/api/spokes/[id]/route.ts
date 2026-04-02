@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 import { getSpokeById, checkSpokeHealth, type SpokeHealthResult } from '@/lib/spoke-registry';
 
 interface SpokeDetailResponse {
@@ -10,7 +12,12 @@ interface SpokeDetailResponse {
 export async function GET(
   _request: Request,
   { params }: { params: { id: string } }
-): Promise<NextResponse<SpokeDetailResponse>> {
+): Promise<NextResponse<SpokeDetailResponse | { success: false; error: string }>> {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return NextResponse.json({ success: false as const, error: 'Unauthorized' }, { status: 401 });
+  }
+
   const spoke = getSpokeById(params.id);
 
   if (!spoke) {
@@ -29,6 +36,11 @@ export async function POST(
   request: Request,
   { params }: { params: { id: string } }
 ): Promise<NextResponse> {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+  }
+
   const spoke = getSpokeById(params.id);
 
   if (!spoke) {

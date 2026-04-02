@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 import { getExceptionAging, getReconsByStatus } from '@/lib/engines/reconciliation';
 
 interface ExceptionItem {
@@ -22,6 +24,11 @@ function severityFromAging(days: number): ExceptionItem['severity'] {
 }
 
 export async function GET() {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+  }
+
   const allExceptions: ExceptionItem[] = [];
 
   // 1. Pull open exceptions from reconciliation engine
