@@ -907,12 +907,12 @@ export async function checkDueDigests(): Promise<number> {
   for (const config of enabled) {
     if (!cronMatches(config.schedule, now)) continue;
 
-    console.log(`[email-digest] Sending scheduled digest: ${config.name}`);
+    console.info(`[email-digest] Sending scheduled digest: ${config.name}`);
     const result = await sendDigest(config.id);
 
     if (result.status === 'sent') {
       sent += 1;
-      console.log(`[email-digest] Sent: ${config.name} to ${config.recipients.join(', ')}`);
+      console.info(`[email-digest] Sent: ${config.name} to ${config.recipients.join(', ')}`);
     } else {
       console.error(`[email-digest] Failed: ${config.name} - ${result.error}`);
     }

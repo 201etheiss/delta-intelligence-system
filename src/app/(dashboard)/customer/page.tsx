@@ -21,6 +21,7 @@ import {
   ArrowUpRight,
 } from 'lucide-react';
 import { AIInsightsBanner } from '@/components/common/AIInsightsBanner';
+import { MockDataBanner } from '@/components/common/MockDataBanner';
 import { useDensity } from '@/components/density/DensityProvider';
 
 // ── Types ─────────────────────────────────────────────────────
@@ -106,6 +107,7 @@ interface Customer360State {
   salesforce: SalesforceData | null;
   sites: DeliverySite[];
   health: HealthData | null;
+  healthIsMock: boolean;
 }
 
 // ── Helpers ───────────────────────────────────────────────────
@@ -466,12 +468,14 @@ async function fetchCustomer360(name: string): Promise<Partial<Customer360State>
 
   // ── Health ────────────────────────────────────────────────────
   let health: HealthData | null = null;
+  let healthIsMock = false;
   if (healthRes.status === 'fulfilled' && healthRes.value?.success) {
     const customers = (healthRes.value.customers ?? []) as HealthData[];
     health = customers[0] ?? null;
+    healthIsMock = healthRes.value.source === 'mock';
   }
 
-  return { financial, aging, invoices, salesforce: { contacts, opportunities, activities }, sites, health };
+  return { financial, aging, invoices, salesforce: { contacts, opportunities, activities }, sites, health, healthIsMock };
 }
 
 // ── Page ──────────────────────────────────────────────────────
@@ -492,6 +496,7 @@ function Customer360Inner() {
     salesforce: null,
     sites: [],
     health: null,
+    healthIsMock: false,
   });
 
   const load = useCallback(
@@ -526,7 +531,7 @@ function Customer360Inner() {
     router.push(`/customer?name=${encodeURIComponent(trimmed)}`);
   };
 
-  const { loading, error, financial, aging, invoices, salesforce, sites, health } = state;
+  const { loading, error, financial, aging, invoices, salesforce, sites, health, healthIsMock } = state;
 
   const agingTotal =
     (aging?.current ?? 0) +
@@ -636,6 +641,7 @@ function Customer360Inner() {
 
               {/* Health grade */}
               <div className="flex flex-col items-start sm:items-end gap-1 shrink-0">
+                {healthIsMock && <MockDataBanner label="Gateway offline — health scores are cached." />}
                 <span className="text-[10px] text-[#52525B] uppercase tracking-widest">Health Score</span>
                 {loading && !health ? (
                   <SkeletonLine w="w-16" h="h-10" />

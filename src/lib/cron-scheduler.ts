@@ -101,7 +101,7 @@ async function tick(): Promise<void> {
   try {
     const reminderCount = await checkDueReminders();
     if (reminderCount > 0) {
-      console.log(`[cron-scheduler] Sent ${reminderCount} due reminder(s)`);
+      console.info(`[cron-scheduler] Sent ${reminderCount} due reminder(s)`);
     }
   } catch (err) {
     console.error('[cron-scheduler] Reminder check error:', err);
@@ -112,7 +112,7 @@ async function tick(): Promise<void> {
     const reportCount = await checkDueReportSchedules();
     if (reportCount > 0) {
       state.runsTriggered += reportCount;
-      console.log(`[cron-scheduler] Generated ${reportCount} scheduled report(s)`);
+      console.info(`[cron-scheduler] Generated ${reportCount} scheduled report(s)`);
     }
   } catch (err) {
     console.error('[cron-scheduler] Report schedule check error:', err);
@@ -123,7 +123,7 @@ async function tick(): Promise<void> {
     const digestCount = await checkDueDigests();
     if (digestCount > 0) {
       state.runsTriggered += digestCount;
-      console.log(`[cron-scheduler] Sent ${digestCount} email digest(s)`);
+      console.info(`[cron-scheduler] Sent ${digestCount} email digest(s)`);
     }
   } catch (err) {
     console.error('[cron-scheduler] Email digest check error:', err);
@@ -147,7 +147,7 @@ async function tick(): Promise<void> {
         automationName: automation.name,
         result: 'triggered',
       });
-      console.log(`[cron-scheduler] Triggered: ${automation.name}`);
+      console.info(`[cron-scheduler] Triggered: ${automation.name}`);
     } catch (err) {
       appendLog({
         timestamp: now.toISOString(),

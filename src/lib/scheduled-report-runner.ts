@@ -211,7 +211,7 @@ export async function checkDueReportSchedules(): Promise<number> {
   for (const schedule of enabled) {
     if (!cronMatches(schedule.schedule, now)) continue;
 
-    console.log(`[report-scheduler] Running scheduled report: ${schedule.name}`);
+    console.info(`[report-scheduler] Running scheduled report: ${schedule.name}`);
     triggered += 1;
 
     const result = await generateScheduledReport(schedule);
@@ -251,7 +251,7 @@ export async function checkDueReportSchedules(): Promise<number> {
       });
     }
 
-    console.log(
+    console.info(
       `[report-scheduler] ${result.status === 'success' ? 'Completed' : 'Failed'}: ${schedule.name} (${result.durationMs}ms)`
     );
   }

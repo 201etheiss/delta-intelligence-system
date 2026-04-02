@@ -127,7 +127,7 @@ export async function POST(
   };
   appendEvent(logEntry);
 
-  console.log(
+  console.info(
     `[webhook/${provider}] ${eventType} — ${triggered.length} automations triggered`
   );
 

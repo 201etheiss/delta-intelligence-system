@@ -135,7 +135,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   appendEvent(logEntry);
 
   const recognized = HANDLED_EVENTS.has(eventType);
-  console.log(
+  console.info(
     `[samsara-webhook] ${eventType} ${recognized ? '(handled)' : '(unrecognized)'} — ${triggered.length} automations triggered`
   );
 

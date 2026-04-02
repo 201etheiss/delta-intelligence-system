@@ -239,12 +239,10 @@ export async function POST(request: NextRequest): Promise<Response> {
       modelId = body.model as ModelId;
     } else if (body.preferredModel && body.preferredModel !== 'auto' && validModels.includes(body.preferredModel as ModelId)) {
       modelId = body.preferredModel as ModelId;
-      console.log(`[STREAM-ROUTER] Using workspace preferred model: ${modelId}`);
     } else {
       const lastMsg = [...body.messages].reverse().find(m => m.role === 'user');
       const routing = routeQueryDetailed(lastMsg?.content ?? '', estimatedTokens);
       modelId = routing.modelId;
-      console.log(`[STREAM-ROUTER] Score: ${routing.score} | Model: ${routing.modelId}`);
     }
 
     body.messages = compactConversation(body.messages);
@@ -298,7 +296,6 @@ export async function POST(request: NextRequest): Promise<Response> {
             return `## ${doc.name}\n${truncated}`;
           }).join('\n\n');
           documentContext = `\n\n# Uploaded Documents\nThe user has attached these documents. Use them to answer questions.\n${docSections}`;
-          console.log(`[STREAM] ${body.documents.length} document(s) attached: ${body.documents.map((d) => d.name).join(', ')}`);
         }
 
         // Build Nova domain context section (module-specific or full cross-domain)

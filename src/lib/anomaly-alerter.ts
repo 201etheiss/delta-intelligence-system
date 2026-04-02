@@ -83,7 +83,6 @@ export function routeAnomalyAlerts(anomalies: readonly AlertableAnomaly[]): Rout
   for (const anomaly of anomalies) {
     // Info-level: log only
     if (anomaly.severity === 'info') {
-      console.log(`[AnomalyAlerter] info: ${anomaly.metric} — ${anomaly.description}`);
       skipped++;
       continue;
     }

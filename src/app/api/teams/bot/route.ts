@@ -343,7 +343,7 @@ export async function POST(request: NextRequest): Promise<Response> {
       );
     }
 
-    console.log(`[teams-bot] Replied to ${senderEmail} (${role}) — ${loopResult.inputTokens + loopResult.outputTokens} tokens`);
+    console.info(`[teams-bot] Replied to ${senderEmail} (${role}) — ${loopResult.inputTokens + loopResult.outputTokens} tokens`);
 
     // Return 200 to acknowledge receipt (reply sent separately)
     return new Response('', { status: 200 });

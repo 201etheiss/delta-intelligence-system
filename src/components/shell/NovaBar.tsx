@@ -220,10 +220,9 @@ export function NovaBar({
         N
       </button>
 
-      {/* Nova Input */}
-      <input
-        type="text"
-        placeholder={inputPlaceholder}
+      {/* Nova Input — click opens chat panel */}
+      <button
+        onClick={onNovaClick}
         style={{
           flex: 1,
           height: '30px',
@@ -231,20 +230,45 @@ export function NovaBar({
           border: '1px solid #3f3f46',
           borderRadius: '6px',
           padding: '0 12px',
-          color: '#e4e4e7',
+          color: '#71717a',
           fontSize: '13px',
           outline: 'none',
           minWidth: 0,
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          textAlign: 'left',
+          transition: 'border-color 0.15s, box-shadow 0.15s',
         }}
-        onFocus={(e) => {
+        onMouseEnter={(e) => {
           e.currentTarget.style.borderColor = '#FE5000';
           e.currentTarget.style.boxShadow = '0 0 0 2px rgba(254,80,0,0.15)';
+          e.currentTarget.style.color = '#a1a1aa';
         }}
-        onBlur={(e) => {
+        onMouseLeave={(e) => {
           e.currentTarget.style.borderColor = '#3f3f46';
           e.currentTarget.style.boxShadow = 'none';
+          e.currentTarget.style.color = '#71717a';
         }}
-      />
+      >
+        <span>{inputPlaceholder}</span>
+        <kbd
+          style={{
+            fontSize: '10px',
+            fontFamily: 'system-ui, sans-serif',
+            padding: '1px 5px',
+            borderRadius: '4px',
+            background: 'rgba(255,255,255,0.08)',
+            border: '1px solid #3f3f46',
+            color: '#52525b',
+            lineHeight: '16px',
+            flexShrink: 0,
+          }}
+        >
+          &#8984;K
+        </kbd>
+      </button>
 
       {/* Pills Group */}
       <div

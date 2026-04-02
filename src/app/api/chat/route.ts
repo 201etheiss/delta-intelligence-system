@@ -98,16 +98,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     } else if (body.preferredModel && body.preferredModel !== 'auto' && validModels.includes(body.preferredModel as ModelId)) {
       // Workspace preferred model (used when user hasn't manually selected)
       modelId = body.preferredModel as ModelId;
-      console.log(`[ROUTER] Using workspace preferred model: ${modelId}`);
     } else if (userPrefs.defaultModel !== 'auto' && validModels.includes(userPrefs.defaultModel as ModelId)) {
       // User preference model (when no explicit model or workspace override)
       modelId = userPrefs.defaultModel as ModelId;
-      console.log(`[ROUTER] Using user preferred model: ${modelId}`);
     } else {
       const lastMsg = [...body.messages].reverse().find(m => m.role === 'user');
       const routing = routeQueryDetailed(lastMsg?.content ?? '', estimatedTokens);
       modelId = routing.modelId;
-      console.log(`[ROUTER] Score: ${routing.score} | Complexity: ${routing.complexity} | Model: ${routing.modelId} | Reasons: ${routing.reasons.join(', ')}`);
     }
 
     // Layer 4: Compact conversation history
@@ -118,7 +115,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       const lastUserMsg = [...body.messages].reverse().find(m => m.role === 'user');
       const orchestrated = await orchestrateQuery(lastUserMsg?.content ?? '', body.messages, role);
       if (orchestrated) {
-        console.log(`[ORCHESTRATOR] Planner: ${orchestrated.plannerTokens} tokens | Data steps: ${orchestrated.dataSteps} | Synthesizer: ${orchestrated.synthesizerTokens} tokens | Total: ${orchestrated.tokensUsed}`);
         return NextResponse.json(orchestrated);
       }
     }
@@ -159,7 +155,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         return `## ${doc.name}\n${truncated}`;
       }).join('\n\n');
       documentContext = `\n\n# Uploaded Documents\nThe user has attached these documents. Use them to answer questions.\n${docSections}`;
-      console.log(`[CHAT] ${body.documents.length} document(s) attached: ${body.documents.map((d) => d.name).join(', ')}`);
     }
 
     // Build Nova domain context section (module-specific or full cross-domain)

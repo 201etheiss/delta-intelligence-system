@@ -238,7 +238,7 @@ function ShellInner({ children }: { children: React.ReactNode }) {
         currentPage={currentPage}
         densityMode={densityMode}
         onDensityToggle={densityToggle}
-        onNovaClick={() => setPaletteOpen(prev => !prev)}
+        onNovaClick={() => setChatOpen(prev => !prev)}
       />
 
       {/* Below NovaBar */}

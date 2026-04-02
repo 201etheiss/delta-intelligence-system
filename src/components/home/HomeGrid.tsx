@@ -2,14 +2,30 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { LayoutGrid, List, SlidersHorizontal, Plus } from 'lucide-react';
+import Link from 'next/link';
+import { useSession } from 'next-auth/react';
+import {
+  LayoutGrid, List, SlidersHorizontal, Plus, ChevronRight,
+  Shield, Gauge, TrendingUp, Truck, Users, BarChart3,
+} from 'lucide-react';
 import { MODULE_GROUPS, SPOKE_MODULES, ALL_MODULES } from '@/lib/shell/module-registry';
 import { getSessionState, getModuleUsage, saveSessionState } from '@/lib/shell/session-state';
+import { getRoleCockpitInfo } from '@/lib/shell/role-routing';
 import { IntelligenceSummary } from './IntelligenceSummary';
 import { ActivityTimeline } from './ActivityTimeline';
 import { ModuleTile } from './ModuleTile';
 import { ModuleCustomizer } from './ModuleCustomizer';
 import type { ModuleGroup } from '@/lib/shell/module-registry';
+import type { UserRole } from '@/lib/config/roles';
+
+const ICON_MAP: Record<string, React.FC<{ size?: number; className?: string }>> = {
+  Shield: Shield as React.FC<{ size?: number; className?: string }>,
+  Gauge: Gauge as React.FC<{ size?: number; className?: string }>,
+  TrendingUp: TrendingUp as React.FC<{ size?: number; className?: string }>,
+  Truck: Truck as React.FC<{ size?: number; className?: string }>,
+  Users: Users as React.FC<{ size?: number; className?: string }>,
+  BarChart3: BarChart3 as React.FC<{ size?: number; className?: string }>,
+};
 
 // Stats per module id
 const MODULE_STATS: Record<string, string> = {
@@ -123,6 +139,11 @@ function ModuleGrid({
 
 export function HomeGrid() {
   const router = useRouter();
+  const { data: session } = useSession();
+  const role = (session?.user?.role as UserRole) ?? 'admin';
+  const cockpit = getRoleCockpitInfo(role);
+  const CockpitIcon = ICON_MAP[cockpit.icon] ?? Shield;
+
   const [pinnedIds, setPinnedIds] = useState<Set<string>>(new Set());
   const [moduleOrder, setModuleOrder] = useState<string[]>([]);
   const [customizerOpen, setCustomizerOpen] = useState(false);
@@ -201,6 +222,26 @@ export function HomeGrid() {
           Your command center across ERP, CRM, fleet, and analytics
         </p>
       </div>
+
+      {/* Role cockpit quick-access */}
+      {role !== 'admin' && (
+        <Link
+          href={cockpit.path}
+          className="flex items-center gap-4 px-5 py-4 rounded-xl bg-gradient-to-r from-[#FE5000]/10 to-transparent border border-[#FE5000]/20 hover:border-[#FE5000]/40 transition-colors group"
+          style={{ textDecoration: 'none' }}
+        >
+          <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-[#FE5000]/15">
+            <CockpitIcon size={20} className="text-[#FE5000]" />
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-white group-hover:text-[#FE5000] transition-colors" style={{ margin: 0 }}>
+              {cockpit.label}
+            </h3>
+            <p className="text-xs text-zinc-400" style={{ margin: '2px 0 0' }}>{cockpit.description}</p>
+          </div>
+          <ChevronRight className="ml-auto h-4 w-4 text-zinc-500 group-hover:text-[#FE5000] transition-colors" />
+        </Link>
+      )}
 
       {/* Intelligence Summary */}
       <IntelligenceSummary />
