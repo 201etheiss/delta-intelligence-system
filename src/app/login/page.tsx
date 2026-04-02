@@ -42,6 +42,17 @@ export default function LoginPage() {
             </svg>
             Sign in with Microsoft 365
           </button>
+
+          {/* Dev login — only shows in development */}
+          {process.env.NODE_ENV === 'development' && (
+            <button
+              onClick={() => signIn('credentials', { email: 'etheiss@delta360.energy', callbackUrl: '/' })}
+              className="flex items-center justify-center gap-2 w-full rounded-md border border-[#3F3F46] bg-[#27272A] px-4 py-2.5 text-sm text-zinc-300 hover:bg-[#3F3F46] transition-colors mt-3"
+            >
+              <span className="text-[#FE5000]">⚡</span>
+              Dev Login (Admin)
+            </button>
+          )}
         </div>
 
         <p className="text-[#52525B] text-xs text-center">

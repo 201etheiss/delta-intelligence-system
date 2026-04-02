@@ -1,5 +1,6 @@
 import type { NextAuthOptions } from 'next-auth';
 import AzureADProvider from 'next-auth/providers/azure-ad';
+import CredentialsProvider from 'next-auth/providers/credentials';
 import { getUserRole, type UserRole } from '@/lib/config/roles';
 
 declare module 'next-auth' {
@@ -28,6 +29,25 @@ declare module 'next-auth/jwt' {
 
 export const authOptions: NextAuthOptions = {
   providers: [
+    // Dev credentials provider — auto-login in development
+    ...(process.env.NODE_ENV === 'development' ? [
+      CredentialsProvider({
+        name: 'Dev Login',
+        credentials: {
+          email: { label: 'Email', type: 'text', placeholder: 'etheiss@delta360.energy' },
+        },
+        async authorize(credentials) {
+          // In dev mode, accept any login and assign admin role
+          const email = credentials?.email ?? 'etheiss@delta360.energy';
+          return {
+            id: 'dev-user',
+            name: 'Evan Theiss',
+            email,
+            image: null,
+          };
+        },
+      }),
+    ] : []),
     AzureADProvider({
       clientId: process.env.AZURE_AD_CLIENT_ID ?? '',
       clientSecret: process.env.AZURE_AD_CLIENT_SECRET ?? '',

@@ -845,7 +845,7 @@ export default function ChatInterface({ isAdmin = false, role = 'readonly', comp
               placeholder="Ask Delta Intelligence anything..."
               rows={1}
               disabled={isLoading}
-              className="flex-1 resize-none bg-transparent text-sm text-[#09090B] dark:text-white placeholder-[#A1A1AA] outline-none leading-relaxed disabled:opacity-60 min-h-[24px] max-h-[320px]"
+              className={`flex-1 resize-none bg-transparent text-sm text-[#09090B] dark:text-white placeholder-[#A1A1AA] outline-none leading-relaxed disabled:opacity-60 min-h-[24px] ${compact ? 'max-h-[80px]' : 'max-h-[320px]'}`}
             />
             <button
               onClick={sendMessage}
