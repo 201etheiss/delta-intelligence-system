@@ -12,6 +12,8 @@ import ChatPanel from '@/components/shell/ChatPanel';
 import LoadingBar from '@/components/common/LoadingBar';
 import CrossAppBreadcrumb from '@/components/integration/CrossAppBreadcrumb';
 import { findModuleForPath, MODULE_GROUPS } from '@/lib/shell/module-registry';
+import { getModulesForRole } from '@/lib/shell/role-routing';
+import type { UserRole } from '@/lib/config/roles';
 import type { ModuleGroup } from '@/lib/shell/module-registry';
 import {
   getTabs,
@@ -34,8 +36,9 @@ function ShellInner({ children }: { children: React.ReactNode }) {
   const densityToggle = useDensityToggle();
 
   // Role-filtered modules for StatusRail
-  // TODO: replace with getModulesForRole(role) when role-routing.ts exists
-  const filteredModules = MODULE_GROUPS;
+  // In dev mode without session, default to admin (sees everything)
+  const userRole: UserRole = 'admin'; // TODO: wire to useSession().data?.user?.role when auth is live
+  const filteredModules = getModulesForRole(userRole);
 
   // Derived active module
   const [activeModule, setActiveModule] = useState<ModuleGroup | undefined>(() => {
