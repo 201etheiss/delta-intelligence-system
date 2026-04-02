@@ -842,7 +842,7 @@ export default function ChatInterface({ isAdmin = false, role = 'readonly', comp
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Ask Delta Intelligence anything..."
+              placeholder="Ask Nova..."
               rows={1}
               disabled={isLoading}
               className={`flex-1 resize-none bg-transparent text-sm text-white placeholder-[#71717A] outline-none leading-relaxed disabled:opacity-60 ${compact ? 'min-h-[20px] max-h-[60px]' : 'min-h-[24px] max-h-[320px]'}`}

@@ -229,7 +229,7 @@ function ShellInner({ children }: { children: React.ReactNode }) {
   // Render
   // -----------------------------------------------------------------------
   return (
-    <div className="flex flex-col h-screen overflow-hidden bg-[#09090B]">
+    <div className="flex flex-col h-screen overflow-hidden bg-[#09090B]" suppressHydrationWarning>
       <LoadingBar />
 
       {/* NovaBar — top */}
