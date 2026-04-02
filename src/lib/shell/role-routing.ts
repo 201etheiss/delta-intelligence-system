@@ -19,12 +19,12 @@ export const ROLE_HOME_MAP: Record<UserRole, string> = {
 
 /** Module groups each role can access */
 const ROLE_MODULE_ACCESS: Record<UserRole, string[]> = {
-  admin: ['finance', 'operations', 'intelligence', 'organization', 'compliance', 'admin', 'platform', 'erp'],
-  accounting: ['finance', 'compliance', 'platform', 'erp'],
-  sales: ['intelligence', 'platform'],
-  operations: ['operations', 'platform'],
-  hr: ['organization', 'platform'],
-  readonly: ['intelligence', 'platform'],
+  admin: ['nova', 'finance', 'operations', 'intelligence', 'organization', 'compliance', 'admin', 'platform', 'erp'],
+  accounting: ['nova', 'finance', 'compliance', 'platform', 'erp'],
+  sales: ['nova', 'intelligence', 'platform'],
+  operations: ['nova', 'operations', 'platform'],
+  hr: ['nova', 'organization', 'platform'],
+  readonly: ['nova', 'intelligence', 'platform'],
 };
 
 /** Get the cockpit/home page for a role */
