@@ -13,9 +13,32 @@ import {
   Layers,
   MessageSquare,
   Search,
+  Database,
+  Globe,
+  Wrench,
+  Radar,
+  type LucideIcon,
 } from 'lucide-react';
+import type { ModuleGroup } from '@/lib/shell/module-registry';
+
+/** Map icon string names from ModuleGroup.icon to Lucide components */
+const ICON_MAP: Record<string, LucideIcon> = {
+  LayoutDashboard,
+  DollarSign,
+  Truck,
+  BarChart3,
+  Users,
+  Shield,
+  Settings,
+  Layers,
+  Database,
+  Globe,
+  Wrench,
+  Radar,
+};
 
 interface StatusRailProps {
+  modules: ModuleGroup[];
   activeModule: string | null;
   chatOpen: boolean;
   onModuleClick: (id: string) => void;
@@ -34,17 +57,6 @@ interface HealthResponse {
   services: ServiceHealth[];
 }
 
-const MODULE_ICONS = [
-  { id: 'home', label: 'Home', Icon: LayoutDashboard },
-  { id: 'finance', label: 'Finance', Icon: DollarSign },
-  { id: 'operations', label: 'Operations', Icon: Truck },
-  { id: 'intelligence', label: 'Intelligence', Icon: BarChart3 },
-  { id: 'organization', label: 'Organization', Icon: Users },
-  { id: 'compliance', label: 'Compliance', Icon: Shield },
-  { id: 'admin', label: 'Admin', Icon: Settings },
-  { id: 'platform', label: 'Platform', Icon: Layers },
-] as const;
-
 function statusColor(status: ServiceHealth['status']): string {
   if (status === 'connected') return 'bg-green-500';
   if (status === 'degraded') return 'bg-yellow-400';
@@ -52,6 +64,7 @@ function statusColor(status: ServiceHealth['status']): string {
 }
 
 export default function StatusRail({
+  modules,
   activeModule,
   chatOpen,
   onModuleClick,
@@ -88,16 +101,38 @@ export default function StatusRail({
     >
       {/* Module group icons */}
       <nav className="flex flex-col items-center gap-1">
-        {MODULE_ICONS.map(({ id, label, Icon }) => {
-          const isHome = id === 'home';
-          const isActive = isHome
-            ? (activeModule === null && pathname === '/')
-            : activeModule === id;
+        {/* Home button — always visible regardless of role */}
+        {(() => {
+          const HomeIcon = LayoutDashboard;
+          const isActive = activeModule === null && pathname === '/';
           return (
             <button
-              key={id}
-              title={label}
-              onClick={() => isHome && onHomeClick ? onHomeClick() : onModuleClick(id)}
+              key="home"
+              title="Home"
+              onClick={() => onHomeClick ? onHomeClick() : onModuleClick('home')}
+              className="relative flex items-center justify-center rounded-[8px] transition-colors"
+              style={{
+                width: 34,
+                height: 34,
+                background: isActive ? 'rgba(254, 80, 0, 0.12)' : 'transparent',
+                color: isActive ? '#FE5000' : '#71717a',
+                borderLeft: isActive ? '2px solid #FE5000' : '2px solid transparent',
+              }}
+            >
+              <HomeIcon size={16} strokeWidth={1.75} />
+            </button>
+          );
+        })()}
+
+        {/* Role-filtered module icons */}
+        {modules.map((mod) => {
+          const Icon = ICON_MAP[mod.icon] ?? Layers;
+          const isActive = activeModule === mod.id;
+          return (
+            <button
+              key={mod.id}
+              title={mod.label}
+              onClick={() => onModuleClick(mod.id)}
               className="relative flex items-center justify-center rounded-[8px] transition-colors"
               style={{
                 width: 34,

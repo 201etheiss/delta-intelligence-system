@@ -318,7 +318,7 @@ function WorkspaceCard({
 }) {
   return (
     <div
-      className="group relative rounded-lg border border-zinc-200 bg-white dark:bg-[#18181B] shadow-sm hover:shadow-md transition-all cursor-pointer overflow-hidden"
+      className="group relative rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-[#18181B] shadow-sm hover:shadow-md transition-all cursor-pointer overflow-hidden"
       style={{ borderLeftWidth: 4, borderLeftColor: ws.color }}
       onClick={onDetail}
       role="button"

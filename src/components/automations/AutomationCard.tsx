@@ -13,8 +13,8 @@ interface AutomationCardProps {
 }
 
 const TRIGGER_BADGES: Record<string, { label: string; color: string }> = {
-  schedule: { label: 'Schedule', color: 'bg-blue-100 text-blue-700 border-blue-200' },
-  threshold: { label: 'Threshold', color: 'bg-amber-100 text-amber-700 border-amber-200' },
+  schedule: { label: 'Schedule', color: 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-700' },
+  threshold: { label: 'Threshold', color: 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-700' },
   manual: { label: 'Manual', color: 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700' },
 };
 
@@ -41,7 +41,7 @@ export default function AutomationCard({
   const statusDot = automation.enabled ? 'bg-green-500' : 'bg-zinc-400';
 
   return (
-    <div className="bg-white dark:bg-[#18181B] border border-zinc-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
+    <div className="bg-white dark:bg-[#18181B] border border-zinc-200 dark:border-zinc-700 rounded-lg p-4 hover:shadow-sm transition-shadow">
       <div className="flex items-start justify-between gap-3">
         {/* Left: status + info */}
         <div className="flex items-start gap-3 min-w-0">
@@ -50,7 +50,7 @@ export default function AutomationCard({
             <h3 className="text-sm font-semibold text-zinc-900 dark:text-white truncate">
               {automation.name}
             </h3>
-            <p className="text-xs text-zinc-500 mt-0.5 line-clamp-2">
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 line-clamp-2">
               {automation.description}
             </p>
             <div className="flex items-center gap-2 mt-2 flex-wrap">
@@ -91,7 +91,7 @@ export default function AutomationCard({
           <button
             onClick={() => onToggle(automation.id, !automation.enabled)}
             className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-              automation.enabled ? 'bg-[#FE5000]' : 'bg-zinc-300'
+              automation.enabled ? 'bg-[#FE5000]' : 'bg-zinc-300 dark:bg-zinc-600'
             }`}
             title={automation.enabled ? 'Disable' : 'Enable'}
           >

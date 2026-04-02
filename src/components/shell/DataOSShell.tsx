@@ -33,6 +33,10 @@ function ShellInner({ children }: { children: React.ReactNode }) {
   const densityMode = useDensity();
   const densityToggle = useDensityToggle();
 
+  // Role-filtered modules for StatusRail
+  // TODO: replace with getModulesForRole(role) when role-routing.ts exists
+  const filteredModules = MODULE_GROUPS;
+
   // Derived active module
   const [activeModule, setActiveModule] = useState<ModuleGroup | undefined>(() => {
     if (typeof window === 'undefined') return undefined;
@@ -237,6 +241,7 @@ function ShellInner({ children }: { children: React.ReactNode }) {
       <div className="flex flex-1 min-h-0">
         {/* StatusRail — left */}
         <StatusRail
+          modules={filteredModules}
           activeModule={activeModule?.id ?? null}
           chatOpen={chatOpen}
           onModuleClick={handleModuleClick}

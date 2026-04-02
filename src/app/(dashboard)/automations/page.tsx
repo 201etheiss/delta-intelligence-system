@@ -149,7 +149,7 @@ export default function AutomationsPage() {
   return (
     <div className="h-full overflow-y-auto bg-zinc-50 dark:bg-zinc-900">
       {/* Header */}
-      <div className="bg-white dark:bg-[#18181B] border-b border-zinc-200 px-6 py-5">
+      <div className="bg-white dark:bg-[#18181B] border-b border-zinc-200 dark:border-zinc-700 px-6 py-5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-[#FE5000]/10">
