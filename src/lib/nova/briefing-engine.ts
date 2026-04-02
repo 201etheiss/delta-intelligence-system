@@ -22,6 +22,7 @@ export interface BriefingItem {
   actionLabel?: string;
   timestamp: string;
   metadata?: Record<string, unknown>;
+  isMock?: boolean;
 }
 
 export interface DailyBriefing {
@@ -35,6 +36,7 @@ export interface DailyBriefing {
     automationRuns: number;
     anomaliesDetected: number;
   };
+  hasMockData?: boolean;
 }
 
 // ── In-memory cache ───────────────────────────────────────────
@@ -279,6 +281,7 @@ export async function getAnomalies(): Promise<BriefingItem[]> {
       baseline: a.baseline,
       deviation: a.deviation,
     },
+    isMock: true,
   }));
 }
 
@@ -399,12 +402,15 @@ export async function generateBriefing(userEmail: string, role: string): Promise
     parts.push('All systems normal');
   }
 
+  const hasMockData = sortedItems.some((item) => item.isMock === true);
+
   const briefing: DailyBriefing = {
     generatedAt: now,
     greeting: getGreeting(),
     summary: parts.join(', '),
     items: sortedItems,
     stats,
+    hasMockData,
   };
 
   // Store in cache

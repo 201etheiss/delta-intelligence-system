@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import { MockDataBanner } from '@/components/common/MockDataBanner';
 import {
   Package,
   RefreshCw,
@@ -314,13 +315,8 @@ export default function InventoryProductsPage() {
         </p>
       )}
 
-      {/* Error */}
-      {error && (
-        <div className="flex items-center gap-2 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
-          <AlertCircle className="h-4 w-4 shrink-0" />
-          {error}
-        </div>
-      )}
+      {/* Gateway offline banner */}
+      {error && <MockDataBanner />}
 
       {/* KPI Bar */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useDensity } from '@/components/density/DensityProvider';
+import { MockDataBanner } from '@/components/common/MockDataBanner';
 import {
   Banknote,
   RefreshCw,
@@ -202,22 +203,8 @@ export default function AccountsReceivablePage() {
         </div>
       </div>
 
-      {/* Gateway error banner */}
-      {error && (
-        <div className="flex items-center gap-3 rounded-lg border border-orange-500/30 bg-orange-500/10 p-4">
-          <AlertTriangle className="h-5 w-5 shrink-0 text-orange-400" />
-          <div className="flex-1">
-            <p className="text-sm font-medium text-orange-300">Gateway offline</p>
-            <p className="text-xs text-orange-400/70">{error}</p>
-          </div>
-          <button
-            onClick={fetchData}
-            className="rounded-md border border-orange-500/30 bg-orange-500/20 px-3 py-1.5 text-xs font-medium text-orange-300 hover:bg-orange-500/30 transition-colors"
-          >
-            Retry
-          </button>
-        </div>
-      )}
+      {/* Gateway offline banner */}
+      {error && <MockDataBanner />}
 
       {/* KPI Bar */}
       {density === 'executive' ? (

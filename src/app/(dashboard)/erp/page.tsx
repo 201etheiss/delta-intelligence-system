@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useDensity } from '@/components/density/DensityProvider';
+import { MockDataBanner } from '@/components/common/MockDataBanner';
 import {
   Receipt,
   Banknote,
@@ -153,6 +154,7 @@ export default function ERPHubPage() {
   const [kpis, setKpis] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState<Record<string, boolean>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const hasAnyError = useMemo(() => Object.keys(errors).length > 0, [errors]);
 
   useEffect(() => {
     const initialLoading: Record<string, boolean> = {};
@@ -207,6 +209,9 @@ export default function ERPHubPage() {
           Accounts payable, receivable, inventory, contracts, and procurement
         </p>
       </div>
+
+      {/* Gateway offline banner */}
+      {hasAnyError && <MockDataBanner />}
 
       {/* Operator mode: compact module summary bar */}
       {density === 'operator' && (

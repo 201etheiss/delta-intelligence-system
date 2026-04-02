@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useDensity } from '@/components/density/DensityProvider';
+import { MockDataBanner } from '@/components/common/MockDataBanner';
 import {
   BarChart,
   Bar,
@@ -217,35 +218,8 @@ export default function AccountsPayablePage() {
         </div>
       </div>
 
-      {/* Error Banner */}
-      {error && (
-        <div className="mb-4 flex items-center justify-between rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3">
-          <div className="flex items-center gap-2">
-            <svg
-              className="w-4 h-4 text-red-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
-              />
-            </svg>
-            <span className="text-sm text-red-300">
-              Gateway offline — showing cached data
-            </span>
-          </div>
-          <button
-            onClick={fetchData}
-            className="rounded bg-red-500/20 px-3 py-1 text-xs font-medium text-red-300 hover:bg-red-500/30 transition-colors"
-          >
-            Retry
-          </button>
-        </div>
-      )}
+      {/* Gateway offline banner */}
+      {error && <MockDataBanner />}
 
       {/* KPI Bar */}
       {density === 'executive' ? (
