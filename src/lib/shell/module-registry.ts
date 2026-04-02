@@ -136,6 +136,22 @@ export const MODULE_GROUPS: ModuleGroup[] = [
       { href: '/onboarding', label: 'Onboarding' },
     ],
   },
+  {
+    id: 'erp',
+    label: 'ERP',
+    icon: 'Database',
+    defaultPagePath: '/erp',
+    pages: [
+      { href: '/erp', label: 'ERP Hub' },
+      { href: '/erp/ap', label: 'Accounts Payable' },
+      { href: '/erp/ar', label: 'Accounts Receivable' },
+      { href: '/erp/inventory', label: 'Inventory' },
+      { href: '/erp/contracts', label: 'Contracts' },
+      { href: '/erp/purchasing', label: 'Purchasing' },
+    ],
+    description: 'Ascend ERP replacement — AP, AR, inventory, contracts, procurement',
+    status: 'dev',
+  },
 ];
 
 // ---------------------------------------------------------------------------

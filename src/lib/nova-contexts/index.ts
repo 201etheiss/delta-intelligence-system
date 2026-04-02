@@ -11,6 +11,9 @@ import { COMPLIANCE_CONTEXT } from './compliance';
 import { ORGANIZATION_CONTEXT } from './organization';
 import { SIGNAL_MAP_CONTEXT } from './signal-map';
 import { GL_MODULE_CONTEXT } from './gl-module';
+import { PORTAL_CONTEXT } from './portal';
+import { EQUIPMENT_TRACKER_CONTEXT } from './equipment-tracker';
+import { ERP_CONTEXT } from './erp';
 
 export { FINANCE_CONTEXT } from './finance';
 export { OPERATIONS_CONTEXT } from './operations';
@@ -19,6 +22,9 @@ export { COMPLIANCE_CONTEXT } from './compliance';
 export { ORGANIZATION_CONTEXT } from './organization';
 export { SIGNAL_MAP_CONTEXT } from './signal-map';
 export { GL_MODULE_CONTEXT } from './gl-module';
+export { PORTAL_CONTEXT } from './portal';
+export { EQUIPMENT_TRACKER_CONTEXT } from './equipment-tracker';
+export { ERP_CONTEXT } from './erp';
 export type { NovaContext } from './finance';
 
 export const ALL_NOVA_CONTEXTS = {
@@ -29,6 +35,9 @@ export const ALL_NOVA_CONTEXTS = {
   organization: ORGANIZATION_CONTEXT,
   'signal-map': SIGNAL_MAP_CONTEXT,
   gl: GL_MODULE_CONTEXT,
+  portal: PORTAL_CONTEXT,
+  'equipment-tracker': EQUIPMENT_TRACKER_CONTEXT,
+  erp: ERP_CONTEXT,
 } as const;
 
 export type NovaModuleId = keyof typeof ALL_NOVA_CONTEXTS;

@@ -86,6 +86,19 @@ export const EVENT_TYPES = {
   SALESFORCE_SYNC: 'salesforce.sync',
   SAMSARA_SYNC: 'samsara.sync',
   POWERBI_SYNC: 'powerbi.sync',
+
+  // ERP module events
+  ERP_AP_VIEWED: 'erp.ap.viewed',
+  ERP_AR_VIEWED: 'erp.ar.viewed',
+  ERP_INVENTORY_VIEWED: 'erp.inventory.viewed',
+  ERP_CONTRACT_VIEWED: 'erp.contract.viewed',
+  ERP_PURCHASE_ORDER_CREATED: 'erp.purchase_order.created',
+  ERP_VENDOR_PAYMENT_SCHEDULED: 'erp.vendor_payment.scheduled',
+
+  // Cross-app integration events
+  CROSS_APP_NAVIGATION: 'integration.navigation',
+  SPOKE_HEALTH_CHECK: 'integration.spoke_health',
+  DATA_BRIDGE_QUERY: 'integration.bridge_query',
 } as const;
 
 export type EventType = (typeof EVENT_TYPES)[keyof typeof EVENT_TYPES];

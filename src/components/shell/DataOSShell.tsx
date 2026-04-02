@@ -10,6 +10,7 @@ import { ModuleTabs } from '@/components/shell/ModuleTabs';
 import Workspace from '@/components/shell/Workspace';
 import ChatPanel from '@/components/shell/ChatPanel';
 import LoadingBar from '@/components/common/LoadingBar';
+import CrossAppBreadcrumb from '@/components/integration/CrossAppBreadcrumb';
 import { findModuleForPath, MODULE_GROUPS } from '@/lib/shell/module-registry';
 import type { ModuleGroup } from '@/lib/shell/module-registry';
 import {
@@ -254,6 +255,9 @@ function ShellInner({ children }: { children: React.ReactNode }) {
             onTabClose={handleTabClose}
             onNewTab={handleNewTab}
           />
+
+          {/* Cross-app breadcrumb */}
+          <CrossAppBreadcrumb currentPath={pathname} currentModule={activeModule?.id ?? null} />
 
           {/* Workspace — content area */}
           <Workspace chatOpen={chatOpen}>

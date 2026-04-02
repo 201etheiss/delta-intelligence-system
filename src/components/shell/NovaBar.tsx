@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { AlertPopover } from './AlertPopover';
 import { BotPopover } from './BotPopover';
 import { AutomationPopover } from './AutomationPopover';
+import AppSwitcher from '@/components/integration/AppSwitcher';
 
 interface NovaBarProps {
   currentModule: string | null;
@@ -484,6 +485,9 @@ export function NovaBar({
           />
         )}
       </div>
+
+      {/* App Switcher */}
+      <AppSwitcher currentApp="delta-intelligence" currentPath={currentPage} />
 
       {/* User Avatar + Dropdown */}
       <div style={{ position: 'relative', flexShrink: 0 }}>
