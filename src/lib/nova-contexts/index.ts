@@ -14,6 +14,8 @@ import { GL_MODULE_CONTEXT } from './gl-module';
 import { PORTAL_CONTEXT } from './portal';
 import { EQUIPMENT_TRACKER_CONTEXT } from './equipment-tracker';
 import { ERP_CONTEXT } from './erp';
+import { ADMIN_CONTEXT } from './admin';
+import { PLATFORM_CONTEXT } from './platform';
 
 export { FINANCE_CONTEXT } from './finance';
 export { OPERATIONS_CONTEXT } from './operations';
@@ -25,6 +27,8 @@ export { GL_MODULE_CONTEXT } from './gl-module';
 export { PORTAL_CONTEXT } from './portal';
 export { EQUIPMENT_TRACKER_CONTEXT } from './equipment-tracker';
 export { ERP_CONTEXT } from './erp';
+export { ADMIN_CONTEXT } from './admin';
+export { PLATFORM_CONTEXT } from './platform';
 export type { NovaContext } from './finance';
 
 export const ALL_NOVA_CONTEXTS = {
@@ -38,6 +42,8 @@ export const ALL_NOVA_CONTEXTS = {
   portal: PORTAL_CONTEXT,
   'equipment-tracker': EQUIPMENT_TRACKER_CONTEXT,
   erp: ERP_CONTEXT,
+  admin: ADMIN_CONTEXT,
+  platform: PLATFORM_CONTEXT,
 } as const;
 
 export type NovaModuleId = keyof typeof ALL_NOVA_CONTEXTS;
