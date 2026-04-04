@@ -46,10 +46,10 @@ See [docs/](./docs/) for full documentation:
 
 ## Key People
 
-- **Taylor Veazey** — Corporate Controller (system owner)
+- **Taylor Veazey** — Corporate Controller 
 - **Adam Vegas** — President/CEO
-- **Evan Theiss** — AI Strategy/System Builder
+- **Evan Theiss** — Head of Special Projects - AI Strategy/System Builder
 
 ## License
 
-Proprietary — Delta360 Energy
+Proprietary — Delta360
